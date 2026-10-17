@@ -1,0 +1,30 @@
+# Cloudflare Worker — Vinh Làm Game media upload (Backblaze B2)
+name = "vinhlamgame-media"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Biến KHÔNG bí mật (sửa trực tiếp ở đây hoặc trong Dashboard › Worker › Settings › Variables)
+[vars]
+# Bucket B2 (Buckets › tên bucket)
+B2_BUCKET = "vinhlamgame-media"
+# Endpoint S3 của bucket (Buckets › Endpoint), KHÔNG có https://
+B2_ENDPOINT = "s3.us-west-004.backblazeb2.com"
+# Region = phần giữa trong endpoint, ví dụ us-west-004 / eu-central-003
+B2_REGION = "us-west-004"
+# Link công khai để hiện ảnh/video trên web. Dùng 1 trong 2:
+#   • Link B2 trực tiếp: https://f004.backblazeb2.com/file/vinhlamgame-media
+#   • Tên miền riêng qua Cloudflare (khuyên dùng, có CDN): https://media.vinhlamgame.com
+PUBLIC_BASE_URL = "https://f004.backblazeb2.com/file/vinhlamgame-media"
+# Các trang được phép gọi Worker (cách nhau dấu phẩy, không có / ở cuối)
+ALLOWED_ORIGINS = "https://vinhlamgame.vercel.app,http://localhost:5173"
+# Supabase (Project Settings › API)
+SUPABASE_URL = "https://YOUR-PROJECT.supabase.co"
+SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY"
+# Giới hạn dung lượng mỗi file (MB) và thời hạn link tải lên (giây)
+MAX_UPLOAD_MB = "200"
+PRESIGN_EXPIRES = "900"
+
+# Biến BÍ MẬT — KHÔNG ghi vào file này. Đặt bằng lệnh:
+#   npx wrangler secret put B2_KEY_ID
+#   npx wrangler secret put B2_APP_KEY
+#   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY   (không bắt buộc — chỉ để gửi email mời quản trị viên)

@@ -381,7 +381,9 @@ main{flex:1}
    Điền URL + anon key của Supabase (chạy schema.sql trước) để đồng bộ cho mọi người xem. */
 const CONFIG = {
   SUPABASE_URL: '',
-  SUPABASE_ANON_KEY: ''
+  SUPABASE_ANON_KEY: '',
+  // Cloudflare Worker tải file lên Backblaze B2 (xem cloudflare-worker/README.md)
+  UPLOAD_WORKER_URL: ''
 };
 
 /* ============ TIỆN ÍCH ============ */
@@ -465,7 +467,7 @@ const MODE = (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase
 const Store = {
   async load() {
     if (MODE === 'cloud') {
-      sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+      if (!sb) sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
       const [s, g, ge, b, ss] = await Promise.all([
         sb.from('settings').select('data').eq('id', 1).maybeSingle(),
         sb.from('games').select('*'),
@@ -980,7 +982,11 @@ document.addEventListener('click', async e => {
       case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
       case 'reset': confirmDel = '__reset'; render(); break;
       case 'reset-yes': D = structuredClone(SEED); Store.persist(); confirmDel = null; render(); toast('Đã nạp lại dữ liệu mẫu'); break;
-      case 'logout': await sb.auth.signOut(); session = null; render(); break;
+      case 'logout': await sb.auth.signOut(); session = null; IS_ADMIN = null; ME = ''; MY_ROLE = ''; MSGS = null; ADMINS = null; AUTH_VIEW = ''; render(); break;
+      case 'auth-view': AUTH_VIEW = t.dataset.v || ''; render(); break;
+      case 'admin-del': confirmDel = 'adm:' + id; render(); break;
+      case 'admin-del-yes': { const { error } = await sb.from('admins').delete().eq('email', id); if (error) throw new Error('Không xoá được: ' + error.message); confirmDel = null; ADMINS = null; render(); toast('Đã xoá quyền của ' + id); break; }
+      case 'admin-invite': await inviteAdmin(id); toast('Đã gửi lại email mời tới ' + id); break;
     }
   } catch (err) { toast(err.message || 'Có lỗi xảy ra', true); }
 });
@@ -1029,7 +1035,8 @@ window.addEventListener('popstate', () => { ROUTE = location.hash || '#/'; close
 (async () => {
   try { await Store.load(); }
   catch (err) { D = structuredClone(SEED); toast('Không kết nối được Supabase — đang hiển thị dữ liệu mẫu.', true); }
-  if (sb) sb.auth.onAuthStateChange((_e, s) => { session = s; });
+  if (sb) sb.auth.onAuthStateChange((ev, s) => { session = s; if (typeof onAuthEvent === 'function') onAuthEvent(ev, s); });
+  if (typeof afterBoot === 'function') await afterBoot();
   render();
 })();
 </script>

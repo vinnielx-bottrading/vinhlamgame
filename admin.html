@@ -321,7 +321,35 @@ main{flex:1}
 @media (max-width:560px){ .cform .row2{grid-template-columns:minmax(0,1fr)} .cform-foot .btn{width:100%} }
 
 /* Admin */
-.admin{padding-block:32px 72px;display:grid;gap:24px}
+.admin{padding-block:28px 72px}
+.admin-shell{display:grid;grid-template-columns:minmax(0,1fr) 256px;gap:clamp(20px,3vw,36px);align-items:start}
+.admin-main{min-width:0;display:grid;gap:22px;align-content:start}
+.admin-side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 92px);display:grid;gap:18px;border:1px solid var(--line);padding:14px;background:var(--paper)}
+.side-group{display:grid;gap:2px}
+.side-group > span{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:6px 10px}
+.side-tab{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:10px 12px;border-radius:var(--r);font-size:14px;color:var(--ink);transition:background .15s,color .15s}
+.side-tab:hover{background:var(--paper-2)}
+.side-tab.on{background:var(--wine);color:#fff}
+.side-tab .cnt{font-size:12px;opacity:.65}
+.side-tab.on .tab-badge{background:#fff;color:var(--wine)}
+.side-me{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:8px;font-size:13px}
+.side-me b{font-weight:600;overflow-wrap:anywhere}
+.side-me .row-act{justify-content:flex-start}
+.role{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:var(--wine-tint);color:var(--wine)}
+.auth-wrap{max-width:420px;margin:48px auto;display:grid;gap:16px}
+.auth-wrap .panel{gap:16px}
+.auth-wrap .link{font-size:13px;color:var(--wine);justify-self:start;border-bottom:1px solid currentColor}
+.auth-note{font-size:13px;color:var(--muted)}
+.upl{font-variant-numeric:tabular-nums}
+@media (max-width:900px){
+  .admin-shell{grid-template-columns:minmax(0,1fr)}
+  .admin-side{position:static;order:-1;padding:10px}
+  .side-groups{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+  .side-group{display:flex;gap:6px}
+  .side-group > span{display:none}
+  .side-tab{white-space:nowrap;width:auto;border:1px solid var(--line)}
+  .side-me{grid-auto-flow:column;justify-content:space-between;align-items:center}
+}
 .admin-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
 .admin-head h1{font-size:2.6rem;margin-top:8px}
 .notice{background:var(--wine-tint);color:var(--wine-deep);padding:12px 16px;font-size:13px;border-left:2px solid var(--wine)}
@@ -441,7 +469,9 @@ textarea{min-height:120px;resize:vertical}
    Điền URL + anon key của Supabase (chạy schema.sql trước) để đồng bộ cho mọi người xem. */
 const CONFIG = {
   SUPABASE_URL: '',
-  SUPABASE_ANON_KEY: ''
+  SUPABASE_ANON_KEY: '',
+  // Cloudflare Worker tải file lên Backblaze B2 (xem cloudflare-worker/README.md)
+  UPLOAD_WORKER_URL: ''
 };
 
 /* ============ TIỆN ÍCH ============ */
@@ -525,7 +555,7 @@ const MODE = (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase
 const Store = {
   async load() {
     if (MODE === 'cloud') {
-      sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+      if (!sb) sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
       const [s, g, ge, b, ss] = await Promise.all([
         sb.from('settings').select('data').eq('id', 1).maybeSingle(),
         sb.from('games').select('*'),
@@ -646,7 +676,7 @@ const FIELDS = {
     { k: 'cover', label: 'Ảnh thumbnail (4:3)', type: 'image', full: true, hint: 'Ảnh trên ô game ở thư viện. Khuyên dùng 1200 × 900.' },
     { k: 'kv', label: 'Ảnh KV chính (16:10)', type: 'image', full: true, hint: 'Ảnh đầu tiên trong slide trang game. Khuyên dùng 1600 × 1000.' },
     { k: 'screenshots', label: 'Ảnh slide thêm', type: 'images', full: true, hint: 'Các ảnh tiếp theo trong slide, tỉ lệ 16:10.' },
-    { k: 'clip_url', label: 'Video ngắn trong slide', type: 'url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
+    { k: 'clip_url', label: 'Video ngắn trong slide', type: 'media-url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
     { type: 'heading', label: 'Bài viết' },
     { k: 'description', label: 'Bài viết giới thiệu game', type: 'textarea', full: true, hint: 'Mỗi dòng là một đoạn.' },
     { k: 'highlights', label: 'Cụm từ marketing (có dấu tích)', type: 'textarea', full: true, hint: 'Mỗi dòng một cụm ngắn gọn. VD: Không cần cài đặt' },
@@ -663,7 +693,7 @@ const FIELDS = {
     { type: 'heading', label: 'Hình ảnh / video' },
     { k: 'media_type', label: 'Dạng banner', type: 'select', options: [['image', 'Hình ảnh'], ['video', 'Video ngắn (.mp4 / .webm)'], ['youtube', 'Video web (YouTube)']] },
     { k: 'image', label: 'Ảnh banner (21:8) — JPG, PNG, WebP hoặc GIF động', type: 'image', full: true, hint: 'Khuyên dùng 2100 × 800. GIF động chạy như ảnh thường. Với video, ảnh này làm ảnh chờ khi video đang tải.' },
-    { k: 'video_url', label: 'Link video', type: 'url', full: true, when: 'media_type=video|youtube', hint: 'Video tự chạy, không tiếng, lặp lại. Nên dài 6–20 giây.' },
+    { k: 'video_url', label: 'Link video', type: 'media-url', full: true, when: 'media_type=video|youtube', hint: 'Video tự chạy, không tiếng, lặp lại. Nên dài 6–20 giây.' },
     { type: 'heading', label: 'Hiển thị' },
     { k: 'duration', label: 'Thời gian riêng (giây)', type: 'number', hint: '0 = theo cài đặt chung ở tab Giao diện. Video nên đặt bằng độ dài video.' },
     { k: 'sort', label: 'Thứ tự', type: 'number' },
@@ -744,7 +774,7 @@ function fieldHTML(f, v) {
         <div class="img-ctl">
           <input type="hidden" name="${f.k}" value="${esc(v)}">
           <input id="${id}" type="text" data-img-url placeholder="${isData ? 'Đang dùng ảnh tải lên' : 'Dán link ảnh https://…'}" value="${isData ? '' : esc(v)}">
-          <div class="img-btns"><span class="btn small line file-btn">Tải ảnh lên<input type="file" accept="image/*" data-img-file></span><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
+          <div class="img-btns"><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" data-img-file></span><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
           ${hint}
         </div></div></div>`;
     }
@@ -753,10 +783,11 @@ function fieldHTML(f, v) {
       return `<div class="${cls}"><span class="lbl">${f.label}</span><div data-imgs="${f.k}" style="display:grid;gap:10px">
         <input type="hidden" name="${f.k}" value="${esc(JSON.stringify(arr))}">
         <div class="shot-list">${arr.map((s, i) => `<div class="shot-item"><img src="${esc(s)}" alt=""><button type="button" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh">×</button></div>`).join('') || '<span class="hint">Chưa có ảnh.</span>'}</div>
-        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">Tải ảnh lên<input type="file" accept="image/*" multiple data-shots-file></span></div>
+        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" multiple data-shots-file></span></div>
       </div></div>`;
     }
     case 'date': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="date" value="${esc(v)}">${hint}</div>`;
+    case 'media-url': return `<div class="${cls}">${lab}<div class="img-btns"><input id="${id}" name="${f.k}" type="url" value="${esc(v)}" style="flex:1;min-width:200px">${uploadOn() ? `<span class="btn small line file-btn">Tải video lên B2<input type="file" accept="video/mp4,video/webm,video/quicktime,image/gif" data-url-file="${f.k}"></span>` : ''}</div>${hint}</div>`;
     default: return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="${f.type === 'url' ? 'url' : 'text'}" value="${esc(v)}" ${f.req ? 'required' : ''}>${hint}</div>`;
   }
 }
@@ -770,7 +801,7 @@ function readForm(form, fields) {
     if (f.type === 'checkbox') o[f.k] = el.checked;
     else if (f.type === 'number') o[f.k] = Number(el.value) || 0;
     else if (f.type === 'images') o[f.k] = JSON.parse(el.value || '[]');
-    else o[f.k] = el.value.trim();
+    else o[f.k] = String(el.value).trim();
   }
   return o;
 }
@@ -893,34 +924,179 @@ function adminBackup() {
   </div>`;
 }
 
-function viewAdmin(tab = 'games') {
-  if (MODE === 'cloud' && !session) return `<div class="wrap"><form class="panel login" data-form="login">
+const TAB_GROUPS = () => [
+  ['Nội dung', [['games', 'Game', D.games.length], ['banners', 'Banner', D.banners.length], ['genres', 'Thể loại', D.genres.length]]],
+  ['Khách hàng', [['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0]]],
+  ['Cài đặt', [['display', 'Giao diện'], ['settings', 'Thông tin trang'], ['admins', 'Quản trị viên'], ['backup', 'Sao lưu']]]
+];
+function authView() {
+  if (AUTH_VIEW === 'setpass') return `<div class="wrap auth-wrap"><form class="panel" data-form="setpass" novalidate>
+      <p class="eyebrow"><span class="dot"></span>Quản trị</p><h2>Đặt mật khẩu</h2>
+      <p class="auth-note">Tài khoản: <b>${esc(session?.user?.email || '')}</b></p>
+      <div class="field"><label for="sp-1">Mật khẩu mới</label><input id="sp-1" name="password" type="password" autocomplete="new-password" minlength="8" required></div>
+      <div class="field"><label for="sp-2">Nhập lại mật khẩu</label><input id="sp-2" name="password2" type="password" autocomplete="new-password" minlength="8" required></div>
+      <p class="auth-note">Tối thiểu 8 ký tự, nên có chữ hoa, chữ thường và số.</p>
+      <button class="btn primary" type="submit">Lưu mật khẩu</button>
+    </form></div>`;
+  if (AUTH_VIEW === 'forgot') return `<div class="wrap auth-wrap"><form class="panel" data-form="forgot" novalidate>
+      <p class="eyebrow"><span class="dot"></span>Quản trị</p><h2>Quên mật khẩu</h2>
+      <p class="auth-note">Nhập email quản trị viên. Nếu email có quyền, bạn sẽ nhận link đặt lại mật khẩu.</p>
+      <div class="field"><label for="fg-email">Email</label><input id="fg-email" name="email" type="email" autocomplete="username" required></div>
+      <button class="btn primary" type="submit">Gửi link đặt lại</button>
+      <button type="button" class="link" data-act="auth-view" data-v="">← Quay lại đăng nhập</button>
+    </form></div>`;
+  return `<div class="wrap auth-wrap"><form class="panel" data-form="login" novalidate>
       <p class="eyebrow"><span class="dot"></span>Quản trị</p><h2>Đăng nhập</h2>
       <div class="field"><label for="lg-email">Email</label><input id="lg-email" name="email" type="email" autocomplete="username" required></div>
       <div class="field"><label for="lg-pass">Mật khẩu</label><input id="lg-pass" name="password" type="password" autocomplete="current-password" required></div>
       <button class="btn primary" type="submit">Đăng nhập</button>
+      <button type="button" class="link" data-act="auth-view" data-v="forgot">Quên mật khẩu?</button>
+      <p class="auth-note">Chỉ email được cấp quyền quản trị mới đăng nhập được.</p>
     </form></div>`;
-  const tabs = [['games', 'Game', D.games.length], ['banners', 'Banner', D.banners.length], ['genres', 'Thể loại', D.genres.length], ['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0], ['display', 'Giao diện'], ['settings', 'Thông tin trang'], ['backup', 'Sao lưu']];
+}
+function viewAdmin(tab = 'games') {
+  if (MODE === 'cloud') {
+    if (AUTH_VIEW === 'setpass' && session) return authView();
+    if (!session) return authView();
+    if (IS_ADMIN === null) return `<div class="wrap auth-wrap"><div class="empty">Đang kiểm tra quyền quản trị…</div></div>`;
+    if (IS_ADMIN === false) return `<div class="wrap auth-wrap"><div class="panel"><h2>Không có quyền</h2>
+      <p class="auth-note">Tài khoản <b>${esc(session.user?.email)}</b> chưa được cấp quyền quản trị. Liên hệ chủ sở hữu để được thêm vào danh sách.</p>
+      <button class="btn line" data-act="logout">Đăng xuất</button></div></div>`;
+  }
+  const groups = TAB_GROUPS();
+  const flat = groups.flatMap(g => g[1]);
   const canAdd = ['games', 'banners', 'genres'].includes(tab);
-  const body = { games: adminGames, banners: adminBanners, genres: adminGenres, messages: adminMessages, display: adminDisplay, settings: adminSettings, backup: adminBackup }[tab] || adminGames;
-  return `<div class="wrap admin">
-    <div class="admin-head">
-      <div><p class="eyebrow"><span class="dot"></span>Quản trị</p><h1>${(tabs.find(t => t[0] === tab) || tabs[0])[1]}</h1></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <a class="btn line" href="index.html" target="_blank" rel="noopener">Xem trang ↗</a>
-        ${canAdd && !editing ? `<button class="btn primary" data-act="new" data-kind="${tab}">+ Thêm ${LABELS[tab]}</button>` : ''}
-        ${MODE === 'cloud' ? `<button class="btn line" data-act="logout">Đăng xuất</button>` : ''}
+  const body = { games: adminGames, banners: adminBanners, genres: adminGenres, messages: adminMessages, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup }[tab] || adminGames;
+  const side = `<aside class="admin-side" aria-label="Mục quản trị">
+      <div class="side-groups">${groups.map(([name, tabs]) => `<div class="side-group"><span>${name}</span>${tabs.map(t => `<button class="side-tab ${t[0] === tab ? 'on' : ''}" data-act="tab" data-tab="${t[0]}" ${t[0] === tab ? 'aria-current="page"' : ''}><span>${t[1]}</span>${t[3] ? `<span class="tab-badge num">${t[3]}</span>` : t[2] != null ? `<span class="cnt num">${t[2]}</span>` : ''}</button>`).join('')}</div>`).join('')}</div>
+      <div class="side-me">
+        ${MODE === 'cloud' ? `<div style="display:grid;gap:4px;min-width:0"><b>${esc(ME)}</b><span><span class="role">${MY_ROLE === 'owner' ? 'Chủ sở hữu' : 'Quản trị viên'}</span></span></div>` : `<span class="auth-note">Chế độ demo</span>`}
+        <div class="row-act"><a class="btn small line" href="index.html" target="_blank" rel="noopener">Xem trang ↗</a>${MODE === 'cloud' ? `<button class="btn small line" data-act="logout">Đăng xuất</button>` : ''}</div>
       </div>
-    </div>
-    ${MODE === 'local' ? `<div class="notice">Chế độ demo: dữ liệu lưu trên trình duyệt này, mở <span class="mono">index.html</span> cùng trình duyệt để xem thay đổi. Điền Supabase vào <span class="mono">CONFIG</span> (cả 2 file) để khách truy cập cùng thấy.</div>` : ''}
-    <nav class="tabs">${tabs.map(t => `<a href="#${t[0]}" data-act="tab" data-tab="${t[0]}" class="${t[0] === tab ? 'on' : ''}">${t[1]}${t[2] != null ? ` <span class="num" style="opacity:.6">${t[2]}</span>` : ''}${t[3] ? `<span class="tab-badge num">${t[3]}</span>` : ''}</a>`).join('')}</nav>
-    ${editing && editing.kind === tab ? formPanel(tab) : ''}
-    ${body()}
-  </div>`;
+    </aside>`;
+  return `<div class="wrap admin"><div class="admin-shell">
+    <section class="admin-main">
+      <div class="admin-head">
+        <div><p class="eyebrow"><span class="dot"></span>Quản trị</p><h1>${(flat.find(t => t[0] === tab) || flat[0])[1]}</h1></div>
+        ${canAdd && !editing ? `<button class="btn primary" data-act="new" data-kind="${tab}">+ Thêm ${LABELS[tab]}</button>` : ''}
+      </div>
+      ${MODE === 'local' ? `<div class="notice">Chế độ demo: chưa kết nối Supabase nên chưa bật đăng nhập, dữ liệu chỉ lưu trên trình duyệt này. Điền Supabase vào <span class="mono">CONFIG</span> (cả 2 file) để bật đăng nhập và đồng bộ cho mọi khách.</div>` : ''}
+      ${editing && editing.kind === tab ? formPanel(tab) : ''}
+      ${body()}
+    </section>
+    ${side}
+  </div></div>`;
+}
+
+/* ---------- Quản trị viên ---------- */
+let ADMINS = null, adminsLoading = false;
+function loadAdmins() {
+  if (adminsLoading || MODE !== 'cloud') return; adminsLoading = true;
+  sb.from('admins').select('*').order('created_at').then(({ data, error }) => { ADMINS = error ? [] : (data || []); if (error) toast('Không tải được danh sách quản trị viên.', true); })
+    .finally(() => { adminsLoading = false; render(); });
+}
+const workerOn = () => MODE === 'cloud' && !!CONFIG.UPLOAD_WORKER_URL;
+function adminAdmins() {
+  if (MODE !== 'cloud') return `<div class="panel">
+      <h2>Đăng nhập & phân quyền</h2>
+      <p class="prose" style="font-size:15px">Khi kết nối Supabase, trang quản trị yêu cầu đăng nhập bằng email và mật khẩu. Chủ sở hữu mặc định là <b>vinnielx@gmail.com</b>. Chủ sở hữu thêm hoặc bớt quản trị viên khác ngay tại tab này.</p>
+      <p class="auth-note">Làm theo mục “Đăng nhập quản trị” trong README.md để bật.</p>
+    </div>`;
+  if (!ADMINS) { loadAdmins(); return `<div class="empty">Đang tải…</div>`; }
+  const owner = MY_ROLE === 'owner';
+  return `${owner ? `<form class="panel" data-form="admin-add" novalidate>
+      <h2>Thêm quản trị viên</h2>
+      <div class="form-grid">
+        <div class="field"><label for="ad-email">Email *</label><input id="ad-email" name="email" type="email" required placeholder="ten@gmail.com"></div>
+        <div class="field"><label for="ad-note">Ghi chú</label><input id="ad-note" name="note" type="text" placeholder="VD: Biên tập nội dung"></div>
+        <div class="field full"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input type="checkbox" name="invite" ${workerOn() ? 'checked' : 'disabled'}> Gửi email mời đặt mật khẩu</label>
+          <span class="hint">${workerOn() ? 'Người được mời bấm link trong email để đặt mật khẩu, rồi đăng nhập tại trang này.' : 'Cần cấu hình Cloudflare Worker (SUPABASE_SERVICE_ROLE_KEY) để gửi lời mời. Nếu chưa có, tạo tài khoản ở Supabase › Authentication › Add user.'}</span></div>
+      </div>
+      <div class="form-act"><button class="btn primary" type="submit">Thêm quản trị viên</button></div>
+    </form>` : `<div class="notice">Chỉ chủ sở hữu được thêm hoặc xoá quản trị viên.</div>`}
+    <div class="tbl-wrap"><table><thead><tr><th>Email</th><th>Vai trò</th><th>Ghi chú</th><th>Thêm ngày</th><th></th></tr></thead><tbody>
+      ${ADMINS.map(a => `<tr>
+        <td style="font-weight:500">${esc(a.email)}${a.email === String(ME).toLowerCase() ? ' <span class="hint" style="color:var(--muted)">(bạn)</span>' : ''}</td>
+        <td><span class="role">${a.role === 'owner' ? 'Chủ sở hữu' : 'Quản trị viên'}</span></td>
+        <td>${esc(a.note)}</td>
+        <td class="num">${a.created_at ? fmtTime(a.created_at) : ''}</td>
+        <td><div class="row-act">${owner && a.role !== 'owner' ? `
+          ${workerOn() ? `<button class="btn small line" data-act="admin-invite" data-id="${esc(a.email)}">Gửi lại lời mời</button>` : ''}
+          ${confirmDel === 'adm:' + a.email ? `<span class="confirm">Xoá quyền? <button class="btn small danger" data-act="admin-del-yes" data-id="${esc(a.email)}">Xoá</button><button class="btn small line" data-act="del-no">Không</button></span>` : `<button class="btn small danger" data-act="admin-del" data-id="${esc(a.email)}">Xoá quyền</button>`}` : ''}</div></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+    <p class="auth-note">Xoá quyền chỉ gỡ email khỏi danh sách quản trị: người đó vẫn đăng nhập được nhưng không xem hoặc sửa được gì. Muốn xoá hẳn tài khoản, vào Supabase › Authentication › Users.</p>`;
+}
+
+/* ---------- Đăng nhập ---------- */
+let AUTH_VIEW = '', IS_ADMIN = null, ME = '', MY_ROLE = '';
+const AUTH_HASH = (() => { const h = location.hash; const t = /type=(recovery|invite)/.exec(h)?.[1]; const err = /error_description=([^&]+)/.exec(h)?.[1]; return { type: t || '', error: err ? decodeURIComponent(err.replace(/\+/g, ' ')) : '' }; })();
+if (AUTH_HASH.type) AUTH_VIEW = 'setpass';
+async function checkAdmin() {
+  if (MODE !== 'cloud' || !session) { IS_ADMIN = null; return; }
+  ME = session.user?.email || '';
+  const { data, error } = await sb.rpc('is_admin');
+  IS_ADMIN = !error && data === true;
+  if (IS_ADMIN) {
+    const r = await sb.from('admins').select('role').eq('email', ME.toLowerCase()).maybeSingle();
+    MY_ROLE = r.data?.role || 'admin';
+    await Store.load();
+  }
+}
+async function afterBoot() {
+  if (AUTH_HASH.error) toast(/expired|invalid/i.test(AUTH_HASH.error) ? 'Link đã hết hạn hoặc đã dùng. Hãy gửi lại link mới.' : AUTH_HASH.error, true);
+  if (AUTH_HASH.type || AUTH_HASH.error) { try { history.replaceState(null, '', location.pathname + '#' + TAB); } catch (_) {} }
+  await checkAdmin();
+}
+function onAuthEvent(ev) {
+  if (ev === 'PASSWORD_RECOVERY') { AUTH_VIEW = 'setpass'; render(); }
+  if (ev === 'SIGNED_OUT') { IS_ADMIN = null; ME = ''; MY_ROLE = ''; MSGS = null; ADMINS = null; }
+}
+
+/* ---------- Tải file lên Backblaze B2 qua Cloudflare Worker ---------- */
+const uploadOn = () => workerOn() && !!session;
+const FOLDER_OF = { banners: 'banner', games: 'games', display: 'ads', settings: 'donate' };
+async function uploadToB2(file, folder, onProgress) {
+  const { data } = await sb.auth.getSession();
+  const tok = data.session?.access_token;
+  if (!tok) throw new Error('Phiên đăng nhập hết hạn, hãy đăng nhập lại.');
+  const r = await fetch(CONFIG.UPLOAD_WORKER_URL.replace(/\/+$/, '') + '/presign', {
+    method: 'POST', headers: { Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size, folder })
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Không xin được link tải lên từ Worker.');
+  await new Promise((res, rej) => {
+    const x = new XMLHttpRequest();
+    x.open('PUT', j.uploadUrl);
+    Object.entries(j.headers || {}).forEach(([k, v]) => x.setRequestHeader(k, v));
+    x.upload.onprogress = e => { if (e.lengthComputable) onProgress?.(Math.round(e.loaded / e.total * 100)); };
+    x.onload = () => x.status < 300 ? res() : rej(new Error(`B2 từ chối file (mã ${x.status}).`));
+    x.onerror = () => rej(new Error('Lỗi mạng, hoặc bucket B2 chưa bật CORS cho tên miền này.'));
+    x.send(file);
+  });
+  return j.publicUrl;
+}
+async function inviteAdmin(email) {
+  const { data } = await sb.auth.getSession();
+  const r = await fetch(CONFIG.UPLOAD_WORKER_URL.replace(/\/+$/, '') + '/admin/invite', {
+    method: 'POST', headers: { Authorization: 'Bearer ' + data.session?.access_token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, redirectTo: location.origin + location.pathname })
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Worker không phản hồi');
+}
+async function uploadWithButton(btn, file, folder) {
+  const label = btn.dataset.label || btn.firstChild?.textContent || '';
+  btn.dataset.label = label;
+  const setText = t => { if (btn.firstChild?.nodeType === 3) btn.firstChild.textContent = t; };
+  btn.classList.add('upl'); setText('Đang tải 0%');
+  try { const url = await uploadToB2(file, folder, p => setText(`Đang tải ${p}%`)); toast('Đã tải lên B2'); return url; }
+  finally { setText(label); btn.classList.remove('upl'); }
 }
 
 let TAB = location.hash.replace(/^#\/?/, '') || 'games';
-if (!['games', 'banners', 'genres', 'messages', 'display', 'settings', 'backup'].includes(TAB)) TAB = 'games';
+if (!['games', 'banners', 'genres', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
 function render() {
   if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
   $('#main').innerHTML = viewAdmin(TAB);
@@ -1007,7 +1183,11 @@ document.addEventListener('click', async e => {
       case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
       case 'reset': confirmDel = '__reset'; render(); break;
       case 'reset-yes': D = structuredClone(SEED); Store.persist(); confirmDel = null; render(); toast('Đã nạp lại dữ liệu mẫu'); break;
-      case 'logout': await sb.auth.signOut(); session = null; render(); break;
+      case 'logout': await sb.auth.signOut(); session = null; IS_ADMIN = null; ME = ''; MY_ROLE = ''; MSGS = null; ADMINS = null; AUTH_VIEW = ''; render(); break;
+      case 'auth-view': AUTH_VIEW = t.dataset.v || ''; render(); break;
+      case 'admin-del': confirmDel = 'adm:' + id; render(); break;
+      case 'admin-del-yes': { const { error } = await sb.from('admins').delete().eq('email', id); if (error) throw new Error('Không xoá được: ' + error.message); confirmDel = null; ADMINS = null; render(); toast('Đã xoá quyền của ' + id); break; }
+      case 'admin-invite': await inviteAdmin(id); toast('Đã gửi lại email mời tới ' + id); break;
     }
   } catch (err) { toast(err.message || 'Có lỗi xảy ra', true); }
 });
@@ -1018,6 +1198,15 @@ document.addEventListener('input', e => {
 document.addEventListener('change', async e => {
   if (e.target.matches('select')) applyWhen(e.target.closest('form') || document);
   try {
+    const folder = FOLDER_OF[e.target.closest('form')?.dataset.form] || 'misc';
+    if (uploadOn() && e.target.matches('[data-img-file],[data-shots-file],[data-url-file]') && e.target.files.length) {
+      const btn = e.target.closest('.file-btn'); const files = [...e.target.files]; e.target.value = '';
+      if (e.target.matches('[data-url-file]')) { const url = await uploadWithButton(btn, files[0], folder); const inp = e.target.closest('form').elements[e.target.dataset.urlFile]; inp.value = url; return; }
+      if (e.target.matches('[data-img-file]')) { const w = e.target.closest('[data-img]'); const url = await uploadWithButton(btn, files[0], folder); setImg(w, url); w.querySelector('[data-img-url]').value = url; return; }
+      const w = e.target.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value);
+      for (const f of files) arr.push(await uploadWithButton(btn, f, folder));
+      setShots(w, arr); return;
+    }
     if (e.target.matches('[data-img-file]') && e.target.files[0]) {
       const w = e.target.closest('[data-img]'); const d = await fileToData(e.target.files[0]);
       setImg(w, d); const u = w.querySelector('[data-img-url]'); u.value = ''; u.placeholder = 'Đang dùng ảnh tải lên';
@@ -1027,7 +1216,7 @@ document.addEventListener('change', async e => {
       for (const f of e.target.files) arr.push(await fileToData(f, 1600));
       setShots(w, arr);
     }
-  } catch (err) { toast(err?.message === 'big-gif' ? 'File GIF lớn hơn 4 MB. Hãy dùng video .mp4 hoặc dán link GIF thay vì tải lên.' : 'Không đọc được ảnh này.', true); }
+  } catch (err) { if (err?.message && err.message !== 'big-gif' && uploadOn()) { toast(err.message, true); return; } toast(err?.message === 'big-gif' ? 'File GIF lớn hơn 4 MB. Hãy dùng video .mp4 hoặc dán link GIF thay vì tải lên.' : 'Không đọc được ảnh này.', true); }
 });
 
 document.addEventListener('submit', async e => {
@@ -1038,9 +1227,35 @@ document.addEventListener('submit', async e => {
   const btn = form.querySelector('[type=submit]'); btn.disabled = true;
   try {
     if (kind === 'login') {
-      const { data, error } = await sb.auth.signInWithPassword({ email: form.email.value, password: form.password.value });
-      if (error) throw new Error('Sai email hoặc mật khẩu.');
-      session = data.session; MSGS = null; render(); return;
+      const { data, error } = await sb.auth.signInWithPassword({ email: form.elements.email.value.trim(), password: form.elements.password.value });
+      if (error) throw new Error(/confirm/i.test(error.message) ? 'Email chưa được xác nhận.' : 'Sai email hoặc mật khẩu.');
+      session = data.session; MSGS = null; ADMINS = null; IS_ADMIN = null; render();
+      await checkAdmin(); render(); return;
+    }
+    if (kind === 'forgot') {
+      const em = form.elements.email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { toast('Email chưa đúng định dạng.', true); return; }
+      const { error } = await sb.auth.resetPasswordForEmail(em, { redirectTo: location.origin + location.pathname });
+      if (error && /rate/i.test(error.message)) throw new Error('Gửi quá nhiều lần, đợi vài phút rồi thử lại.');
+      AUTH_VIEW = ''; render(); toast('Nếu email có quyền quản trị, link đặt lại mật khẩu đã được gửi.'); return;
+    }
+    if (kind === 'setpass') {
+      const p1 = form.elements.password.value, p2 = form.elements.password2.value;
+      if (p1.length < 8) { toast('Mật khẩu tối thiểu 8 ký tự.', true); return; }
+      if (p1 !== p2) { toast('Hai lần nhập mật khẩu chưa khớp.', true); return; }
+      const { error } = await sb.auth.updateUser({ password: p1 });
+      if (error) throw new Error(/different/i.test(error.message) ? 'Mật khẩu mới phải khác mật khẩu cũ.' : 'Không lưu được mật khẩu: ' + error.message);
+      AUTH_VIEW = ''; await checkAdmin(); render(); toast('Đã lưu mật khẩu mới'); return;
+    }
+    if (kind === 'admin-add') {
+      const em = form.elements.email.value.trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)) { toast('Email chưa đúng định dạng.', true); form.elements.email.focus(); return; }
+      if (ADMINS?.some(a => a.email === em)) { toast('Email này đã là quản trị viên.', true); return; }
+      const { error } = await sb.from('admins').insert({ email: em, role: 'admin', note: form.elements.note.value.trim(), added_by: String(ME).toLowerCase() });
+      if (error) throw new Error('Không thêm được: ' + error.message);
+      let msg = 'Đã thêm ' + em;
+      if (form.elements.invite?.checked && workerOn()) { try { await inviteAdmin(em); msg += ' và gửi email mời'; } catch (e2) { msg += '. Chưa gửi được lời mời: ' + e2.message; } }
+      ADMINS = null; render(); toast(msg); return;
     }
     const v = readForm(form, FIELDS[kind]);
     const missing = FIELDS[kind].find(f => f.req && !v[f.k]);
@@ -1068,7 +1283,8 @@ document.addEventListener('submit', async e => {
 (async () => {
   try { await Store.load(); }
   catch (err) { D = structuredClone(SEED); toast('Không kết nối được Supabase — đang hiển thị dữ liệu mẫu.', true); }
-  if (sb) sb.auth.onAuthStateChange((_e, s) => { session = s; });
+  if (sb) sb.auth.onAuthStateChange((ev, s) => { session = s; if (typeof onAuthEvent === 'function') onAuthEvent(ev, s); });
+  if (typeof afterBoot === 'function') await afterBoot();
   render();
 })();
 </script>

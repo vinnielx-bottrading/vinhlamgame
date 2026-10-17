@@ -1,5 +1,5 @@
 # Cloudflare Worker — Vinh Làm Game media upload (Backblaze B2)
-name = "vinhlamgame-media"
+name = "vinhlamgame"
 main = "src/index.js"
 compatibility_date = "2024-09-23"
 
@@ -11,17 +11,18 @@ B2_BUCKET = "vinhlamgame-media"
 B2_ENDPOINT = "s3.us-west-004.backblazeb2.com"
 # Region = phần giữa trong endpoint, ví dụ us-west-004 / eu-central-003
 B2_REGION = "us-west-004"
-# Link công khai để hiện ảnh/video trên web. Dùng 1 trong 2:
-#   • Link B2 trực tiếp: https://f004.backblazeb2.com/file/vinhlamgame-media
-#   • Tên miền riêng qua Cloudflare (khuyên dùng, có CDN): https://media.vinhlamgame.com
-PUBLIC_BASE_URL = "https://f004.backblazeb2.com/file/vinhlamgame-media"
+# Bucket PRIVATE: KHÔNG cần PUBLIC_BASE_URL. Worker tự phát file tại https://<worker>/media/<key>
+# Chỉ đặt khi có tên miền riêng trỏ vào Worker, ví dụ:
+# PUBLIC_BASE_URL = "https://media.vinhlamgame.com/media"
+# Thời gian trình duyệt / Cloudflare giữ cache file (giây). Mặc định 1 năm.
+MEDIA_CACHE_SECONDS = "31536000"
 # Các trang được phép gọi Worker (cách nhau dấu phẩy, không có / ở cuối)
 ALLOWED_ORIGINS = "https://vinhlamgame.vercel.app,http://localhost:5173"
 # Supabase (Project Settings › API)
 SUPABASE_URL = "https://YOUR-PROJECT.supabase.co"
 SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY"
 # Giới hạn dung lượng mỗi file (MB) và thời hạn link tải lên (giây)
-MAX_UPLOAD_MB = "200"
+MAX_UPLOAD_MB = "95"
 PRESIGN_EXPIRES = "900"
 
 # Biến BÍ MẬT — KHÔNG ghi vào file này. Đặt bằng lệnh:

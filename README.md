@@ -70,18 +70,18 @@ const CONFIG = {
 
 ---
 
-## 4. Tải hình / video lên Backblaze B2 (Cloudflare Worker)
+## 4. Hình / video trên Backblaze B2 (bucket private, qua Cloudflare Worker)
 
 Toàn bộ code, biến và hướng dẫn nằm trong `cloudflare-worker/README.md`. Tóm tắt:
 
-1. Tạo bucket B2 dạng Public và Application Key chỉ cho bucket đó.
-2. Điền các biến trong `cloudflare-worker/wrangler.toml`, đặt biến bí mật bằng `wrangler secret put`, rồi `npx wrangler deploy`.
-3. Bật CORS cho bucket bằng `b2-cors-rules.json`.
-4. Dán địa chỉ Worker vào `UPLOAD_WORKER_URL` trong `admin.html`.
+1. Tạo bucket B2 **Private** và một Application Key chỉ cho bucket đó (Read and Write). Không cần thẻ thanh toán.
+2. Tạo Worker trên Cloudflare Dashboard, dán `cloudflare-worker/worker-dashboard.js`, rồi thêm biến ở Settings → Variables and Secrets.
+3. **Không cần CORS** trên bucket: để "Do not share any files with any origin".
+4. `UPLOAD_WORKER_URL` trong `admin.html` đã điền sẵn Worker `https://vinhlamgame.vinnielx.workers.dev`.
 
-Sau đó mỗi ô ảnh có nút **Tải lên B2**, ô video có nút **Tải video lên B2**, kèm % tiến trình. Link công khai được điền tự động. File đi thẳng từ trình duyệt lên B2, không qua Vercel hay Supabase.
+Ảnh được **tự nén WebP** trước khi gửi, mỗi file tối đa khoảng 95 MB. Mỗi ô ảnh có nút **Tải lên B2**, ô video có nút **Tải video lên B2**, kèm % tiến trình. Link file được điền tự động, dạng `https://<worker>.workers.dev/media/banner/images/2026/10/ten-file-a1b2c3d4.jpg`. Worker đọc file từ bucket private và phát cho khách xem.
 
----
+B2 miễn phí có hạn mức theo ngày. Nên nén ảnh, giữ video banner nhỏ, và dùng YouTube cho video dài. Chi tiết trong README của Worker.
 
 ## 5. Giao diện admin
 

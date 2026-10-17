@@ -6,7 +6,7 @@
       "http://localhost:5173"
     ],
     "allowedHeaders": ["*"],
-    "allowedOperations": ["s3_put", "s3_get", "s3_head", "b2_download_file_by_name"],
+    "allowedOperations": ["s3_put", "s3_head"],
     "exposeHeaders": ["ETag", "x-amz-request-id"],
     "maxAgeSeconds": 3600
   }

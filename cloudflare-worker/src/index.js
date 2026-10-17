@@ -1,15 +1,18 @@
 /**
  * Vinh Làm Game — Cloudflare Worker: tải hình / video lên Backblaze B2
  *
- * Luồng chính (khuyên dùng, không giới hạn dung lượng của Worker):
- *   1. admin.html gọi POST /presign  → Worker kiểm tra quản trị viên, trả về link PUT có chữ ký (hết hạn sau vài phút)
- *   2. Trình duyệt PUT file thẳng lên B2 qua link đó (có thanh tiến trình)
- *   3. Dán publicUrl vào ô ảnh / video
+ * Luồng tải lên mặc định (KHÔNG cần CORS trên bucket B2):
+ *   admin.html PUT file lên  /upload  → Worker kiểm tra quản trị viên → Worker đẩy file lên B2 → trả publicUrl
+ *   Giới hạn: mỗi file tối đa ~100 MB (giới hạn request của Cloudflare gói Free).
+ * Luồng phụ  /presign  (trình duyệt PUT thẳng lên B2) chỉ dùng khi bucket đã có CORS rule s3_put.
+ *
+ * Bucket PRIVATE (không cần thẻ thanh toán): Worker tự phát file cho khách xem qua
+ *   GET    /media/<key>     — đọc file từ bucket private (có Range cho video, có cache), KHÔNG cần đăng nhập
  *
  * Endpoint:
  *   GET    /health          — kiểm tra Worker đang chạy và đã cấu hình đủ biến
  *   POST   /presign         — { filename, contentType, size, folder } → { uploadUrl, publicUrl, key, headers }
- *   PUT    /upload?…        — tải qua Worker (dự phòng, tối đa ~100 MB theo giới hạn Cloudflare)
+ *   PUT    /upload?…        — tải qua Worker (mặc định, tối đa ~100 MB theo giới hạn Cloudflare)
  *   DELETE /file?key=…      — xoá file trên B2
  *   POST   /admin/invite    — { email } gửi email mời đặt mật khẩu (cần SUPABASE_SERVICE_ROLE_KEY)
  *
@@ -27,18 +30,21 @@ const EXT = {
 const FOLDERS = ['banner', 'games', 'ads', 'misc', 'donate'];
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
+    const url = new URL(req.url);
+    if (url.pathname.startsWith('/media/') && (req.method === 'GET' || req.method === 'HEAD')) return serveMedia(req, env, ctx, url);
+    if (url.pathname.startsWith('/media/') && req.method === 'OPTIONS') return new Response(null, { status: 204, headers: MEDIA_CORS });
+
     const cors = corsHeaders(req, env);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
 
     try {
-      const url = new URL(req.url);
       const path = url.pathname.replace(/\/+$/, '') || '/';
 
       if (path === '/health' && req.method === 'GET') {
-        const missing = ['B2_KEY_ID', 'B2_APP_KEY', 'B2_BUCKET', 'B2_ENDPOINT', 'B2_REGION', 'PUBLIC_BASE_URL', 'SUPABASE_URL', 'SUPABASE_ANON_KEY']
+        const missing = ['B2_KEY_ID', 'B2_APP_KEY', 'B2_BUCKET', 'B2_ENDPOINT', 'B2_REGION', 'SUPABASE_URL', 'SUPABASE_ANON_KEY']
           .filter(k => !env[k]);
-        return json({ ok: missing.length === 0, missing, invite: !!env.SUPABASE_SERVICE_ROLE_KEY, maxUploadMb: maxMb(env) }, 200, cors);
+        return json({ ok: missing.length === 0, missing, mediaBase: mediaBase(env, url), invite: !!env.SUPABASE_SERVICE_ROLE_KEY, maxUploadMb: maxMb(env) }, 200, cors);
       }
 
       const admin = await requireAdmin(req, env);
@@ -56,7 +62,7 @@ export default {
           method: 'PUT',
           headers: { 'Content-Type': contentType },
           key,
-          publicUrl: publicUrl(env, key),
+          publicUrl: publicUrl(env, url, key),
           expiresIn: Number(env.PRESIGN_EXPIRES || 900),
           by: admin.email
         }, 200, cors);
@@ -66,18 +72,28 @@ export default {
         const contentType = (req.headers.get('Content-Type') || '').split(';')[0].trim();
         const size = Number(req.headers.get('Content-Length') || 0);
         const { key } = buildKey({ filename: url.searchParams.get('filename'), folder: url.searchParams.get('folder'), contentType, size }, env);
-        const res = await b2(env).fetch(objectUrl(env, key), {
+        if (!size) throw httpError(411, 'Thiếu dung lượng file (Content-Length)');
+        // B2 cần biết trước dung lượng → dùng FixedLengthStream để đẩy thẳng, không giữ cả file trong bộ nhớ
+        let body;
+        if (typeof FixedLengthStream !== 'undefined' && req.body) {
+          const { readable, writable } = new FixedLengthStream(size);
+          req.body.pipeTo(writable).catch(() => {});
+          body = readable;
+        } else {
+          body = await req.arrayBuffer();
+        }
+        const res = await b2(env).fetch(objectUrl(env, key).toString(), {
           method: 'PUT',
-          body: req.body,
+          body,
           headers: { 'Content-Type': contentType, 'Content-Length': String(size), 'X-Amz-Content-Sha256': 'UNSIGNED-PAYLOAD' }
         });
         if (!res.ok) throw httpError(502, 'B2 từ chối file: ' + (await res.text()).slice(0, 300));
-        return json({ key, publicUrl: publicUrl(env, key) }, 200, cors);
+        return json({ key, publicUrl: publicUrl(env, url, key) }, 200, cors);
       }
 
       if (path === '/file' && req.method === 'DELETE') {
         const key = url.searchParams.get('key') || '';
-        if (!/^[a-z0-9][a-z0-9/_.-]{3,300}$/i.test(key) || key.includes('..')) throw httpError(400, 'Key không hợp lệ');
+        if (!validKey(key)) throw httpError(400, 'Key không hợp lệ');
         const res = await b2(env).fetch(objectUrl(env, key), { method: 'DELETE' });
         if (!res.ok && res.status !== 404) throw httpError(502, 'Không xoá được file: ' + res.status);
         return json({ deleted: key }, 200, cors);
@@ -118,10 +134,56 @@ function objectUrl(env, key) {
   const host = env.B2_ENDPOINT.replace(/^https?:\/\//, '').replace(/\/+$/, '');
   return new URL(`https://${host}/${env.B2_BUCKET}/${key.split('/').map(encodeURIComponent).join('/')}`);
 }
-function publicUrl(env, key) {
-  return `${env.PUBLIC_BASE_URL.replace(/\/+$/, '')}/${key.split('/').map(encodeURIComponent).join('/')}`;
+// Link để hiện file trên web. Bucket private → mặc định đi qua Worker: https://<worker>/media/<key>
+// (Nếu sau này có tên miền riêng trỏ vào Worker, đặt PUBLIC_BASE_URL = https://media.ten-mien.com/media)
+function mediaBase(env, url) {
+  return (env.PUBLIC_BASE_URL || `${url.origin}/media`).replace(/\/+$/, '');
 }
-const maxMb = env => Number(env.MAX_UPLOAD_MB || 200);
+function publicUrl(env, url, key) {
+  return `${mediaBase(env, url)}/${key.split('/').map(encodeURIComponent).join('/')}`;
+}
+const validKey = k => /^(banner|games|ads|misc|donate)\/(images|videos)\/\d{4}\/\d{2}\/[a-z0-9-]{1,80}\.[a-z0-9]{2,4}$/.test(k);
+
+/* ---------------- Phát file từ bucket private ---------------- */
+const MEDIA_CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS', 'Access-Control-Allow-Headers': 'Range', 'Access-Control-Max-Age': '86400' };
+async function serveMedia(req, env, ctx, url) {
+  let key;
+  try { key = decodeURIComponent(url.pathname.slice('/media/'.length)); } catch { key = ''; }
+  if (!validKey(key)) return new Response('Không tìm thấy file', { status: 404, headers: MEDIA_CORS });
+  const ttl = Number(env.MEDIA_CACHE_SECONDS || 31536000);
+  const range = req.headers.get('Range');
+  const cache = caches.default;
+  const cacheKey = new Request(`${url.origin}/media/${key}`, { method: 'GET' });
+
+  // 1) Cache của Cloudflare (chỉ có tác dụng khi Worker chạy trên tên miền riêng, workers.dev bỏ qua)
+  if (req.method === 'GET' && !range) {
+    try { const hit = await cache.match(cacheKey); if (hit) return hit; } catch {}
+  }
+
+  // 2) Đọc từ B2 bằng request có chữ ký
+  const signed = await b2(env).sign(objectUrl(env, key).toString(), { method: req.method, headers: range ? { Range: range } : {} });
+  const res = await fetch(signed, { cf: { cacheEverything: true, cacheTtl: ttl } });
+  if (res.status === 404) return new Response('Không tìm thấy file', { status: 404, headers: MEDIA_CORS });
+  if (!res.ok && res.status !== 206) {
+    const t = await res.text().catch(() => '');
+    const capped = /cap|exceeded|limit/i.test(t);
+    return new Response(capped ? 'B2 đã hết hạn mức tải xuống miễn phí trong ngày' : 'Không đọc được file từ B2', { status: capped ? 503 : 502, headers: { ...MEDIA_CORS, 'Retry-After': '3600', 'Cache-Control': 'no-store' } });
+  }
+
+  const h = new Headers(MEDIA_CORS);
+  for (const k of ['content-type', 'content-length', 'content-range', 'etag', 'last-modified']) { const v = res.headers.get(k); if (v) h.set(k, v); }
+  h.set('Accept-Ranges', 'bytes');
+  h.set('Cache-Control', `public, max-age=${ttl}, immutable`);   // tên file có mã ngẫu nhiên → cache lâu an toàn
+  h.set('X-Content-Type-Options', 'nosniff');
+  h.set('Content-Security-Policy', "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self'; sandbox");
+  h.set('Content-Disposition', 'inline');
+  const out = new Response(req.method === 'HEAD' ? null : res.body, { status: res.status, headers: h });
+  if (req.method === 'GET' && !range && res.status === 200 && ctx?.waitUntil) {
+    ctx.waitUntil(cache.put(cacheKey, out.clone()).catch(() => {}));
+  }
+  return out;
+}
+const maxMb = env => Number(env.MAX_UPLOAD_MB || 95);
 
 function buildKey({ filename, contentType, size, folder }, env) {
   const type = String(contentType || '').split(';')[0].trim().toLowerCase();

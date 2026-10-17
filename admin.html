@@ -471,7 +471,7 @@ const CONFIG = {
   SUPABASE_URL: '',
   SUPABASE_ANON_KEY: '',
   // Cloudflare Worker tải file lên Backblaze B2 (xem cloudflare-worker/README.md)
-  UPLOAD_WORKER_URL: ''
+  UPLOAD_WORKER_URL: 'https://vinhlamgame.vinnielx.workers.dev'
 };
 
 /* ============ TIỆN ÍCH ============ */
@@ -673,9 +673,9 @@ const FIELDS = {
     { k: 'sort', label: 'Thứ tự', type: 'number' },
     { k: 'hot', label: 'Gắn nhãn Hot', type: 'checkbox' },
     { type: 'heading', label: 'Hình ảnh' },
-    { k: 'cover', label: 'Ảnh thumbnail (4:3)', type: 'image', full: true, hint: 'Ảnh trên ô game ở thư viện. Khuyên dùng 1200 × 900.' },
-    { k: 'kv', label: 'Ảnh KV chính (16:10)', type: 'image', full: true, hint: 'Ảnh đầu tiên trong slide trang game. Khuyên dùng 1600 × 1000.' },
-    { k: 'screenshots', label: 'Ảnh slide thêm', type: 'images', full: true, hint: 'Các ảnh tiếp theo trong slide, tỉ lệ 16:10.' },
+    { k: 'cover', label: 'Ảnh thumbnail (4:3)', type: 'image', max: 1200, full: true, hint: 'Ảnh trên ô game ở thư viện. Khuyên dùng 1200 × 900.' },
+    { k: 'kv', label: 'Ảnh KV chính (16:10)', type: 'image', max: 1920, full: true, hint: 'Ảnh đầu tiên trong slide trang game. Khuyên dùng 1600 × 1000.' },
+    { k: 'screenshots', label: 'Ảnh slide thêm', type: 'images', max: 1920, full: true, hint: 'Các ảnh tiếp theo trong slide, tỉ lệ 16:10.' },
     { k: 'clip_url', label: 'Video ngắn trong slide', type: 'media-url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
     { type: 'heading', label: 'Bài viết' },
     { k: 'description', label: 'Bài viết giới thiệu game', type: 'textarea', full: true, hint: 'Mỗi dòng là một đoạn.' },
@@ -692,7 +692,7 @@ const FIELDS = {
     { k: 'sponsor', label: 'Tên nhà tài trợ', type: 'text', when: 'kind=ad', hint: 'Hiện cạnh nhãn “Quảng cáo”. Không bắt buộc.' },
     { type: 'heading', label: 'Hình ảnh / video' },
     { k: 'media_type', label: 'Dạng banner', type: 'select', options: [['image', 'Hình ảnh'], ['video', 'Video ngắn (.mp4 / .webm)'], ['youtube', 'Video web (YouTube)']] },
-    { k: 'image', label: 'Ảnh banner (21:8) — JPG, PNG, WebP hoặc GIF động', type: 'image', full: true, hint: 'Khuyên dùng 2100 × 800. GIF động chạy như ảnh thường. Với video, ảnh này làm ảnh chờ khi video đang tải.' },
+    { k: 'image', label: 'Ảnh banner (21:8) — JPG, PNG, WebP hoặc GIF động', type: 'image', max: 2400, full: true, hint: 'Khuyên dùng 2100 × 800. GIF động chạy như ảnh thường. Với video, ảnh này làm ảnh chờ khi video đang tải.' },
     { k: 'video_url', label: 'Link video', type: 'media-url', full: true, when: 'media_type=video|youtube', hint: 'Video tự chạy, không tiếng, lặp lại. Nên dài 6–20 giây.' },
     { type: 'heading', label: 'Hiển thị' },
     { k: 'duration', label: 'Thời gian riêng (giây)', type: 'number', hint: '0 = theo cài đặt chung ở tab Giao diện. Video nên đặt bằng độ dài video.' },
@@ -721,7 +721,7 @@ const FIELDS = {
     { type: 'heading', label: 'Banner quảng cáo (dưới thư viện)' },
     { k: 'ad_on', label: 'Hiện banner quảng cáo', type: 'checkbox' },
     { k: 'ad_size', label: 'Tỉ lệ banner', type: 'select', options: [['6/1', 'Ngang rộng 6:1 (1200 × 200)'], ['4/1', 'Ngang 4:1 (1200 × 300)'], ['970/250', 'Billboard 970 × 250'], ['728/90', 'Leaderboard 728 × 90']] },
-    { k: 'ad_image', label: 'Ảnh quảng cáo', type: 'image', full: true, hint: 'Để trống sẽ hiện ô “Vị trí đặt banner quảng cáo” để chào bán.' },
+    { k: 'ad_image', label: 'Ảnh quảng cáo', type: 'image', max: 2000, full: true, hint: 'Để trống sẽ hiện ô “Vị trí đặt banner quảng cáo” để chào bán.' },
     { k: 'ad_link', label: 'Link khi bấm vào quảng cáo', type: 'url', full: true },
     { k: 'ad_title', label: 'Chữ khi chưa có ảnh', type: 'text' },
     { k: 'ad_note', label: 'Dòng phụ khi chưa có ảnh', type: 'text' }
@@ -745,7 +745,7 @@ const FIELDS = {
     { k: 'donate_memo', label: 'Nội dung chuyển khoản', type: 'text', hint: 'Không dấu, tối đa 50 ký tự.' },
     { k: 'momo', label: 'Số MoMo', type: 'text' },
     { k: 'donate_link', label: 'Link ủng hộ (Ko-fi, Buy Me a Coffee…)', type: 'url', full: true },
-    { k: 'donate_qr', label: 'Ảnh mã QR dự phòng', type: 'image', full: true, hint: 'Chỉ hiện khi chưa điền số tài khoản. Bình thường mã QR được tạo tự động theo số tiền.' }
+    { k: 'donate_qr', label: 'Ảnh mã QR dự phòng', type: 'image', max: 1000, keepPng: true, full: true, hint: 'Chỉ hiện khi chưa điền số tài khoản. Bình thường mã QR được tạo tự động theo số tiền.' }
   ]
 };
 const BLANK = {
@@ -774,8 +774,9 @@ function fieldHTML(f, v) {
         <div class="img-ctl">
           <input type="hidden" name="${f.k}" value="${esc(v)}">
           <input id="${id}" type="text" data-img-url placeholder="${isData ? 'Đang dùng ảnh tải lên' : 'Dán link ảnh https://…'}" value="${isData ? '' : esc(v)}">
-          <div class="img-btns"><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" data-img-file></span><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
+          <div class="img-btns"><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" data-img-file data-max="${f.max || 1920}"${f.keepPng ? ' data-png' : ''}></span><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
           ${hint}
+          <span class="hint">Ảnh tự nén WebP, cạnh dài tối đa ${f.max || 1920}px.</span>
         </div></div></div>`;
     }
     case 'images': {
@@ -783,7 +784,7 @@ function fieldHTML(f, v) {
       return `<div class="${cls}"><span class="lbl">${f.label}</span><div data-imgs="${f.k}" style="display:grid;gap:10px">
         <input type="hidden" name="${f.k}" value="${esc(JSON.stringify(arr))}">
         <div class="shot-list">${arr.map((s, i) => `<div class="shot-item"><img src="${esc(s)}" alt=""><button type="button" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh">×</button></div>`).join('') || '<span class="hint">Chưa có ảnh.</span>'}</div>
-        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" multiple data-shots-file></span></div>
+        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" multiple data-shots-file data-max="${f.max || 1920}"></span></div>
       </div></div>`;
     }
     case 'date': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="date" value="${esc(v)}">${hint}</div>`;
@@ -1060,22 +1061,23 @@ async function uploadToB2(file, folder, onProgress) {
   const { data } = await sb.auth.getSession();
   const tok = data.session?.access_token;
   if (!tok) throw new Error('Phiên đăng nhập hết hạn, hãy đăng nhập lại.');
-  const r = await fetch(CONFIG.UPLOAD_WORKER_URL.replace(/\/+$/, '') + '/presign', {
-    method: 'POST', headers: { Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size, folder })
-  });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.error || 'Không xin được link tải lên từ Worker.');
-  await new Promise((res, rej) => {
+  if (file.size > 95 * 1024 * 1024) throw new Error('File lớn hơn 95 MB. Hãy nén nhỏ lại hoặc đưa video lên YouTube.');
+  const url = CONFIG.UPLOAD_WORKER_URL.replace(/\/+$/, '') + '/upload?' + new URLSearchParams({ filename: file.name, folder });
+  // Gửi file lên Worker, Worker đẩy tiếp lên B2 → bucket không cần CORS
+  return await new Promise((res, rej) => {
     const x = new XMLHttpRequest();
-    x.open('PUT', j.uploadUrl);
-    Object.entries(j.headers || {}).forEach(([k, v]) => x.setRequestHeader(k, v));
-    x.upload.onprogress = e => { if (e.lengthComputable) onProgress?.(Math.round(e.loaded / e.total * 100)); };
-    x.onload = () => x.status < 300 ? res() : rej(new Error(`B2 từ chối file (mã ${x.status}).`));
-    x.onerror = () => rej(new Error('Lỗi mạng, hoặc bucket B2 chưa bật CORS cho tên miền này.'));
+    x.open('PUT', url);
+    x.setRequestHeader('Authorization', 'Bearer ' + tok);
+    x.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    x.upload.onprogress = e => { if (e.lengthComputable) onProgress?.(Math.min(99, Math.round(e.loaded / e.total * 100))); };
+    x.onload = () => {
+      let j = {}; try { j = JSON.parse(x.responseText); } catch (_) {}
+      if (x.status < 300 && j.publicUrl) { onProgress?.(100); res(j.publicUrl); }
+      else rej(new Error(j.error || `Tải lên không thành công (mã ${x.status}).`));
+    };
+    x.onerror = () => rej(new Error('Không kết nối được Worker. Kiểm tra ALLOWED_ORIGINS có đúng tên miền admin không.'));
     x.send(file);
   });
-  return j.publicUrl;
 }
 async function inviteAdmin(email) {
   const { data } = await sb.auth.getSession();
@@ -1091,7 +1093,7 @@ async function uploadWithButton(btn, file, folder) {
   btn.dataset.label = label;
   const setText = t => { if (btn.firstChild?.nodeType === 3) btn.firstChild.textContent = t; };
   btn.classList.add('upl'); setText('Đang tải 0%');
-  try { const url = await uploadToB2(file, folder, p => setText(`Đang tải ${p}%`)); toast('Đã tải lên B2'); return url; }
+  try { const url = await uploadToB2(file, folder, p => setText(`Đang tải ${p}%`)); if (!file.originalSize) toast('Đã tải lên B2'); return url; }
   finally { setText(label); btn.classList.remove('upl'); }
 }
 
@@ -1108,30 +1110,79 @@ function closeDD() {}
 function go() {}
 
 /* ============ ẢNH ============ */
-function fileToData(file, max = 1280) {
-  return new Promise((res, rej) => {
-    const fr = new FileReader();
-    fr.onerror = rej;
-    if (file.type === 'image/gif') {
-      if (file.size > 4 * 1024 * 1024) { rej(new Error('big-gif')); return; }
-      fr.onload = () => res(fr.result);
-      fr.readAsDataURL(file);
-      return;
-    }
-    fr.onload = () => {
-      const img = new Image();
-      img.onerror = rej;
-      img.onload = () => {
-        const k = Math.min(1, max / Math.max(img.width, img.height));
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
-        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-        res(c.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', .82));
-      };
-      img.src = fr.result;
-    };
-    fr.readAsDataURL(file);
+/* ---------- Nén ảnh trước khi tải lên ----------
+   • Tự xoay đúng chiều theo EXIF, thu nhỏ từng bước (giữ nét), xuất WebP chất lượng 0.82
+   • Giữ nguyên GIF động, SVG; nếu bản nén không nhỏ hơn thì dùng file gốc
+   • Trình duyệt không xuất được WebP → JPEG (ảnh có nền trong suốt → PNG) */
+const IMG_QUALITY = 0.82;
+const fmtBytes = n => n >= 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+async function loadBitmap(file) {
+  if (window.createImageBitmap) {
+    try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch (_) {}
+  }
+  return await new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('Không đọc được ảnh này.')); };
+    img.src = url;
   });
+}
+const canvasBlob = (c, type, q) => new Promise(r => c.toBlob(b => r(b), type, q));
+function hasAlpha(ctx, w, h) {
+  try {
+    const step = Math.max(1, Math.floor(Math.sqrt(w * h / 40000)));
+    const d = ctx.getImageData(0, 0, w, h).data;
+    for (let y = 0; y < h; y += step) for (let x = 0; x < w; x += step) if (d[(y * w + x) * 4 + 3] < 250) return true;
+  } catch (_) {}
+  return false;
+}
+async function compressImage(file, maxSide = 1920, opts = {}) {
+  if (!/^image\/(jpeg|jpg|png|webp|bmp|avif|heic|heif)$/i.test(file.type)) return file;   // GIF, SVG giữ nguyên
+  const src = await loadBitmap(file);
+  const W = src.width || src.naturalWidth, H = src.height || src.naturalHeight;
+  const k = Math.min(1, maxSide / Math.max(W, H));
+  const tw = Math.max(1, Math.round(W * k)), th = Math.max(1, Math.round(H * k));
+  // Thu nhỏ từng nửa một để ảnh không bị răng cưa
+  let cur = src, cw = W, ch = H;
+  while (cw / 2 >= tw * 1.05) {
+    const c = document.createElement('canvas'); c.width = Math.round(cw / 2); c.height = Math.round(ch / 2);
+    const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(cur, 0, 0, c.width, c.height);
+    cur = c; cw = c.width; ch = c.height;
+  }
+  const out = document.createElement('canvas'); out.width = tw; out.height = th;
+  const ctx = out.getContext('2d'); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(cur, 0, 0, tw, th);
+  src.close?.();
+  let blob = opts.png ? await canvasBlob(out, 'image/png') : await canvasBlob(out, 'image/webp', IMG_QUALITY);
+  if (!blob || (!opts.png && blob.type !== 'image/webp')) {
+    blob = hasAlpha(ctx, tw, th) ? await canvasBlob(out, 'image/png') : await canvasBlob(out, 'image/jpeg', IMG_QUALITY);
+  }
+  if (!blob) return file;
+  if (blob.size >= file.size && k === 1) return file;     // ảnh gốc đã nhỏ gọn
+  const ext = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' }[blob.type] || 'img';
+  const name = (file.name || 'anh').replace(/\.[^.]+$/, '') + '.' + ext;
+  const f = new File([blob], name, { type: blob.type, lastModified: Date.now() });
+  f.originalSize = file.size; f.dims = `${tw}×${th}`;
+  return f;
+}
+async function compressFrom(input, file) {
+  const f = await compressImage(file, Number(input.dataset.max) || 1920, { png: input.hasAttribute('data-png') });
+  return f;
+}
+function reportCompress(list) {
+  const done = list.filter(f => f.originalSize);
+  if (!done.length) return;
+  const before = done.reduce((a, f) => a + f.originalSize, 0), after = done.reduce((a, f) => a + f.size, 0);
+  toast(`Đã nén ${done.length > 1 ? done.length + ' ảnh' : 'ảnh ' + done[0].dims}: ${fmtBytes(before)} → ${fmtBytes(after)} (giảm ${Math.max(0, Math.round((1 - after / before) * 100))}%)`);
+}
+const readData = f => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(f); });
+async function fileToData(file, input) {
+  if (file.type === 'image/gif') {
+    if (file.size > 4 * 1024 * 1024) throw new Error('big-gif');
+    return { data: await readData(file), file };
+  }
+  const f = await compressFrom(input, file);
+  return { data: await readData(f), file: f };
 }
 function setImg(wrap, v) {
   wrap.querySelector('input[type=hidden]').value = v;
@@ -1200,21 +1251,26 @@ document.addEventListener('change', async e => {
   try {
     const folder = FOLDER_OF[e.target.closest('form')?.dataset.form] || 'misc';
     if (uploadOn() && e.target.matches('[data-img-file],[data-shots-file],[data-url-file]') && e.target.files.length) {
-      const btn = e.target.closest('.file-btn'); const files = [...e.target.files]; e.target.value = '';
-      if (e.target.matches('[data-url-file]')) { const url = await uploadWithButton(btn, files[0], folder); const inp = e.target.closest('form').elements[e.target.dataset.urlFile]; inp.value = url; return; }
-      if (e.target.matches('[data-img-file]')) { const w = e.target.closest('[data-img]'); const url = await uploadWithButton(btn, files[0], folder); setImg(w, url); w.querySelector('[data-img-url]').value = url; return; }
-      const w = e.target.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value);
-      for (const f of files) arr.push(await uploadWithButton(btn, f, folder));
-      setShots(w, arr); return;
+      const input = e.target, btn = input.closest('.file-btn'); const files = [...input.files]; input.value = '';
+      if (input.matches('[data-url-file]')) { const url = await uploadWithButton(btn, files[0], folder); const inp = input.closest('form').elements[input.dataset.urlFile]; inp.value = url; return; }
+      const label = btn.firstChild?.textContent; if (btn.firstChild?.nodeType === 3) btn.firstChild.textContent = 'Đang nén…';
+      let ready;
+      try { ready = []; for (const f of files) ready.push(await compressFrom(input, f)); }
+      finally { if (btn.firstChild?.nodeType === 3) btn.firstChild.textContent = label; }
+      if (input.matches('[data-img-file]')) { const w = input.closest('[data-img]'); const url = await uploadWithButton(btn, ready[0], folder); setImg(w, url); w.querySelector('[data-img-url]').value = url; reportCompress(ready); return; }
+      const w = input.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value);
+      for (const f of ready) arr.push(await uploadWithButton(btn, f, folder));
+      setShots(w, arr); reportCompress(ready); return;
     }
     if (e.target.matches('[data-img-file]') && e.target.files[0]) {
-      const w = e.target.closest('[data-img]'); const d = await fileToData(e.target.files[0]);
-      setImg(w, d); const u = w.querySelector('[data-img-url]'); u.value = ''; u.placeholder = 'Đang dùng ảnh tải lên';
+      const w = e.target.closest('[data-img]'); const r = await fileToData(e.target.files[0], e.target); e.target.value = '';
+      setImg(w, r.data); const u = w.querySelector('[data-img-url]'); u.value = ''; u.placeholder = 'Đang dùng ảnh tải lên';
+      reportCompress([r.file]);
     }
     if (e.target.matches('[data-shots-file]') && e.target.files.length) {
       const w = e.target.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value);
-      for (const f of e.target.files) arr.push(await fileToData(f, 1600));
-      setShots(w, arr);
+      const got = []; for (const f of e.target.files) { const r = await fileToData(f, e.target); arr.push(r.data); got.push(r.file); }
+      e.target.value = ''; setShots(w, arr); reportCompress(got);
     }
   } catch (err) { if (err?.message && err.message !== 'big-gif' && uploadOn()) { toast(err.message, true); return; } toast(err?.message === 'big-gif' ? 'File GIF lớn hơn 4 MB. Hãy dùng video .mp4 hoặc dán link GIF thay vì tải lên.' : 'Không đọc được ảnh này.', true); }
 });

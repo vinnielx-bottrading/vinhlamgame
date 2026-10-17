@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
 /* Layout: gallery-like white space — thin header, editorial banner, 3-col library grid, quiet footer. Single light theme by brief (trắng + rượu vang). */
@@ -468,8 +468,8 @@ textarea{min-height:120px;resize:vertical}
    Để trống = chế độ demo (dữ liệu lưu trên trình duyệt này).
    Điền URL + anon key của Supabase (chạy schema.sql trước) để đồng bộ cho mọi người xem. */
 const CONFIG = {
-  SUPABASE_URL: '',
-  SUPABASE_ANON_KEY: '',
+  SUPABASE_URL: 'https://yzyepdkzownfajvqmzbf.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_bFh-bM6FkvlbIDSDsfX4pA_B7wDMZ2k',   // publishable key (thay cho anon key)
   // Cloudflare Worker tải file lên Backblaze B2 (xem cloudflare-worker/README.md)
   UPLOAD_WORKER_URL: 'https://vinhlamgame.vinnielx.workers.dev'
 };

@@ -10,8 +10,8 @@
  *       Text   B2_ENDPOINT        s3.us-west-004.backblazeb2.com      (B2 › Buckets › Endpoint, bỏ https://)
  *       Text   B2_REGION          us-west-004                          (phần giữa của endpoint)
  *       Text   ALLOWED_ORIGINS    https://vinhlamgame.vercel.app       (tên miền chạy admin, cách nhau dấu phẩy)
- *       Text   SUPABASE_URL       https://xxxx.supabase.co
- *       Text   SUPABASE_ANON_KEY  eyJ...
+ *       Text   SUPABASE_URL       https://yzyepdkzownfajvqmzbf.supabase.co
+ *       Text   SUPABASE_ANON_KEY  sb_publishable_bFh-bM6FkvlbIDSDsfX4pA_B7wDMZ2k
  *       Secret B2_KEY_ID          keyID của Application Key (quyền Read and Write, chỉ bucket này)
  *       Secret B2_APP_KEY         applicationKey
  *     Không bắt buộc:

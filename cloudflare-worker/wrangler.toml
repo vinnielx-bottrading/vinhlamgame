@@ -17,10 +17,10 @@ B2_REGION = "us-west-004"
 # Thời gian trình duyệt / Cloudflare giữ cache file (giây). Mặc định 1 năm.
 MEDIA_CACHE_SECONDS = "31536000"
 # Các trang được phép gọi Worker (cách nhau dấu phẩy, không có / ở cuối)
-ALLOWED_ORIGINS = "https://vinhlamgame.vercel.app,http://localhost:5173"
+ALLOWED_ORIGINS = "https://vinhlamgame.vercel.app"
 # Supabase (Project Settings › API)
-SUPABASE_URL = "https://YOUR-PROJECT.supabase.co"
-SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY"
+SUPABASE_URL = "https://yzyepdkzownfajvqmzbf.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_bFh-bM6FkvlbIDSDsfX4pA_B7wDMZ2k"
 # Giới hạn dung lượng mỗi file (MB) và thời hạn link tải lên (giây)
 MAX_UPLOAD_MB = "95"
 PRESIGN_EXPIRES = "900"

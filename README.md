@@ -29,13 +29,13 @@ Chưa kết nối Supabase thì site chạy **chế độ demo**: dữ liệu ad
 
 1. Tạo project Supabase mới.
 2. **SQL Editor** → dán toàn bộ `schema.sql` → **Run**. Chạy lại nhiều lần cũng không sao.
-3. **Project Settings → API**: copy **Project URL** và **anon public key**, dán vào `CONFIG` ở đầu **cả hai** file `index.html` và `admin.html`:
+3. URL và key **đã điền sẵn** trong `CONFIG` ở đầu cả `index.html` và `admin.html`:
 
 ```js
 const CONFIG = {
-  SUPABASE_URL: 'https://xxxx.supabase.co',
-  SUPABASE_ANON_KEY: 'eyJ...',
-  UPLOAD_WORKER_URL: ''   // điền ở bước 4, chỉ admin.html cần
+  SUPABASE_URL: 'https://yzyepdkzownfajvqmzbf.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_bFh-bM6FkvlbIDSDsfX4pA_B7wDMZ2k',   // publishable key, công khai được
+  UPLOAD_WORKER_URL: 'https://vinhlamgame.vinnielx.workers.dev'        // chỉ có trong admin.html
 };
 ```
 

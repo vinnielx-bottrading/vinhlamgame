@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quản trị Vinh Làm Game</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+/* Layout: gallery-like white space — thin header, editorial banner, 3-col library grid, quiet footer. Single light theme by brief (trắng + rượu vang). */
+:root{
+  --paper:#FFFFFF;
+  --paper-2:#FAF6F7;
+  --ink:#22151B;
+  --muted:#7C6A71;
+  --line:#ECE2E5;
+  --wine:#6B1A2D;
+  --wine-deep:#4A0F1F;
+  --wine-tint:#F5EBEE;
+  --ok:#2F6B4A;
+  --display:'Cormorant Garamond','Iowan Old Style','Times New Roman',serif;
+  --body:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r:2px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.65 var(--body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.08;text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font:500 11px/1.4 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.eyebrow .dot{width:6px;height:6px;background:var(--wine);display:inline-block}
+.num{font-variant-numeric:tabular-nums}
+
+/* Header */
+.site-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.head-row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:72px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo svg{flex:none}
+.logo-text{font:600 24px/1 var(--display);letter-spacing:-.01em;white-space:nowrap}
+.logo-text em{font-style:italic;font-weight:500;color:var(--wine)}
+.nav{display:flex;align-items:center;gap:clamp(14px,3vw,36px);font-size:14px}
+.nav > a,.nav > .dd > button{position:relative;padding:6px 0;color:var(--ink);display:flex;align-items:center;gap:6px}
+.nav > a::after,.nav > .dd > button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--wine);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.nav > a:hover::after,.nav > a.on::after,.nav > .dd > button:hover::after,.nav > .dd > button.on::after{transform:scaleX(1)}
+.dd{position:relative}
+.dd-menu{position:absolute;right:-12px;top:calc(100% + 14px);min-width:210px;background:var(--paper);border:1px solid var(--line);box-shadow:0 18px 40px -20px rgba(74,15,31,.35);padding:8px;display:grid}
+.dd-menu a{padding:9px 12px;display:flex;justify-content:space-between;gap:12px;border-radius:var(--r)}
+.dd-menu a:hover{background:var(--wine-tint);color:var(--wine)}
+.dd-menu a span{color:var(--muted);font-size:12px}
+.caret{width:8px;height:8px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:500 14px/1 var(--body);padding:14px 22px;border:1px solid var(--ink);border-radius:var(--r);transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.btn.primary{background:var(--wine);border-color:var(--wine);color:#fff}
+.btn.primary:hover{background:var(--wine-deep);border-color:var(--wine-deep)}
+.btn.ghost:hover{background:var(--ink);color:#fff}
+.btn.small{padding:9px 14px;font-size:13px}
+.btn.line{border-color:var(--line)}
+.btn.line:hover{border-color:var(--ink)}
+.btn.danger{border-color:#E6C9CF;color:var(--wine)}
+.btn.danger:hover{background:var(--wine);color:#fff;border-color:var(--wine)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.play-ico{width:0;height:0;border-left:8px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+
+/* Covers */
+.cover{position:relative;overflow:hidden;background:var(--paper-2);aspect-ratio:4/3;max-width:100%}
+.cover img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.gen{position:absolute;inset:0;color:#fff;
+  background:
+    linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px) 0 0/22px 22px,
+    linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px) 0 0/22px 22px,
+    linear-gradient(140deg,hsl(var(--h) 52% calc(var(--l) * 1%)),hsl(var(--h) 44% calc((var(--l) + 16) * 1%)));
+  transition:transform .6s ease}
+.gen-l{position:absolute;right:6%;bottom:-6%;font:italic 500 clamp(110px,22vw,220px)/1 var(--display);color:rgba(255,255,255,.88)}
+.gen-t{position:absolute;left:7%;top:8%;font:500 10px/1.4 var(--body);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.75);max-width:60%}
+.gen-px{position:absolute;left:7%;bottom:9%;display:grid;grid-template-columns:repeat(3,7px);gap:2px}
+.gen-px i{width:7px;height:7px;background:rgba(255,255,255,.85)}
+.gen-px i.o{background:transparent}
+
+/* Banner */
+.banner{padding-top:clamp(16px,2.4vw,28px)}
+.slides{position:relative;aspect-ratio:21/8;overflow:hidden;background:#140A0E;max-width:100%}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 1.1s ease,visibility 0s linear 1.1s}
+.slide.on{opacity:1;visibility:visible;transition:opacity 1.1s ease}
+.slide-media{position:absolute;inset:0;overflow:hidden}
+.slide-media img,.slide-media video,.slide-media .cover{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;object-fit:cover}
+.slide-media .gen-l{font-size:clamp(160px,28vw,420px)}
+.slide-media iframe{position:absolute;top:50%;left:50%;width:100%;height:100%;min-width:calc(100% + 2px);min-height:56.25vw;transform:translate(-50%,-50%) scale(1.35);border:0;pointer-events:none}
+.slide-media img{transition:transform 8s ease}
+.slide.on .slide-media img{transform:scale(1.03)}
+.slide-link{position:absolute;inset:0;z-index:1}
+.ad-tag{position:absolute;top:12px;left:12px;z-index:2;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:4px 8px;pointer-events:none}
+.ad-tag b{color:var(--ink);font-weight:600;letter-spacing:.04em;text-transform:none;margin-left:4px}
+.dots{position:absolute;left:50%;bottom:clamp(10px,2vw,18px);transform:translateX(-50%);display:flex;gap:8px;z-index:3}
+.dots button{width:28px;height:3px;padding:0;background:rgba(255,255,255,.5);border-radius:2px;transition:background .3s,width .3s;position:relative}
+.dots button.on{background:#fff;width:44px}
+.dots button::before{content:"";position:absolute;inset:-10px -2px}
+.sl-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.88);color:var(--ink);display:grid;place-items:center;opacity:0;transition:opacity .3s}
+.slides:hover .sl-nav,.sl-nav:focus-visible{opacity:1}
+.sl-nav.prev{left:16px}.sl-nav.next{right:16px}
+.sl-nav.prev svg{transform:rotate(180deg)}
+@media (max-width:560px){ .slides{aspect-ratio:16/10} .slide-media iframe{min-height:62.5vw;transform:translate(-50%,-50%) scale(1.6)} }
+@media (hover:none){ .sl-nav{display:none} }
+
+/* Donate */
+.donate{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(28px,5vw,64px);align-items:start;margin-top:8px}
+.amounts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.amt{padding:16px 14px;border:1px solid var(--line);border-radius:var(--r);font:500 1.35rem/1 var(--display);text-align:left;display:flex;justify-content:space-between;align-items:baseline;transition:border-color .2s,background .2s,color .2s}
+.amt small{font:400 12px var(--body);color:var(--muted)}
+.amt:hover{border-color:var(--ink)}
+.amt.on{background:var(--wine);border-color:var(--wine);color:#fff}
+.amt.on small{color:#F1D3DA}
+.amt-other{display:grid;gap:6px;margin-top:4px}
+.amt-other label{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.amt-input{display:flex;align-items:center;border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.amt-input:focus-within{border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.amt-input input{flex:1;min-width:0;border:0;background:none;font:500 1.2rem var(--body);padding:12px 14px;color:var(--ink);outline:none}
+.amt-input span{padding:0 14px;color:var(--muted);font-size:14px}
+.qr-card{border:1px solid var(--line);padding:clamp(18px,3vw,28px);display:grid;gap:16px;justify-items:center;text-align:center;background:var(--paper)}
+.qr-box{width:min(260px,100%);aspect-ratio:1;background:#fff;padding:10px;border:1px solid var(--line);display:grid;place-items:center}
+.qr-box canvas,.qr-box img{width:100%;height:100%;display:block;image-rendering:pixelated}
+.qr-amt{font:500 2.2rem/1 var(--display);color:var(--wine)}
+.qr-steps{font-size:13px;color:var(--muted);max-width:34ch}
+.bank{display:grid;width:100%;border-top:1px solid var(--line);text-align:left}
+.bank > div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;flex-wrap:wrap}
+.bank .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.bank .v{font-weight:500;overflow-wrap:anywhere;user-select:all}
+.vrow{display:flex;gap:8px;align-items:center}
+@media (max-width:900px){ .donate{grid-template-columns:minmax(0,1fr)} }
+
+/* Library */
+.library{padding-block:clamp(48px,7vw,88px)}
+.lib-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.lib-head h2{font-size:clamp(2rem,3.6vw,2.8rem);margin-top:10px}
+.lib-head .count{color:var(--muted);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.chip{font-size:13px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted);transition:all .2s}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.grid{--cols:var(--cols-d,3);display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:clamp(20px,3vw,40px) clamp(16px,2.4vw,32px)}
+.card{display:grid;gap:14px;align-content:start;color:var(--ink)}
+.card-media{position:relative}
+.badge-hot{position:absolute;top:12px;left:12px;z-index:1;display:inline-flex;align-items:center;gap:6px;background:var(--wine);color:#fff;font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;padding:7px 10px 7px 9px;box-shadow:0 6px 16px -6px rgba(74,15,31,.7)}
+.badge-hot::before{content:"";width:6px;height:6px;border-radius:50%;background:#FFD7DF;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.card-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.card-row .card-body{min-width:0;gap:4px}
+.card-genre{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.card-arrow{flex:none;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--wine);transition:background .2s,color .2s,border-color .2s,transform .2s}
+.card:hover .card-arrow,.card:focus-visible .card-arrow{background:var(--wine);border-color:var(--wine);color:#fff;transform:translateX(3px)}
+.lib-desc{color:var(--muted);font-weight:300;max-width:60ch;margin-top:8px}
+.pager{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:clamp(32px,5vw,56px)}
+.pager button{min-width:42px;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r);font-size:14px}
+.pager button:hover{border-color:var(--ink)}
+.pager button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pager button[disabled]{opacity:.35;pointer-events:none}
+.ad-slot{padding-bottom:clamp(48px,7vw,88px)}
+.ad{position:relative;display:block;aspect-ratio:var(--ar,6/1);min-height:90px;max-width:100%;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
+.ad img{width:100%;height:100%;object-fit:cover}
+.ad-label{position:absolute;top:8px;right:8px;z-index:1;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:3px 7px}
+.ad-empty{height:100%;display:grid;place-content:center;justify-items:center;text-align:center;gap:6px;padding:16px;background:repeating-linear-gradient(135deg,var(--paper-2) 0 14px,var(--wine-tint) 14px 15px)}
+.ad-empty b{font:500 clamp(1.2rem,2.4vw,1.8rem)/1.2 var(--display);color:var(--wine)}
+.ad-empty span{font-size:13px;color:var(--muted)}
+.card:hover img,.card:hover .gen{transform:scale(1.035)}
+.card-body{display:grid;gap:6px}
+.card-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);letter-spacing:.04em}
+.card h3{font-size:1.65rem;transition:color .2s}
+.card:hover h3{color:var(--wine)}
+.card p{color:var(--muted);font-size:14px;max-width:44ch}
+.tag-hot{font:600 10px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--wine);border:1px solid currentColor;padding:4px 6px}
+.empty{padding:56px 24px;text-align:center;color:var(--muted);border:1px dashed var(--line);grid-column:1/-1}
+
+/* Detail */
+.crumbs{font-size:13px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;padding-top:28px}
+.crumbs a:hover{color:var(--wine)}
+.g-kv{margin-top:20px}
+.g-kv .cover{aspect-ratio:21/9}
+.g-kv .gen-l{font-size:clamp(160px,30vw,420px)}
+.g-head{position:relative;margin:clamp(-88px,-6vw,-40px) clamp(0px,3vw,40px) 0;background:var(--paper);border:1px solid var(--line);padding:clamp(20px,3vw,36px);display:flex;flex-wrap:wrap;gap:24px 48px;align-items:flex-end;justify-content:space-between}
+.g-title{flex:999 1 420px;min-width:0;display:grid;gap:12px}
+.g-title h1{font-size:clamp(2.4rem,5vw,4.4rem)}
+.g-title .lede{color:var(--muted);font-size:17px;font-weight:300;max-width:52ch}
+.g-cta{flex:1 1 240px;display:grid;gap:10px;max-width:340px}
+.g-cta .btn{width:100%}
+.g-cta .btn.primary{padding:18px 28px;font-size:15px}
+.g-cta small{font-size:12px;color:var(--muted);text-align:center}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 24px;border-bottom:1px solid var(--line);margin:40px 0 0;padding-bottom:20px}
+.facts div{display:grid;gap:4px;padding-top:16px}
+.facts dt{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.facts dd{margin:0;font-size:15px}
+.facts dd a{border-bottom:1px solid var(--line)}
+.facts dd a:hover{color:var(--wine);border-color:var(--wine)}
+.g-sec{padding-block:clamp(40px,6vw,72px);border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);gap:clamp(16px,4vw,56px)}
+.g-sec h2{font-size:clamp(1.8rem,3vw,2.3rem)}
+.g-sec .eyebrow{margin-bottom:10px}
+.g-body{min-width:0;display:grid;gap:20px;align-content:start}
+.media-main{position:relative;aspect-ratio:16/9;background:#140A0E;overflow:hidden;max-width:100%}
+.media-main > iframe,.media-main > video,.media-main > img{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;background:#140A0E}
+.media-main > video{object-fit:contain}
+.media-main .cover{position:absolute;inset:0;aspect-ratio:auto}
+.shots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.shots button{position:relative;padding:0;aspect-ratio:16/10;overflow:hidden;opacity:.65;border:1px solid transparent;background:#2A0F18;color:#fff;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.shots button.on,.shots button:hover{opacity:1;border-color:var(--wine)}
+.shots img{width:100%;height:100%;object-fit:cover}
+.prose{max-width:65ch;display:grid;gap:14px;font-size:16px;font-weight:300}
+.hl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;padding-top:28px;border-top:1px solid var(--line)}
+.hl div{display:grid;gap:6px;align-content:start}
+.hl b{font:500 1.45rem/1.15 var(--display)}
+.hl span{font-size:14px;color:var(--muted)}
+.keys{display:grid;border-top:1px solid var(--line);max-width:640px}
+.keys div{display:grid;grid-template-columns:minmax(120px,200px) minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.keys kbd{font:500 12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--wine);background:var(--wine-tint);padding:4px 8px;border-radius:var(--r);justify-self:start}
+.tips{max-width:65ch;color:var(--muted);font-weight:300;display:grid;gap:8px}
+.tips p::before{content:"— ";color:var(--wine)}
+.devnote .prose p:first-child{font:italic 500 1.55rem/1.35 var(--display);color:var(--ink)}
+.more{padding-block:clamp(40px,6vw,72px)}
+.more .lib-head{margin-bottom:28px}
+.endcta{background:var(--wine);color:#fff}
+.endcta-in{display:flex;flex-wrap:wrap;gap:24px 40px;align-items:center;justify-content:space-between;padding-block:clamp(40px,6vw,72px)}
+.endcta h2{font-size:clamp(2rem,4vw,3.2rem);color:#fff}
+.endcta .eyebrow{color:#E9B9C4;margin-bottom:10px}
+.endcta .eyebrow .dot{background:#E9B9C4}
+.endcta-act{display:flex;flex-wrap:wrap;gap:10px}
+.btn.light{background:#fff;color:var(--wine-deep);border-color:#fff}
+.btn.light:hover{background:var(--wine-tint);border-color:var(--wine-tint)}
+.btn.outline-light{border-color:rgba(255,255,255,.55);color:#fff}
+.btn.outline-light:hover{background:rgba(255,255,255,.12)}
+
+/* Game detail v3 */
+.gd-head{padding-block:16px clamp(24px,3vw,36px);display:grid;gap:10px}
+.gd-head h1{font-size:clamp(2.4rem,5vw,4.2rem)}
+.gd{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,56px);align-items:start;padding-bottom:clamp(48px,6vw,80px)}
+.stage{position:relative;aspect-ratio:16/10;background:#140A0E;overflow:hidden;max-width:100%}
+.stage > img,.stage > video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage > .cover{position:absolute;inset:0;aspect-ratio:auto}
+.stage-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--ink);display:grid;place-items:center;box-shadow:0 6px 18px -8px rgba(0,0,0,.5);transition:background .2s}
+.stage-nav:hover{background:#fff}
+.stage-nav.prev{left:12px}.stage-nav.next{right:12px}
+.stage-nav.prev svg{transform:rotate(180deg)}
+.stage-count{position:absolute;right:12px;bottom:12px;background:rgba(20,10,14,.72);color:#fff;font-size:12px;padding:4px 10px;border-radius:999px;letter-spacing:.06em}
+.thumbs{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
+.thumbs button{position:relative;flex:none;width:96px;aspect-ratio:16/10;padding:0;overflow:hidden;border:2px solid transparent;opacity:.6;background:#2A0F18;color:#fff;font-size:11px;transition:opacity .2s,border-color .2s}
+.thumbs button.on,.thumbs button:hover{opacity:1;border-color:var(--wine)}
+.thumbs img,.thumbs video{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs .vbadge{position:absolute;inset:auto auto 4px 4px;background:rgba(20,10,14,.8);padding:2px 6px;border-radius:2px;font-size:10px;letter-spacing:.08em}
+.gd-article{display:grid;gap:26px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);min-width:0}
+.perks{list-style:none;margin:0;padding:22px 0 0;border-top:1px solid var(--line);display:grid;gap:14px}
+.perks li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:12px;align-items:start;font-size:15.5px;font-weight:500;line-height:1.45}
+.tick{width:26px;height:26px;border-radius:50%;background:var(--wine);color:#fff;display:grid;place-items:center;margin-top:-1px}
+.gd-play{display:grid;gap:10px}
+.gd-play .btn.primary{width:100%;padding:20px 28px;font-size:16px}
+.gd-play small{font-size:12px;color:var(--muted);text-align:center}
+.gd-play small a{color:var(--wine);border-bottom:1px solid currentColor}
+.yt{max-width:960px;margin:0 auto;padding-block:clamp(40px,6vw,72px);border-top:1px solid var(--line);display:grid;gap:22px;justify-items:center;text-align:center}
+.yt h2{font-size:clamp(1.8rem,3vw,2.4rem)}
+.yt-frame{position:relative;width:100%;aspect-ratio:16/9;background:#140A0E;max-width:100%}
+.yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.gd-ad{padding-top:clamp(24px,4vw,40px)}
+@media (max-width:900px){ .gd{grid-template-columns:minmax(0,1fr)} .gd-article{position:static} }
+
+/* Play */
+.play{padding-block:20px 48px;display:grid;gap:16px}
+.play-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.play-bar h1{font-size:1.9rem;margin-right:auto}
+.frame{position:relative;background:#140A0E;aspect-ratio:16/9;max-height:calc(100vh - 220px);width:100%;max-width:100%;border:1px solid var(--line)}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#140A0E}
+.play-note{font-size:13px;color:var(--muted)}
+.play-note a{color:var(--wine);border-bottom:1px solid currentColor}
+
+/* About / Donate */
+.page{padding-block:clamp(40px,7vw,88px);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,6vw,80px)}
+.page h1{font-size:clamp(2.8rem,6vw,5rem);margin-top:14px}
+.stats{display:flex;gap:40px;margin-top:32px}
+.stats b{display:block;font:500 3rem/1 var(--display);color:var(--wine)}
+.stats span{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.kv{display:grid;border-top:1px solid var(--line);margin-top:28px}
+.kv > div{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid var(--line)}
+.kv .k{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.kv .v{font-size:17px;user-select:all;overflow-wrap:anywhere}
+.qr{max-width:220px;border:1px solid var(--line);padding:10px;margin-top:24px}
+
+/* Footer */
+.site-foot{border-top:1px solid var(--line);margin-top:auto}
+.foot-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-block:28px;font-size:13px;color:var(--muted)}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a:hover{color:var(--wine)}
+#app{min-height:100vh;display:flex;flex-direction:column}
+main{flex:1}
+
+/* Contact */
+.cform{display:grid;gap:18px;min-width:0}
+.cform .row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cfield{display:grid;gap:6px;min-width:0}
+.cfield label{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cfield label b{color:var(--wine);font-weight:600}
+.cfield input,.cfield textarea{width:100%;font:400 15px/1.5 var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.cfield textarea{min-height:160px;resize:vertical}
+.cfield input:focus,.cfield textarea:focus{outline:none;border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.cfield input[aria-invalid=true],.cfield textarea[aria-invalid=true]{border-color:var(--wine)}
+.cfield .err{font-size:12px;color:var(--wine)}
+.cform .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cform-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cform-foot small{color:var(--muted);font-size:12px}
+.cform-foot .btn{min-width:160px}
+.sent{border:1px solid var(--line);padding:clamp(24px,4vw,40px);display:grid;gap:14px;justify-items:start}
+.sent .tick{width:40px;height:40px}
+.sent h2{font-size:2rem}
+@media (max-width:560px){ .cform .row2{grid-template-columns:minmax(0,1fr)} .cform-foot .btn{width:100%} }
+
+/* Admin */
+.admin{padding-block:32px 72px;display:grid;gap:24px}
+.admin-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.admin-head h1{font-size:2.6rem;margin-top:8px}
+.notice{background:var(--wine-tint);color:var(--wine-deep);padding:12px 16px;font-size:13px;border-left:2px solid var(--wine)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs a{padding:12px 16px;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs a.on{color:var(--wine);border-color:var(--wine)}
+.tabs a:hover{color:var(--ink)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+th{text-align:left;font:500 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--line);background:var(--paper-2)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td .thumb{width:72px}
+td .thumb .cover{aspect-ratio:16/10}
+td .thumb .gen-l{font-size:44px}
+td .thumb .gen-t,td .thumb .gen-px{display:none}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;letter-spacing:.04em}
+.pill.pub{background:#E8F1EC;color:var(--ok)}
+.pill.draft{background:var(--paper-2);color:var(--muted);border:1px solid var(--line)}
+.row-act{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.toggle{width:36px;height:20px;border-radius:999px;background:var(--line);position:relative;transition:background .2s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.toggle.on{background:var(--wine)}
+.toggle.on::after{transform:translateX(16px)}
+.panel{border:1px solid var(--line);padding:clamp(16px,3vw,28px);display:grid;gap:20px;background:var(--paper)}
+.panel h2{font-size:1.8rem}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px}
+.field{display:grid;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.pill.ad{background:var(--wine-tint);color:var(--wine)}
+.pill.game{background:#EEF0F4;color:#3B4252}
+.field label,.field .lbl{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field .hint{font-size:12px;color:var(--muted)}
+.form-sec{font:500 1.35rem/1.2 var(--display);color:var(--wine);padding-top:14px;border-top:1px solid var(--line);margin-top:6px}
+input[type=text],input[type=url],input[type=number],input[type=email],input[type=password],select,textarea{width:100%;font:400 14px/1.5 var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+textarea{min-height:120px;resize:vertical}
+.check{display:flex;align-items:center;gap:8px;font-size:14px}
+.check input{accent-color:var(--wine);width:16px;height:16px}
+.checks{display:flex;flex-wrap:wrap;gap:8px 18px}
+.img-field{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:start}
+.img-prev{aspect-ratio:16/10;background:var(--paper-2);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;font-size:11px;color:var(--muted)}
+.img-prev img{width:100%;height:100%;object-fit:cover}
+.img-ctl{display:grid;gap:8px}
+.img-btns{display:flex;gap:8px;flex-wrap:wrap}
+.file-btn{position:relative;overflow:hidden}
+.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.shot-list{display:flex;flex-wrap:wrap;gap:8px}
+.shot-item{position:relative;width:96px;aspect-ratio:16/10;border:1px solid var(--line);overflow:hidden}
+.shot-item img{width:100%;height:100%;object-fit:cover}
+.shot-item button{position:absolute;top:3px;right:3px;width:20px;height:20px;background:rgba(34,21,27,.75);color:#fff;font-size:12px;line-height:20px;border-radius:50%}
+.form-act{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;border-top:1px solid var(--line);padding-top:18px}
+.confirm{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--wine)}
+.login{max-width:380px;margin:40px auto;display:grid;gap:16px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;font-size:14px;border-radius:var(--r);z-index:50;box-shadow:0 12px 30px -10px rgba(0,0,0,.4)}
+.toast.err{background:var(--wine)}
+.msg-list{display:grid;gap:12px}
+.msg{border:1px solid var(--line);padding:18px 20px;display:grid;gap:12px;background:var(--paper)}
+.msg.new{border-left:3px solid var(--wine)}
+.msg-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.msg-who{display:grid;gap:4px;min-width:0}
+.msg-who b{font-weight:600;font-size:15px}
+.msg-contact{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.msg-contact span{user-select:all;overflow-wrap:anywhere}
+.msg-body{white-space:pre-line;font-size:14.5px;line-height:1.6;overflow-wrap:anywhere;max-width:80ch}
+.msg-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.tab-badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--wine);color:#fff;font-size:11px;font-weight:600;margin-left:4px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+
+@media (max-width:900px){
+  .grid{--cols:2}
+  .slide,.page,.g-sec{grid-template-columns:minmax(0,1fr)}
+  .slide-art{order:-1}
+  .hl{grid-template-columns:minmax(0,1fr)}
+  .shots{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .grid{--cols:1}
+  .head-row{min-height:64px}
+  .logo-text{font-size:20px}
+  .nav{font-size:13px;gap:14px}
+  .form-grid{grid-template-columns:minmax(0,1fr)}
+  .img-field{grid-template-columns:minmax(0,1fr)}
+  .img-prev{max-width:200px}
+  .shots{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .keys div{grid-template-columns:minmax(0,1fr)}
+  .g-cta{max-width:none}
+}
+@media (max-width:480px){ .head-row{flex-wrap:wrap;padding-block:12px;gap:10px} .nav{width:100%;justify-content:space-between} }
+@media (prefers-reduced-motion:reduce){
+  .badge-hot::before{animation:none}
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+</style>
+
+</head>
+<body>
+<div id="app">
+
+  <header class="site-head">
+    <div class="wrap head-row">
+      <a class="logo" href="index.html" target="_blank" rel="noopener" aria-label="Mở trang chính">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><g fill="#6B1A2D"><rect x="0" y="0" width="8" height="8"/><rect x="18" y="0" width="8" height="8"/><rect x="0" y="9" width="8" height="8"/><rect x="18" y="9" width="8" height="8"/><rect x="9" y="18" width="8" height="8"/></g></svg>
+        <span class="logo-text" id="logoText">Vinh <em>Làm Game</em></span>
+      </a>
+      <span class="eyebrow"><span class="dot"></span>Bảng quản trị</span>
+    </div>
+  </header>
+  <main id="main"></main>
+
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============ CẤU HÌNH ============
+   Để trống = chế độ demo (dữ liệu lưu trên trình duyệt này).
+   Điền URL + anon key của Supabase (chạy schema.sql trước) để đồng bộ cho mọi người xem. */
+const CONFIG = {
+  SUPABASE_URL: '',
+  SUPABASE_ANON_KEY: ''
+};
+
+/* ============ TIỆN ÍCH ============ */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Date.now().toString(36) + Math.random().toString(36).slice(2));
+const slugify = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D')
+  .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const paras = t => String(t || '').split(/\n+/).filter(x => x.trim()).map(p => `<p>${esc(p)}</p>`).join('');
+const bySort = (a, b) => (a.sort ?? 0) - (b.sort ?? 0) || String(a.title || a.name).localeCompare(String(b.title || b.name), 'vi');
+const hash = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.codePointAt(0)) >>> 0; return h; };
+let toastT;
+function toast(msg, err) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast' + (err ? ' err' : ''); t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600);
+}
+
+/* ============ DỮ LIỆU MẪU ============ */
+const SEED = {
+  settings: {
+    studio_name: 'Vinh Làm Game',
+    tagline: 'Những trò chơi nhỏ làm bằng HTML5, chơi ngay trên trình duyệt.',
+    about: 'Mình là Vinh. Vinh Làm Game là nơi mình gom lại các trò chơi web tự làm, để ai cũng có thể vào xem, đọc giới thiệu và chơi thử ngay mà không cần cài đặt.\nMỗi game bắt đầu từ một ý tưởng nhỏ: một chuyến chạy xe về nhà ngày mưa, một chú khủng long đi tìm trứng, một hành tinh lạ. Mình làm chúng bằng HTML5 và JavaScript, chạy được trên cả máy tính lẫn điện thoại.\nNếu bạn có góp ý hoặc muốn hợp tác, cứ nhắn cho mình.',
+    email: '',
+    contact_note: 'Bạn muốn góp ý về game, hợp tác hay đặt quảng cáo? Để lại lời nhắn, mình sẽ phản hồi sớm nhất có thể.',
+    donate_note: 'Nếu bạn thích những trò chơi ở đây, một ly cà phê nhỏ sẽ giúp mình có thêm thời gian làm game mới. Cảm ơn bạn rất nhiều.',
+    bank_name: 'Vietcombank', bank_bin: '970436', bank_account: '0111000182684', bank_holder: 'NGUYEN HOANG VINH', momo: '', donate_link: '', donate_qr: '',
+    donate_amounts: '20000, 50000, 100000, 200000', donate_memo: 'Ung ho Vinh Lam Game',
+    footer_text: 'Làm game nhỏ, chơi trên trình duyệt.',
+    facebook: '', youtube: '', github: '',
+    banner_autoplay: true, banner_speed: 6,
+    grid_cols: '3', pagination_on: false, grid_rows: 3,
+    genre_show_count: true,
+    ad_on: true, ad_image: '', ad_link: '', ad_size: '6/1',
+    ad_title: 'Vị trí đặt banner quảng cáo', ad_note: 'Liên hệ Vinh Làm Game để đặt quảng cáo'
+  },
+  genres: [
+    { id: 'g-phieu-luu', name: 'Phiêu lưu', slug: 'phieu-luu', sort: 1 },
+    { id: 'g-platformer', name: 'Platformer', slug: 'platformer', sort: 2 },
+    { id: 'g-hanh-dong', name: 'Hành động', slug: 'hanh-dong', sort: 3 },
+    { id: 'g-casual', name: 'Casual', slug: 'casual', sort: 4 },
+    { id: 'g-thieu-nhi', name: 'Thiếu nhi', slug: 'thieu-nhi', sort: 5 }
+  ],
+  games: [
+    { id: 'game-laj', slug: 'hanh-tinh-laj', title: 'Hành Tinh LAJ', tagline: 'Một chuyến platformer tĩnh lặng trên hành tinh lạ.',
+      description: 'Hành Tinh LAJ là game platformer thiên về không khí: nhảy qua những vùng đất lạ, lắng nghe âm thanh của một hành tinh chưa ai đặt chân tới.\nGame chạy trực tiếp trên trình duyệt, không cần cài đặt.',
+      genre_ids: ['g-platformer', 'g-phieu-luu'], cover: '', screenshots: [], play_url: 'https://hanhtinhlaj.vercel.app',
+      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, sort: 1,
+      kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Chơi ngay trên trình duyệt\nKhông cần cài đặt\nKhông khí tĩnh lặng, nhạc nền dễ chịu', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Mọi lứa tuổi', language: 'Tiếng Việt' },
+    { id: 'game-chu', slug: 'chu-va-qua-trung-that-lac', title: 'Chu và Quả Trứng Thất Lạc', tagline: 'Cùng chú khủng long Chu đi tìm quả trứng bị lạc.',
+      description: 'Chu và Quả Trứng Thất Lạc là chuyến phiêu lưu dành cho các bạn nhỏ: theo chân khủng long Chu băng qua nhiều vùng đất để tìm lại quả trứng bị thất lạc.\nPhù hợp để bố mẹ chơi cùng con.',
+      genre_ids: ['g-phieu-luu', 'g-thieu-nhi'], cover: '', screenshots: [], play_url: 'https://chuvaquatrungkhunglong.vercel.app',
+      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, sort: 2,
+      kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Dành riêng cho các bạn nhỏ\nBố mẹ chơi cùng con\nKhông cần cài đặt', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Thiếu nhi', language: 'Tiếng Việt' },
+    { id: 'game-monster', slug: 'monster-breakout', title: 'Monster Breakout', tagline: 'Bắn súng sinh tồn: vượt từng cổng, diệt quái virus.',
+      description: 'Monster Breakout là game bắn súng sinh tồn góc nhìn từ trên xuống. Người hùng phải vượt qua từng cổng đầy quái virus.\nVượt thử thách và nhặt trang bị để nâng sức mạnh khẩu súng. Chơi được trên máy tính và điện thoại.',
+      genre_ids: ['g-hanh-dong'], cover: '', screenshots: [], play_url: '',
+      released: '2026', platforms: 'Web · Mobile', controls: '', status: 'published', hot: true, sort: 3,
+      kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Vượt từng cổng, diệt quái virus\nNâng cấp súng qua từng thử thách\nChơi được trên máy tính và điện thoại', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: '', language: 'Tiếng Việt' },
+    { id: 'game-mua', slug: 'qua-mua-mua', title: 'Qua Mùa Mưa', tagline: 'Chạy xe máy về nhà qua bốn cửa của mùa mưa.',
+      description: 'Qua Mùa Mưa là mini game chạy xe máy về nhà trong mùa mưa, qua bốn cửa với độ khó tăng dần.\nChọn nhân vật, đặt tên và ảnh đại diện của riêng bạn, rồi lên đường. Trên đường đi có gì thì bạn tự khám phá nhé.',
+      genre_ids: ['g-casual'], cover: '', screenshots: [], play_url: '',
+      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: false, sort: 4,
+      kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Bốn cửa, độ khó tăng dần\nTự đặt tên và ảnh đại diện\nMỗi chuyến về nhà một bất ngờ', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Mọi lứa tuổi', language: 'Tiếng Việt' }
+  ],
+  banners: [
+    { id: 'b-1', eyebrow: 'Đang hot', title: 'Hành Tinh LAJ', subtitle: 'Nhảy qua những vùng đất lạ trên một hành tinh chưa ai đặt chân tới.', game_id: 'game-laj', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 1, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 },
+    { id: 'b-2', eyebrow: 'Cho bé', title: 'Chu và Quả Trứng Thất Lạc', subtitle: 'Chuyến phiêu lưu khủng long để bố mẹ chơi cùng con.', game_id: 'game-chu', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 2, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 },
+    { id: 'b-3', eyebrow: 'Sắp ra mắt', title: 'Monster Breakout', subtitle: 'Vượt từng cổng, diệt quái virus, nâng cấp súng.', game_id: 'game-monster', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 3, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 }
+  ]
+};
+
+/* ============ LỚP DỮ LIỆU (Supabase hoặc localStorage) ============ */
+const LS_KEY = 'vlg_data_v1';
+const TABLES = { games: 'games', banners: 'banners', genres: 'genres' };
+let D = { settings: {}, genres: [], games: [], banners: [] };
+let sb = null, session = null;
+const MODE = (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase) ? 'cloud' : 'local';
+
+const Store = {
+  async load() {
+    if (MODE === 'cloud') {
+      sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+      const [s, g, ge, b, ss] = await Promise.all([
+        sb.from('settings').select('data').eq('id', 1).maybeSingle(),
+        sb.from('games').select('*'),
+        sb.from('genres').select('*'),
+        sb.from('banners').select('*'),
+        sb.auth.getSession()
+      ]);
+      const err = [s, g, ge, b].find(r => r.error);
+      if (err) throw err.error;
+      session = ss.data.session;
+      D = { settings: { ...SEED.settings, ...(s.data?.data || {}) }, games: g.data || [], genres: ge.data || [], banners: b.data || [] };
+    } else {
+      let raw = null;
+      try { raw = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
+      D = raw && raw.games ? raw : structuredClone(SEED);
+      D.settings = { ...SEED.settings, ...D.settings };
+    }
+  },
+  persist() { try { localStorage.setItem(LS_KEY, JSON.stringify(D)); } catch (e) { toast('Bộ nhớ trình duyệt đầy — hãy dùng ảnh nhỏ hơn hoặc link ảnh.', true); } },
+  async save(kind, item) {
+    if (MODE === 'cloud') {
+      const { data, error } = await sb.from(TABLES[kind]).upsert(item).select().single();
+      if (error) throw error;
+      item = data;
+    }
+    const list = D[kind], i = list.findIndex(x => x.id === item.id);
+    i >= 0 ? (list[i] = item) : list.push(item);
+    if (MODE === 'local') this.persist();
+    return item;
+  },
+  async remove(kind, id) {
+    if (MODE === 'cloud') { const { error } = await sb.from(TABLES[kind]).delete().eq('id', id); if (error) throw error; }
+    D[kind] = D[kind].filter(x => x.id !== id);
+    if (kind === 'games') D.banners.forEach(b => { if (b.game_id === id) b.game_id = ''; });
+    if (MODE === 'local') this.persist();
+  },
+  async saveSettings(s) {
+    if (MODE === 'cloud') { const { error } = await sb.from('settings').upsert({ id: 1, data: s }); if (error) throw error; }
+    D.settings = s;
+    if (MODE === 'local') this.persist();
+  }
+};
+
+/* ============ LIÊN HỆ ============ */
+const MSG_KEY = 'vlg_messages_v1';
+const Msg = {
+  local() { try { return JSON.parse(localStorage.getItem(MSG_KEY)) || []; } catch (e) { return []; } },
+  saveLocal(arr) { try { localStorage.setItem(MSG_KEY, JSON.stringify(arr)); } catch (e) { throw new Error('Không lưu được tin nhắn trên trình duyệt này.'); } },
+  async add(m) {
+    if (MODE === 'cloud') { const { error } = await sb.from('messages').insert(m); if (error) throw new Error('Gửi không thành công, bạn thử lại sau nhé.'); return; }
+    const arr = this.local(); arr.unshift({ ...m, id: uid(), handled: false, created_at: new Date().toISOString() }); this.saveLocal(arr);
+  },
+  async list() {
+    if (MODE === 'cloud') { const { data, error } = await sb.from('messages').select('*').order('created_at', { ascending: false }); if (error) throw error; return data || []; }
+    return this.local();
+  },
+  async update(id, patch) {
+    if (MODE === 'cloud') { const { error } = await sb.from('messages').update(patch).eq('id', id); if (error) throw error; return; }
+    this.saveLocal(this.local().map(x => x.id === id ? { ...x, ...patch } : x));
+  },
+  async remove(id) {
+    if (MODE === 'cloud') { const { error } = await sb.from('messages').delete().eq('id', id); if (error) throw error; return; }
+    this.saveLocal(this.local().filter(x => x.id !== id));
+  }
+};
+
+/* ============ TRUY VẤN ============ */
+const pubGames = () => D.games.filter(g => g.status === 'published').sort(bySort);
+const gameById = id => D.games.find(g => g.id === id);
+const genreById = id => D.genres.find(g => g.id === id);
+const genreNames = g => (g.genre_ids || []).map(genreById).filter(Boolean).map(x => x.name);
+const genresSorted = () => [...D.genres].sort(bySort);
+const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+const visibleGenres = () => genresSorted().filter(x => x.show !== false);
+
+/* ============ THÀNH PHẦN ============ */
+function genArt(g) {
+  const h = hash(g.title || g.id);
+  const hue = [342, 348, 352, 356, 4, 336][h % 6];
+  const l = [20, 24, 28, 18][(h >> 3) % 4];
+  const initial = [...(g.title || '?').trim()][0] || '?';
+  const px = [1,0,1, 1,0,1, 0,1,0].map(on => `<i class="${on ? '' : 'o'}"></i>`).join('');
+  return `<div class="gen" style="--h:${hue};--l:${l}"><span class="gen-t">${esc(g.title)}</span><span class="gen-l">${esc(initial)}</span><span class="gen-px">${px}</span></div>`;
+}
+const coverOf = (g, img) => `<div class="cover">${(img || g?.cover) ? `<img src="${esc(img || g.cover)}" alt="${esc(g?.title || '')}" loading="lazy">` : genArt(g || { title: '?' })}</div>`;
+
+const ARROW = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>';
+function card(g) {
+  const gn = genreNames(g).join(' · ');
+  return `<a class="card" href="#/game/${esc(g.slug)}" aria-label="Xem chi tiết ${esc(g.title)}">
+    <div class="card-media">${coverOf(g)}${g.hot ? '<span class="badge-hot">Hot</span>' : ''}</div>
+    <div class="card-row">
+      <div class="card-body"><h3>${esc(g.title)}</h3>${gn ? `<span class="card-genre">${esc(gn)}</span>` : ''}</div>
+      <span class="card-arrow">${ARROW}</span>
+    </div></a>`;
+}
+
+/* ============ ADMIN ============ */
+function logoHTML(name) {
+  const w = String(name || '').trim().split(/\s+/);
+  return w.length > 1 ? `${esc(w[0])} <em>${esc(w.slice(1).join(' '))}</em>` : esc(name);
+}
+let editing = null;          // { kind, item }
+let confirmDel = null;       // id
+
+const FIELDS = {
+  games: [
+    { type: 'heading', label: 'Cơ bản' },
+    { k: 'title', label: 'Tên game', type: 'text', req: true },
+    { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo từ tên game.' },
+    { k: 'tagline', label: 'Câu giới thiệu ngắn', type: 'text', full: true, hint: 'Dùng cho banner trang chủ.' },
+    { k: 'genre_ids', label: 'Thể loại', type: 'genres', full: true },
+    { k: 'play_url', label: 'Link chơi game', type: 'url', full: true, hint: 'Link bản game đã deploy (Vercel, GitHub Pages…). Để trống = “Sắp ra mắt”.' },
+    { k: 'status', label: 'Trạng thái', type: 'select', options: [['published', 'Đã đăng'], ['draft', 'Bản nháp']] },
+    { k: 'sort', label: 'Thứ tự', type: 'number' },
+    { k: 'hot', label: 'Gắn nhãn Hot', type: 'checkbox' },
+    { type: 'heading', label: 'Hình ảnh' },
+    { k: 'cover', label: 'Ảnh thumbnail (4:3)', type: 'image', full: true, hint: 'Ảnh trên ô game ở thư viện. Khuyên dùng 1200 × 900.' },
+    { k: 'kv', label: 'Ảnh KV chính (16:10)', type: 'image', full: true, hint: 'Ảnh đầu tiên trong slide trang game. Khuyên dùng 1600 × 1000.' },
+    { k: 'screenshots', label: 'Ảnh slide thêm', type: 'images', full: true, hint: 'Các ảnh tiếp theo trong slide, tỉ lệ 16:10.' },
+    { k: 'clip_url', label: 'Video ngắn trong slide', type: 'url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
+    { type: 'heading', label: 'Bài viết' },
+    { k: 'description', label: 'Bài viết giới thiệu game', type: 'textarea', full: true, hint: 'Mỗi dòng là một đoạn.' },
+    { k: 'highlights', label: 'Cụm từ marketing (có dấu tích)', type: 'textarea', full: true, hint: 'Mỗi dòng một cụm ngắn gọn. VD: Không cần cài đặt' },
+    { type: 'heading', label: 'Video giới thiệu' },
+    { k: 'youtube_url', label: 'Link YouTube', type: 'url', full: true, hint: 'Hiện ở giữa, dưới phần bài viết. Để trống thì ẩn.' }
+  ],
+  banners: [
+    { type: 'heading', label: 'Loại banner' },
+    { k: 'kind', label: 'Loại', type: 'select', options: [['game', 'Giới thiệu game của studio'], ['ad', 'Quảng cáo của khách hàng']], hint: 'Quảng cáo: bấm vào mở trang web của khách trong tab mới, có nhãn “Quảng cáo”.' },
+    { k: 'title', label: 'Tên banner', type: 'text', req: true, hint: 'Không hiện trên trang, dùng làm mô tả ảnh và để quản lý.' },
+    { k: 'game_id', label: 'Bấm vào sẽ mở game', type: 'game', when: 'kind=game' },
+    { k: 'link_url', label: 'Link trang web của khách', type: 'url', full: true, when: 'kind=ad', hint: 'VD: https://thuonghieu.vn/khuyen-mai' },
+    { k: 'sponsor', label: 'Tên nhà tài trợ', type: 'text', when: 'kind=ad', hint: 'Hiện cạnh nhãn “Quảng cáo”. Không bắt buộc.' },
+    { type: 'heading', label: 'Hình ảnh / video' },
+    { k: 'media_type', label: 'Dạng banner', type: 'select', options: [['image', 'Hình ảnh'], ['video', 'Video ngắn (.mp4 / .webm)'], ['youtube', 'Video web (YouTube)']] },
+    { k: 'image', label: 'Ảnh banner (21:8) — JPG, PNG, WebP hoặc GIF động', type: 'image', full: true, hint: 'Khuyên dùng 2100 × 800. GIF động chạy như ảnh thường. Với video, ảnh này làm ảnh chờ khi video đang tải.' },
+    { k: 'video_url', label: 'Link video', type: 'url', full: true, when: 'media_type=video|youtube', hint: 'Video tự chạy, không tiếng, lặp lại. Nên dài 6–20 giây.' },
+    { type: 'heading', label: 'Hiển thị' },
+    { k: 'duration', label: 'Thời gian riêng (giây)', type: 'number', hint: '0 = theo cài đặt chung ở tab Giao diện. Video nên đặt bằng độ dài video.' },
+    { k: 'sort', label: 'Thứ tự', type: 'number' },
+    { k: 'start_at', label: 'Ngày bắt đầu', type: 'date', hint: 'Để trống = hiện ngay.' },
+    { k: 'end_at', label: 'Ngày kết thúc', type: 'date', hint: 'Để trống = không hết hạn. Hợp cho hợp đồng quảng cáo.' },
+    { k: 'active', label: 'Đang hiển thị', type: 'checkbox' }
+  ],
+  genres: [
+    { k: 'name', label: 'Tên thể loại', type: 'text', req: true },
+    { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo.' },
+    { k: 'description', label: 'Mô tả thể loại', type: 'textarea', full: true, hint: 'Hiện dưới tên thể loại khi khách lọc theo thể loại.' },
+    { k: 'sort', label: 'Thứ tự', type: 'number' },
+    { k: 'show', label: 'Hiện trong menu & bộ lọc', type: 'checkbox' }
+  ],
+  display: [
+    { type: 'heading', label: 'Banner trang chủ' },
+    { k: 'banner_autoplay', label: 'Tự động trượt banner', type: 'checkbox' },
+    { k: 'banner_speed', label: 'Thời gian mỗi banner (giây)', type: 'number', hint: 'Tối thiểu 2 giây. Mặc định 6.' },
+    { type: 'heading', label: 'Thư viện game' },
+    { k: 'grid_cols', label: 'Số game mỗi hàng', type: 'select', options: [['2', '2 game'], ['3', '3 game'], ['4', '4 game'], ['5', '5 game']], hint: 'Trên máy tính. Tablet tự về 2, điện thoại 1.' },
+    { k: 'grid_rows', label: 'Số hàng mỗi trang', type: 'number', hint: 'Dùng khi bật phân trang.' },
+    { k: 'pagination_on', label: 'Bật phân trang', type: 'checkbox' },
+    { type: 'heading', label: 'Thể loại' },
+    { k: 'genre_show_count', label: 'Hiện số game cạnh tên thể loại trong menu', type: 'checkbox' },
+    { type: 'heading', label: 'Banner quảng cáo (dưới thư viện)' },
+    { k: 'ad_on', label: 'Hiện banner quảng cáo', type: 'checkbox' },
+    { k: 'ad_size', label: 'Tỉ lệ banner', type: 'select', options: [['6/1', 'Ngang rộng 6:1 (1200 × 200)'], ['4/1', 'Ngang 4:1 (1200 × 300)'], ['970/250', 'Billboard 970 × 250'], ['728/90', 'Leaderboard 728 × 90']] },
+    { k: 'ad_image', label: 'Ảnh quảng cáo', type: 'image', full: true, hint: 'Để trống sẽ hiện ô “Vị trí đặt banner quảng cáo” để chào bán.' },
+    { k: 'ad_link', label: 'Link khi bấm vào quảng cáo', type: 'url', full: true },
+    { k: 'ad_title', label: 'Chữ khi chưa có ảnh', type: 'text' },
+    { k: 'ad_note', label: 'Dòng phụ khi chưa có ảnh', type: 'text' }
+  ],
+  settings: [
+    { k: 'studio_name', label: 'Tên studio (logo)', type: 'text', req: true },
+    { k: 'tagline', label: 'Khẩu hiệu', type: 'text' },
+    { k: 'about', label: 'Nội dung trang About', type: 'textarea', full: true, hint: 'Mỗi dòng là một đoạn.' },
+    { k: 'email', label: 'Email liên hệ', type: 'text' },
+    { k: 'contact_note', label: 'Lời nhắn trang Liên hệ', type: 'textarea', full: true },
+    { k: 'footer_text', label: 'Dòng chữ footer', type: 'text' },
+    { k: 'facebook', label: 'Facebook', type: 'url' },
+    { k: 'youtube', label: 'YouTube', type: 'url' },
+    { k: 'github', label: 'GitHub', type: 'url' },
+    { k: 'donate_note', label: 'Lời nhắn trang Ủng hộ', type: 'textarea', full: true },
+    { k: 'bank_name', label: 'Ngân hàng', type: 'text' },
+    { k: 'bank_bin', label: 'Mã ngân hàng (BIN)', type: 'select', options: [['970436', 'Vietcombank · 970436'], ['970415', 'VietinBank · 970415'], ['970418', 'BIDV · 970418'], ['970405', 'Agribank · 970405'], ['970407', 'Techcombank · 970407'], ['970422', 'MB Bank · 970422'], ['970416', 'ACB · 970416'], ['970432', 'VPBank · 970432'], ['970423', 'TPBank · 970423'], ['970403', 'Sacombank · 970403']], hint: 'Dùng để tạo mã QR có kèm số tiền.' },
+    { k: 'bank_account', label: 'Số tài khoản', type: 'text' },
+    { k: 'bank_holder', label: 'Chủ tài khoản', type: 'text' },
+    { k: 'donate_amounts', label: 'Các mức ủng hộ gợi ý (₫)', type: 'text', full: true, hint: 'Cách nhau bằng dấu phẩy, tối đa 6 mức. VD: 20000, 50000, 100000, 200000' },
+    { k: 'donate_memo', label: 'Nội dung chuyển khoản', type: 'text', hint: 'Không dấu, tối đa 50 ký tự.' },
+    { k: 'momo', label: 'Số MoMo', type: 'text' },
+    { k: 'donate_link', label: 'Link ủng hộ (Ko-fi, Buy Me a Coffee…)', type: 'url', full: true },
+    { k: 'donate_qr', label: 'Ảnh mã QR dự phòng', type: 'image', full: true, hint: 'Chỉ hiện khi chưa điền số tài khoản. Bình thường mã QR được tạo tự động theo số tiền.' }
+  ]
+};
+const BLANK = {
+  games: () => ({ status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
+  banners: () => ({ active: true, kind: 'game', media_type: 'image', duration: 0, sort: D.banners.length + 1 }),
+  genres: () => ({ sort: D.genres.length + 1, show: true, description: '' })
+};
+
+function fieldHTML(f, v) {
+  const id = 'f-' + f.k;
+  const lab = `<label for="${id}">${f.label}${f.req ? ' *' : ''}</label>`;
+  const hint = f.hint ? `<span class="hint">${f.hint}</span>` : '';
+  const cls = `field${f.full ? ' full' : ''}`;
+  switch (f.type) {
+    case 'heading': return `<div class="field full form-sec">${f.label}</div>`;
+    case 'textarea': return `<div class="${cls}">${lab}<textarea id="${id}" name="${f.k}">${esc(v)}</textarea>${hint}</div>`;
+    case 'number': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="number" value="${esc(v ?? 0)}">${hint}</div>`;
+    case 'checkbox': return `<div class="${cls}" style="align-self:end"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input id="${id}" name="${f.k}" type="checkbox" ${v ? 'checked' : ''}> ${f.label}</label></div>`;
+    case 'select': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}">${f.options.map(o => `<option value="${o[0]}" ${String(v) === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select>${hint}</div>`;
+    case 'game': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}"><option value="">— Không —</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${v === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>${hint}</div>`;
+    case 'genres': return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="checks">${genresSorted().map(g => `<label class="check"><input type="checkbox" name="genre_ids" value="${esc(g.id)}" ${(v || []).includes(g.id) ? 'checked' : ''}> ${esc(g.name)}</label>`).join('') || '<span class="hint">Chưa có thể loại — thêm ở tab Thể loại.</span>'}</div></div>`;
+    case 'image': {
+      const isData = String(v || '').startsWith('data:');
+      return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="img-field" data-img="${f.k}">
+        <div class="img-prev">${v ? `<img src="${esc(v)}" alt="">` : 'Chưa có ảnh'}</div>
+        <div class="img-ctl">
+          <input type="hidden" name="${f.k}" value="${esc(v)}">
+          <input id="${id}" type="text" data-img-url placeholder="${isData ? 'Đang dùng ảnh tải lên' : 'Dán link ảnh https://…'}" value="${isData ? '' : esc(v)}">
+          <div class="img-btns"><span class="btn small line file-btn">Tải ảnh lên<input type="file" accept="image/*" data-img-file></span><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
+          ${hint}
+        </div></div></div>`;
+    }
+    case 'images': {
+      const arr = v || [];
+      return `<div class="${cls}"><span class="lbl">${f.label}</span><div data-imgs="${f.k}" style="display:grid;gap:10px">
+        <input type="hidden" name="${f.k}" value="${esc(JSON.stringify(arr))}">
+        <div class="shot-list">${arr.map((s, i) => `<div class="shot-item"><img src="${esc(s)}" alt=""><button type="button" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh">×</button></div>`).join('') || '<span class="hint">Chưa có ảnh.</span>'}</div>
+        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">Tải ảnh lên<input type="file" accept="image/*" multiple data-shots-file></span></div>
+      </div></div>`;
+    }
+    case 'date': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="date" value="${esc(v)}">${hint}</div>`;
+    default: return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="${f.type === 'url' ? 'url' : 'text'}" value="${esc(v)}" ${f.req ? 'required' : ''}>${hint}</div>`;
+  }
+}
+
+function readForm(form, fields) {
+  const o = {};
+  for (const f of fields) {
+    if (f.type === 'heading') continue;
+    if (f.type === 'genres') { o[f.k] = [...form.querySelectorAll('input[name=genre_ids]:checked')].map(i => i.value); continue; }
+    const el = form.elements[f.k];
+    if (f.type === 'checkbox') o[f.k] = el.checked;
+    else if (f.type === 'number') o[f.k] = Number(el.value) || 0;
+    else if (f.type === 'images') o[f.k] = JSON.parse(el.value || '[]');
+    else o[f.k] = el.value.trim();
+  }
+  return o;
+}
+
+const LABELS = { games: 'game', banners: 'banner', genres: 'thể loại' };
+function formPanel(kind) {
+  const it = editing.item;
+  return `<form class="panel" data-form="${kind}" novalidate>
+    <h2>${it.id ? 'Sửa ' : 'Thêm '}${LABELS[kind]}</h2>
+    <div class="form-grid">${FIELDS[kind].map(f => { const h = fieldHTML(f, it[f.k] ?? (f.type === 'select' ? f.options[0][0] : it[f.k])); return f.when ? h.replace('<div ', `<div data-when="${f.when}" `) : h; }).join('')}</div>
+    <div class="form-act"><button type="button" class="btn line" data-act="cancel">Huỷ</button><button class="btn primary" type="submit">${it.id ? 'Lưu thay đổi' : 'Thêm ' + LABELS[kind]}</button></div>
+  </form>`;
+}
+
+function applyWhen(root = document) {
+  root.querySelectorAll('[data-when]').forEach(el => {
+    const [k, vals] = el.dataset.when.split('=');
+    const form = el.closest('form'); const ctl = form?.elements[k];
+    el.hidden = !!ctl && !vals.split('|').includes(ctl.value);
+  });
+}
+function delCell(id) {
+  return confirmDel === id
+    ? `<span class="confirm">Xoá thật? <button class="btn small danger" data-act="del-yes" data-id="${esc(id)}">Xoá</button><button class="btn small line" data-act="del-no">Không</button></span>`
+    : `<button class="btn small line" data-act="edit" data-id="${esc(id)}">Sửa</button><button class="btn small danger" data-act="del" data-id="${esc(id)}">Xoá</button>`;
+}
+
+function adminGames() {
+  const rows = [...D.games].sort(bySort).map(g => `<tr>
+    <td><div class="thumb">${coverOf(g)}</div></td>
+    <td><a href="index.html#/game/${esc(g.slug)}" target="_blank" rel="noopener" style="font-weight:500">${esc(g.title)}</a><div class="hint mono" style="color:var(--muted)">/${esc(g.slug)}</div></td>
+    <td>${esc(genreNames(g).join(', '))}</td>
+    <td><span class="pill ${g.status === 'published' ? 'pub' : 'draft'}">${g.status === 'published' ? 'Đã đăng' : 'Nháp'}</span>${g.play_url ? '' : ' <span class="pill draft">Chưa có link</span>'}</td>
+    <td><button class="toggle ${g.hot ? 'on' : ''}" data-act="flip" data-kind="games" data-k="hot" data-id="${esc(g.id)}" aria-label="Hot"></button></td>
+    <td class="num">${g.sort ?? 0}</td>
+    <td><div class="row-act">${delCell(g.id)}</div></td></tr>`).join('');
+  return tableWrap(['', 'Game', 'Thể loại', 'Trạng thái', 'Hot', 'Thứ tự', ''], rows, 'Chưa có game nào.');
+}
+function adminBanners() {
+  const td = today();
+  const rows = [...D.banners].sort(bySort).map(b => { const g = b.kind === 'ad' ? null : gameById(b.game_id);
+    const expired = b.end_at && b.end_at < td, upcoming = b.start_at && b.start_at > td;
+    return `<tr>
+    <td><div class="thumb">${coverOf(g || { title: b.title }, b.image || g?.kv)}</div></td>
+    <td><span style="font-weight:500">${esc(b.title)}</span><div class="hint" style="color:var(--muted)">${{ image: 'Hình ảnh', video: 'Video ngắn', youtube: 'YouTube' }[b.media_type || 'image']}${b.duration ? ` · ${b.duration}s` : ''}</div></td>
+    <td><span class="pill ${b.kind === 'ad' ? 'ad' : 'game'}">${b.kind === 'ad' ? 'Quảng cáo' : 'Game'}</span></td>
+    <td>${b.kind === 'ad' ? `${b.sponsor ? esc(b.sponsor) + '<br>' : ''}<span class="mono">${esc(b.link_url)}</span>` : (g ? esc(g.title) : '—')}</td>
+    <td class="num" style="white-space:nowrap">${b.start_at || b.end_at ? `${esc(b.start_at || '…')} → ${esc(b.end_at || '…')}` : '—'}${expired ? '<br><span class="pill draft">Hết hạn</span>' : upcoming ? '<br><span class="pill draft">Chưa tới ngày</span>' : ''}</td>
+    <td><button class="toggle ${b.active ? 'on' : ''}" data-act="flip" data-kind="banners" data-k="active" data-id="${esc(b.id)}" aria-label="Hiển thị"></button></td>
+    <td class="num">${b.sort ?? 0}</td>
+    <td><div class="row-act">${delCell(b.id)}</div></td></tr>`; }).join('');
+  return tableWrap(['', 'Banner', 'Loại', 'Bấm vào mở', 'Thời gian chạy', 'Hiện', 'Thứ tự', ''], rows, 'Chưa có banner. Trang chủ sẽ tự lấy các game gắn nhãn Hot.');
+}
+function adminGenres() {
+  const rows = genresSorted().map(x => `<tr>
+    <td style="font-weight:500">${esc(x.name)}${x.description ? `<div class="hint" style="color:var(--muted);font-weight:400">${esc(x.description).slice(0, 80)}</div>` : ''}</td><td class="mono">${esc(x.slug)}</td>
+    <td class="num">${D.games.filter(g => (g.genre_ids || []).includes(x.id)).length}</td><td class="num">${x.sort ?? 0}</td>
+    <td><button class="toggle ${x.show !== false ? 'on' : ''}" data-act="flip" data-kind="genres" data-k="show" data-id="${esc(x.id)}" aria-label="Hiện trong menu"></button></td>
+    <td><div class="row-act">${delCell(x.id)}</div></td></tr>`).join('');
+  return tableWrap(['Tên', 'Slug', 'Số game', 'Thứ tự', 'Hiện', ''], rows, 'Chưa có thể loại.');
+}
+const tableWrap = (heads, rows, empty) => rows
+  ? `<div class="tbl-wrap"><table><thead><tr>${heads.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`
+  : `<div class="empty">${empty}</div>`;
+
+function adminSettings() {
+  return `<form class="panel" data-form="settings" novalidate>
+    <h2>Thông tin trang</h2>
+    <div class="form-grid">${FIELDS.settings.map(f => fieldHTML(f, D.settings[f.k])).join('')}</div>
+    <div class="form-act"><button class="btn primary" type="submit">Lưu thông tin</button></div>
+  </form>`;
+}
+let MSGS = null, msgLoading = false, msgFilter = 'all';
+function loadMsgs() {
+  if (msgLoading) return; msgLoading = true;
+  Msg.list().then(r => { MSGS = r; }).catch(() => { MSGS = []; toast('Không tải được tin nhắn liên hệ.', true); }).finally(() => { msgLoading = false; render(); });
+}
+const fmtTime = iso => { try { return new Date(iso).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } };
+function adminMessages() {
+  if (!MSGS) return `<div class="empty">Đang tải tin nhắn…</div>`;
+  const counts = { all: MSGS.length, new: MSGS.filter(m => !m.handled).length, done: MSGS.filter(m => m.handled).length };
+  const list = MSGS.filter(m => msgFilter === 'all' || (msgFilter === 'new' ? !m.handled : m.handled));
+  const chips = [['all', 'Tất cả'], ['new', 'Chưa liên hệ'], ['done', 'Đã liên hệ']].map(([k, l]) => `<button class="chip ${msgFilter === k ? 'on' : ''}" data-act="msg-filter" data-f="${k}">${l} <span class="num" style="opacity:.7">${counts[k]}</span></button>`).join('');
+  return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div class="chips" style="margin:0;padding:0;border:0">${chips}</div><button class="btn small line" data-act="msg-refresh">Tải lại</button></div>
+    ${MODE === 'local' ? `<p class="hint" style="color:var(--muted);font-size:13px">Chế độ demo: chỉ thấy tin nhắn gửi từ trình duyệt này. Kết nối Supabase để nhận tin nhắn của mọi khách.</p>` : ''}
+    ${list.length ? `<div class="msg-list">${list.map(m => `<article class="msg ${m.handled ? '' : 'new'}">
+      <div class="msg-top">
+        <div class="msg-who"><b>${esc(m.name)}</b>
+          <div class="msg-contact"><span>${esc(m.email)}</span>${m.phone ? `<span class="num">${esc(m.phone)}</span>` : ''}</div>
+        </div>
+        <span class="pill ${m.handled ? 'draft' : 'pub'}">${m.handled ? 'Đã liên hệ' : 'Mới'}</span>
+      </div>
+      <div class="msg-body">${esc(m.message)}</div>
+      <div class="msg-meta"><span class="num">${fmtTime(m.created_at)}</span>
+        <span style="margin-left:auto" class="row-act">
+          <button class="btn small line" data-act="copy" data-v="${esc(m.email)}">Chép email</button>
+          ${m.phone ? `<button class="btn small line" data-act="copy" data-v="${esc(m.phone)}">Chép SĐT</button>` : ''}
+          <button class="btn small ${m.handled ? 'line' : 'primary'}" data-act="msg-toggle" data-id="${esc(m.id)}">${m.handled ? 'Đánh dấu chưa liên hệ' : 'Đánh dấu đã liên hệ'}</button>
+          ${confirmDel === 'msg:' + m.id ? `<span class="confirm">Xoá? <button class="btn small danger" data-act="msg-del-yes" data-id="${esc(m.id)}">Xoá</button><button class="btn small line" data-act="del-no">Không</button></span>` : `<button class="btn small danger" data-act="msg-del" data-id="${esc(m.id)}">Xoá</button>`}
+        </span></div>
+    </article>`).join('')}</div>` : `<div class="empty">${MSGS.length ? 'Không có tin nhắn nào trong mục này.' : 'Chưa có tin nhắn liên hệ nào.'}</div>`}`;
+}
+function adminDisplay() {
+  return `<form class="panel" data-form="display" novalidate>
+    <h2>Giao diện trang chủ</h2>
+    <div class="form-grid">${FIELDS.display.map(f => fieldHTML(f, D.settings[f.k])).join('')}</div>
+    <div class="form-act"><button class="btn primary" type="submit">Lưu giao diện</button></div>
+  </form>`;
+}
+function adminBackup() {
+  return `<div class="panel">
+    <h2>Sao lưu dữ liệu</h2>
+    <p class="hint" style="color:var(--muted)">Sao chép khối JSON bên dưới để lưu lại. ${MODE === 'local' ? 'Dán JSON đã lưu vào đây rồi bấm “Nhập dữ liệu” để khôi phục.' : 'Dữ liệu đang lưu trên Supabase.'}</p>
+    <textarea id="backupBox" class="mono" style="min-height:260px">${esc(JSON.stringify(D, null, 2))}</textarea>
+    <div class="form-act" style="justify-content:flex-start">
+      <button class="btn line" data-act="copy-backup">Sao chép JSON</button>
+      ${MODE === 'local' ? `<button class="btn line" data-act="import">Nhập dữ liệu</button>
+      ${confirmDel === '__reset' ? `<span class="confirm">Xoá hết và nạp lại dữ liệu mẫu? <button class="btn small danger" data-act="reset-yes">Đồng ý</button><button class="btn small line" data-act="del-no">Không</button></span>` : `<button class="btn danger" data-act="reset">Khôi phục dữ liệu mẫu</button>`}` : ''}
+    </div>
+  </div>`;
+}
+
+function viewAdmin(tab = 'games') {
+  if (MODE === 'cloud' && !session) return `<div class="wrap"><form class="panel login" data-form="login">
+      <p class="eyebrow"><span class="dot"></span>Quản trị</p><h2>Đăng nhập</h2>
+      <div class="field"><label for="lg-email">Email</label><input id="lg-email" name="email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="lg-pass">Mật khẩu</label><input id="lg-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <button class="btn primary" type="submit">Đăng nhập</button>
+    </form></div>`;
+  const tabs = [['games', 'Game', D.games.length], ['banners', 'Banner', D.banners.length], ['genres', 'Thể loại', D.genres.length], ['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0], ['display', 'Giao diện'], ['settings', 'Thông tin trang'], ['backup', 'Sao lưu']];
+  const canAdd = ['games', 'banners', 'genres'].includes(tab);
+  const body = { games: adminGames, banners: adminBanners, genres: adminGenres, messages: adminMessages, display: adminDisplay, settings: adminSettings, backup: adminBackup }[tab] || adminGames;
+  return `<div class="wrap admin">
+    <div class="admin-head">
+      <div><p class="eyebrow"><span class="dot"></span>Quản trị</p><h1>${(tabs.find(t => t[0] === tab) || tabs[0])[1]}</h1></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn line" href="index.html" target="_blank" rel="noopener">Xem trang ↗</a>
+        ${canAdd && !editing ? `<button class="btn primary" data-act="new" data-kind="${tab}">+ Thêm ${LABELS[tab]}</button>` : ''}
+        ${MODE === 'cloud' ? `<button class="btn line" data-act="logout">Đăng xuất</button>` : ''}
+      </div>
+    </div>
+    ${MODE === 'local' ? `<div class="notice">Chế độ demo: dữ liệu lưu trên trình duyệt này, mở <span class="mono">index.html</span> cùng trình duyệt để xem thay đổi. Điền Supabase vào <span class="mono">CONFIG</span> (cả 2 file) để khách truy cập cùng thấy.</div>` : ''}
+    <nav class="tabs">${tabs.map(t => `<a href="#${t[0]}" data-act="tab" data-tab="${t[0]}" class="${t[0] === tab ? 'on' : ''}">${t[1]}${t[2] != null ? ` <span class="num" style="opacity:.6">${t[2]}</span>` : ''}${t[3] ? `<span class="tab-badge num">${t[3]}</span>` : ''}</a>`).join('')}</nav>
+    ${editing && editing.kind === tab ? formPanel(tab) : ''}
+    ${body()}
+  </div>`;
+}
+
+let TAB = location.hash.replace(/^#\/?/, '') || 'games';
+if (!['games', 'banners', 'genres', 'messages', 'display', 'settings', 'backup'].includes(TAB)) TAB = 'games';
+function render() {
+  if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
+  $('#main').innerHTML = viewAdmin(TAB);
+  applyWhen();
+  $('#logoText').innerHTML = logoHTML(D.settings.studio_name);
+  document.title = 'Quản trị · ' + D.settings.studio_name;
+}
+function closeDD() {}
+function go() {}
+
+/* ============ ẢNH ============ */
+function fileToData(file, max = 1280) {
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onerror = rej;
+    if (file.type === 'image/gif') {
+      if (file.size > 4 * 1024 * 1024) { rej(new Error('big-gif')); return; }
+      fr.onload = () => res(fr.result);
+      fr.readAsDataURL(file);
+      return;
+    }
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = rej;
+      img.onload = () => {
+        const k = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        res(c.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', .82));
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+function setImg(wrap, v) {
+  wrap.querySelector('input[type=hidden]').value = v;
+  wrap.querySelector('.img-prev').innerHTML = v ? `<img src="${esc(v)}" alt="">` : 'Chưa có ảnh';
+}
+function setShots(wrap, arr) {
+  wrap.querySelector('input[type=hidden]').value = JSON.stringify(arr);
+  wrap.querySelector('.shot-list').innerHTML = arr.map((s, i) => `<div class="shot-item"><img src="${esc(s)}" alt=""><button type="button" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh">×</button></div>`).join('') || '<span class="hint">Chưa có ảnh.</span>';
+}
+
+/* ============ SỰ KIỆN ============ */
+document.addEventListener('click', async e => {
+  const link = e.target.closest('a[href^="#/"]');
+  if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); go(link.getAttribute('href')); return; }
+  const t = e.target.closest('[data-act]');
+  if (!t) { if (!e.target.closest('.dd')) closeDD(); return; }
+  const act = t.dataset.act, id = t.dataset.id;
+  const tab = typeof TAB !== 'undefined' ? TAB : 'games';
+  try {
+    switch (act) {
+      case 'tab': e.preventDefault(); TAB = t.dataset.tab; editing = null; confirmDel = null; try { history.replaceState(null, '', '#' + TAB); } catch (_) {} render(); window.scrollTo(0, 0); break;
+      case 'dd': { const m = $('#ddMenu'); m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); break; }
+      case 'slide': e.preventDefault(); goSlide(Number(t.dataset.d)); break;
+      case 'slide-to': e.preventDefault(); goSlide(Number(t.dataset.i), true); break;
+      case 'msg-filter': msgFilter = t.dataset.f; render(); break;
+      case 'msg-refresh': MSGS = null; render(); break;
+      case 'msg-toggle': { const m = MSGS.find(x => x.id === id); await Msg.update(id, { handled: !m.handled }); m.handled = !m.handled; render(); toast(m.handled ? 'Đã đánh dấu đã liên hệ' : 'Đã đánh dấu chưa liên hệ'); break; }
+      case 'msg-del': confirmDel = 'msg:' + id; render(); break;
+      case 'msg-del-yes': await Msg.remove(id); MSGS = MSGS.filter(x => x.id !== id); confirmDel = null; render(); toast('Đã xoá tin nhắn'); break;
+      case 'amt': { donateAmt = Number(t.dataset.v); const o = $('#amtOther'); if (o) o.value = ''; document.querySelectorAll('.amt').forEach(b => { const on = b === t; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); }); drawQR(); break; }
+      case 'contact-again': contactSent = false; render(); break;
+      case 'page': libPage = Number(t.dataset.p) || 1; render(); $('#library')?.scrollIntoView({ block: 'start' }); break;
+      case 'media': showMedia(Number(t.dataset.i)); break;
+      case 'media-step': showMedia(mediaIdx + Number(t.dataset.d)); break;
+      case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
+      case 'fs': { const f = $('#frame'); (f.requestFullscreen || f.webkitRequestFullscreen)?.call(f)?.catch?.(() => toast('Trình duyệt không cho phép toàn màn hình ở đây.', true)); break; }
+      case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
+      case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'cancel': editing = null; render(); break;
+      case 'del': confirmDel = id; render(); break;
+      case 'del-no': confirmDel = null; render(); break;
+      case 'del-yes': await Store.remove(tab, id); confirmDel = null; if (editing?.item.id === id) editing = null; render(); toast('Đã xoá'); break;
+      case 'flip': { const it = { ...D[t.dataset.kind].find(x => x.id === id) }; const k = t.dataset.k; it[k] = k === 'show' ? it[k] === false : !it[k]; await Store.save(t.dataset.kind, it); render(); break; }
+      case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
+      case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
+      case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
+      case 'copy-backup': { const b = $('#backupBox'); try { await navigator.clipboard.writeText(b.value); toast('Đã sao chép JSON'); } catch { b.select(); toast('Đã bôi đen — nhấn Ctrl/Cmd + C.'); } break; }
+      case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
+      case 'reset': confirmDel = '__reset'; render(); break;
+      case 'reset-yes': D = structuredClone(SEED); Store.persist(); confirmDel = null; render(); toast('Đã nạp lại dữ liệu mẫu'); break;
+      case 'logout': await sb.auth.signOut(); session = null; render(); break;
+    }
+  } catch (err) { toast(err.message || 'Có lỗi xảy ra', true); }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.matches('[data-img-url]')) setImg(e.target.closest('[data-img]'), e.target.value.trim());
+});
+document.addEventListener('change', async e => {
+  if (e.target.matches('select')) applyWhen(e.target.closest('form') || document);
+  try {
+    if (e.target.matches('[data-img-file]') && e.target.files[0]) {
+      const w = e.target.closest('[data-img]'); const d = await fileToData(e.target.files[0]);
+      setImg(w, d); const u = w.querySelector('[data-img-url]'); u.value = ''; u.placeholder = 'Đang dùng ảnh tải lên';
+    }
+    if (e.target.matches('[data-shots-file]') && e.target.files.length) {
+      const w = e.target.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value);
+      for (const f of e.target.files) arr.push(await fileToData(f, 1600));
+      setShots(w, arr);
+    }
+  } catch (err) { toast(err?.message === 'big-gif' ? 'File GIF lớn hơn 4 MB. Hãy dùng video .mp4 hoặc dán link GIF thay vì tải lên.' : 'Không đọc được ảnh này.', true); }
+});
+
+document.addEventListener('submit', async e => {
+  const form = e.target.closest('[data-form]');
+  if (!form) return;
+  e.preventDefault();
+  const kind = form.dataset.form;
+  const btn = form.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    if (kind === 'login') {
+      const { data, error } = await sb.auth.signInWithPassword({ email: form.email.value, password: form.password.value });
+      if (error) throw new Error('Sai email hoặc mật khẩu.');
+      session = data.session; MSGS = null; render(); return;
+    }
+    const v = readForm(form, FIELDS[kind]);
+    const missing = FIELDS[kind].find(f => f.req && !v[f.k]);
+    if (kind === 'banners' && v.kind === 'ad' && !/^https?:\/\//i.test(v.link_url)) { toast('Banner quảng cáo cần link trang web của khách, bắt đầu bằng https://', true); form.elements.link_url?.focus(); return; }
+    if (kind === 'banners' && v.media_type !== 'image' && !v.video_url) { toast('Hãy dán link video cho banner dạng video.', true); form.elements.video_url?.focus(); return; }
+    if (kind === 'banners' && v.start_at && v.end_at && v.end_at < v.start_at) { toast('Ngày kết thúc phải sau ngày bắt đầu.', true); return; }
+    if (missing) { toast(`Hãy điền “${missing.label}”.`, true); form.elements[missing.k]?.focus(); return; }
+    if (kind === 'display') v.banner_speed = Math.max(2, Number(v.banner_speed) || 6), v.grid_rows = Math.max(1, Number(v.grid_rows) || 3);
+    if (kind === 'settings' || kind === 'display') { await Store.saveSettings({ ...D.settings, ...v }); render(); toast(kind === 'display' ? 'Đã lưu giao diện' : 'Đã lưu thông tin trang'); return; }
+    const item = { ...editing.item, ...v };
+    if (!item.id) item.id = uid();
+    if ('slug' in v) {
+      let s = slugify(v.slug || item.title || item.name) || item.id.slice(0, 8), base = s, n = 2;
+      while (D[kind].some(x => x.slug === s && x.id !== item.id)) s = `${base}-${n++}`;
+      item.slug = s;
+    }
+    await Store.save(kind, item);
+    editing = null; render(); toast(`Đã lưu ${LABELS[kind]}`);
+  } catch (err) { toast(err.message || 'Lưu không thành công', true); }
+  finally { btn.disabled = false; }
+});
+
+
+/* ============ KHỞI ĐỘNG ============ */
+(async () => {
+  try { await Store.load(); }
+  catch (err) { D = structuredClone(SEED); toast('Không kết nối được Supabase — đang hiển thị dữ liệu mẫu.', true); }
+  if (sb) sb.auth.onAuthStateChange((_e, s) => { session = s; });
+  render();
+})();
+</script>
+
+</body>
+</html>

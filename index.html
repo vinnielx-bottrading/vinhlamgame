@@ -8,7 +8,7 @@
 <meta name="description" content="Vinh Làm Game — studio trưng bày các trò chơi web tự làm, chơi ngay trên trình duyệt.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
@@ -286,6 +286,96 @@ p{margin:0}
 .yt-frame{position:relative;width:100%;aspect-ratio:16/9;background:#140A0E;max-width:100%}
 .yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .gd-sp{padding-top:clamp(24px,4vw,40px)}
+/* ---- Trang game (template chung, màu nhấn --ac theo từng game) ---- */
+.gp{--gt:'Bricolage Grotesque',var(--body)}
+.gp-hero{padding-bottom:clamp(40px,6vw,64px)}
+.gp-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,44px);align-items:start}
+.gp-stage{border-radius:6px;box-shadow:0 24px 50px -28px rgba(74,15,31,.55)}
+.gp-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.gp-dots{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:12px}
+.gp-dots button{width:8px;height:8px;padding:0;border-radius:999px;background:#D9C9CE;transition:width .2s,background .2s;position:relative}
+.gp-dots button.vid{width:14px;height:14px;display:grid;place-items:center}
+.gp-dots button.vid::after{content:'';border-left:5px solid #fff;border-top:3px solid transparent;border-bottom:3px solid transparent;margin-left:1px}
+.gp-dots button.on{background:var(--ac);width:22px}
+.gp-dots button.vid.on{width:22px}
+.gp-info{display:flex;flex-direction:column;gap:18px;min-width:0}
+.gp-tags{display:flex;flex-wrap:wrap;gap:8px}
+.gp-tag{font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--wine-tint);color:var(--wine)}
+.gp-tag.hot{background:var(--wine);color:#fff;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.gp-title{font:800 clamp(2.6rem,5.2vw,4rem)/.95 var(--gt);letter-spacing:-.01em;color:var(--ink);overflow-wrap:anywhere}
+.gp-sub{margin-top:8px;font-size:16px;color:var(--muted)}
+.gp-hook{font:700 clamp(1.25rem,2vw,1.55rem)/1.22 var(--gt);color:var(--ac)}
+.gp-sum{font-size:16px;line-height:1.65;color:#4A3A41}
+.gp-btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:6px;background:var(--ac);color:#fff;font-weight:700;font-size:16px;align-self:flex-start;transition:filter .15s,transform .15s}
+.gp-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.gp-btn.big{min-height:56px;padding:0 32px;font-size:17px}
+.gp-btn.inv{background:#fff;color:var(--ac)}
+.gp-btn.soon{background:var(--paper-2);color:var(--muted);pointer-events:none}
+.gp-free{font-weight:600;opacity:.9}
+.gp-share{display:flex;flex-direction:column;gap:10px;padding-top:18px;border-top:1px solid var(--line)}
+.gp-k{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gp-share-row{display:flex;flex-wrap:wrap;gap:10px}
+.sh{width:44px;height:44px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;color:var(--ac);background:#fff;transition:background .15s,border-color .15s}
+.sh:hover{background:var(--wine-tint);border-color:var(--ac)}
+.si{width:18px;height:18px;fill:currentColor;display:block}
+.gp-band{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.gp-sec{padding-block:clamp(48px,6vw,64px)}
+.gp-sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:24px}
+.gp-sec-head .gp-h2{margin-bottom:0}
+.gp-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
+.gp-h2{font:800 clamp(1.8rem,3.4vw,2.5rem)/1.05 var(--gt);margin-bottom:28px}
+.gp-h2.sm{font-size:clamp(1.5rem,2.4vw,1.8rem)}
+.gp-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.gp-feat{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.gp-feat-img{aspect-ratio:16/9;background:#1E1418}
+.gp-feat-img img{width:100%;height:100%;object-fit:cover;display:block}
+.gp-feat-b{padding:20px 22px 24px;display:grid;gap:8px}
+.gp-feat-b h3{font:700 1.3rem/1.2 var(--gt)}
+.gp-feat-b p{font-size:15px;line-height:1.6;color:#4A3A41}
+.gp-how{display:flex;flex-wrap:wrap;gap:40px}
+.gp-how > div{flex:999 1 520px;min-width:0}
+.gp-steps{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.gp-steps li{display:flex;gap:18px;align-items:flex-start}
+.gp-step-n{flex:none;width:44px;height:44px;border-radius:6px;background:var(--wine-tint);color:var(--ac);font:800 20px/44px var(--gt);text-align:center}
+.gp-steps h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.gp-steps p{font-size:15px;line-height:1.6;color:#4A3A41}
+.gp-keys{flex:1 1 300px;min-width:0;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:24px;display:grid;gap:12px;align-content:start}
+.gp-keys h3{font-size:16px;font-weight:700}
+.gp-keys div{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:15px;color:#4A3A41}
+.gp-keys kbd{font-family:inherit;padding:6px 10px;border-radius:6px;border:1px solid #D9C9CE;border-bottom-width:3px;background:#fff;font-size:13px;white-space:nowrap}
+.gp-keys p{margin-top:4px;padding-top:14px;border-top:1px solid var(--line);font-size:14px;line-height:1.5;color:var(--muted)}
+.gp-story{border-top:1px solid var(--line)}
+.gp-story-in{max-width:720px;margin:0 auto;padding:clamp(48px,6vw,64px) var(--gut,24px)}
+.gp-story .rich{font-size:17px;line-height:1.75;color:#4A3A41}
+.gp-gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.gp-gal figure{margin:0}
+.gp-gal button{display:block;width:100%;padding:0;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:#1E1418}
+.gp-gal img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.gp-gal button:hover img{transform:scale(1.03)}
+.gp-gal figcaption{margin-top:10px;font-size:14px;color:#4A3A41}
+.gp-cta-wrap{padding-top:clamp(32px,4vw,48px)}
+.gp-cta{border-radius:6px;background:var(--ac);color:#fff;padding:clamp(28px,4vw,48px) clamp(24px,4vw,44px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px}
+.gp-cta > div{flex:1 1 380px;min-width:0}
+.gp-cta-t{font:800 clamp(1.6rem,3vw,2.25rem)/1.1 var(--gt)}
+.gp-cta-s{margin-top:8px;font-size:17px;color:rgba(255,255,255,.85)}
+.gp-cta .gp-btn{align-self:center}
+.gp-more{border-bottom:0}
+.gp-all{font-size:14px;font-weight:600;color:var(--wine)}
+.gp-mbar{display:none}
+.lb{position:fixed;inset:0;z-index:80;background:rgba(20,10,14,.92);display:grid;place-items:center;padding:56px 16px 24px}
+.lb figure{margin:0;display:grid;gap:12px;justify-items:center;max-width:min(1400px,100%)}
+.lb img{max-width:100%;max-height:calc(100vh - 140px);object-fit:contain}
+.lb figcaption{color:#fff;font-size:15px;text-align:center}
+.lb figcaption .num{opacity:.6;margin-left:8px;font-size:13px}
+.lb-x{position:absolute;top:12px;right:16px;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:26px;line-height:44px}
+@media (max-width:900px){ .gp-grid{grid-template-columns:minmax(0,1fr)} .gp-info{order:-1} }
+@media (max-width:760px){
+  .gp-mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid var(--line);align-items:center;justify-content:space-between;gap:12px;transform:translateY(110%);transition:transform .25s}
+  .gp-mbar.show{transform:none}
+  .gp-mbar b{font:800 18px/1.1 var(--gt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gp-mbar .gp-btn{min-height:46px;padding:0 20px;flex:none}
+  .gp-mbar .gp-free{display:none}
+}
 @media (max-width:900px){ .gd{grid-template-columns:minmax(0,1fr)} .gd-article{position:static} }
 
 /* Play */
@@ -663,6 +753,20 @@ const gameById = id => D.games.find(g => g.id === id);
 const genreById = id => D.genres.find(g => g.id === id);
 const genreNames = g => (g.genre_ids || []).map(genreById).filter(Boolean).map(x => x.name);
 const genresSorted = () => [...D.genres].sort(bySort);
+const isVid = u => !!ytId(u) || /\.(mp4|webm|mov|ogg)(\?|#|$)/i.test(String(u || ''));
+const normMedia = x => typeof x === 'string' ? { src: x, caption: '' } : { src: String(x?.src || ''), caption: String(x?.caption || '') };
+const okAccent = c => /^#[0-9a-f]{6}$/i.test(String(c || '').trim()) ? String(c).trim() : '#6B1A2D';
+const lines = t => String(t || '').split('\n').map(x => x.trim()).filter(Boolean);
+const pairs = t => lines(t).map(l => { const i = l.indexOf('|'); return i < 0 ? [l, ''] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
+function gameMedia(g) {
+  const list = (g.screenshots || []).map(normMedia).filter(m => m.src);
+  const has = u => list.some(m => m.src === u);
+  const clip = g.clip_url || (g.video_url && !ytId(g.video_url) ? g.video_url : '');
+  const yt = g.youtube_url || (ytId(g.video_url) ? g.video_url : '');
+  if (clip && !has(clip)) list.splice(Math.min(1, list.length), 0, { src: clip, caption: '' });
+  if (yt && !has(yt)) list.push({ src: yt, caption: '' });
+  return list;
+}
 const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
 const visibleGenres = () => genresSorted().filter(x => x.show !== false);
 
@@ -870,8 +974,6 @@ function viewHome(genreSlug) {
   ${ad}`;
 }
 
-const lines = t => String(t || '').split('\n').map(x => x.trim()).filter(Boolean);
-const pairs = t => lines(t).map(l => { const i = l.indexOf('|'); return i < 0 ? [l, ''] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
 function videoHTML(url) {
   const u = String(url || '').trim();
   if (!u) return '';
@@ -881,12 +983,13 @@ function videoHTML(url) {
   return `<img src="${esc(u)}" alt="Video gameplay">`;
 }
 const CHECK = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>';
-let curMedia = [], mediaIdx = 0;
-function mediaHTML(m, inThumb) {
-  if (m.type === 'video') return inThumb ? `<video src="${esc(m.src)}" muted playsinline preload="metadata"></video><span class="vbadge">▶&#xFE0E; Video</span>` : `<video src="${esc(m.src)}" autoplay muted loop playsinline controls></video>`;
-  if (m.type === 'gen') return inThumb ? '' : coverOf(m.game);
-  if (inThumb) return `<img src="${esc(m.src)}" alt="" loading="lazy">`;
-  return `<div class="stage-bg" style="background-image:url(&quot;${esc(m.src)}&quot;)"></div><img class="fit" src="${esc(m.src)}" alt="">`;
+let curMedia = [], mediaIdx = 0, curGallery = [], lbIdx = 0;
+function mediaHTML(m) {
+  if (m.type === 'gen') return coverOf(m.game);
+  const yt = ytId(m.src);
+  if (yt) return `<iframe src="https://www.youtube-nocookie.com/embed/${yt}?rel=0&playsinline=1" title="Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  if (isVid(m.src)) return `<video src="${esc(m.src)}" autoplay muted loop playsinline controls></video>`;
+  return `<div class="stage-bg" style="background-image:url(&quot;${esc(m.src)}&quot;)"></div><img class="fit" src="${esc(m.src)}" alt="${esc(m.caption || '')}">`;
 }
 function showMedia(i) {
   if (!curMedia.length) return;
@@ -894,54 +997,131 @@ function showMedia(i) {
   const st = $('#stage'); if (!st) return;
   st.querySelector('.stage-media').innerHTML = mediaHTML(curMedia[mediaIdx]);
   const c = st.querySelector('.stage-count'); if (c) c.textContent = `${mediaIdx + 1} / ${curMedia.length}`;
-  document.querySelectorAll('.thumbs button').forEach((b, k) => b.classList.toggle('on', k === mediaIdx));
+  document.querySelectorAll('.gp-dots button').forEach((b, k) => { b.classList.toggle('on', k === mediaIdx); b.setAttribute('aria-current', k === mediaIdx ? 'true' : 'false'); });
+}
+// Vuốt trái / phải trên khung slide (điện thoại)
+let swipeX = null;
+document.addEventListener('touchstart', e => { swipeX = e.target.closest?.('#stage') && !e.target.closest('video,iframe') ? e.touches[0].clientX : null; }, { passive: true });
+document.addEventListener('touchend', e => { if (swipeX === null) return; const dx = e.changedTouches[0].clientX - swipeX; swipeX = null; if (Math.abs(dx) > 40) showMedia(mediaIdx + (dx < 0 ? 1 : -1)); }, { passive: true });
+
+// Icon mạng xã hội lấy nguyên bản từ bộ Simple Icons 16.32.0 (giấy phép CC0)
+const SI_PATH = {"facebook": "M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z", "x": "M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z", "instagram": "M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077", "zalo": "M12.49 10.2722v-.4496h1.3467v6.3218h-.7704a.576.576 0 01-.5763-.5729l-.0006.0005a3.273 3.273 0 01-1.9372.6321c-1.8138 0-3.2844-1.4697-3.2844-3.2823 0-1.8125 1.4706-3.2822 3.2844-3.2822a3.273 3.273 0 011.9372.6321l.0006.0005zM6.9188 7.7896v.205c0 .3823-.051.6944-.2995 1.0605l-.03.0343c-.0542.0615-.1815.206-.2421.2843L2.024 14.8h4.8948v.7682a.5764.5764 0 01-.5767.5761H0v-.3622c0-.4436.1102-.6414.2495-.8476L4.8582 9.23H.1922V7.7896h6.7266zm8.5513 8.3548a.4805.4805 0 01-.4803-.4798v-7.875h1.4416v8.3548H15.47zM20.6934 9.6C22.52 9.6 24 11.0807 24 12.9044c0 1.8252-1.4801 3.306-3.3066 3.306-1.8264 0-3.3066-1.4808-3.3066-3.306 0-1.8237 1.4802-3.3044 3.3066-3.3044zm-10.1412 5.253c1.0675 0 1.9324-.8645 1.9324-1.9312 0-1.065-.865-1.9295-1.9324-1.9295s-1.9324.8644-1.9324 1.9295c0 1.0667.865 1.9312 1.9324 1.9312zm10.1412-.0033c1.0737 0 1.945-.8707 1.945-1.9453 0-1.073-.8713-1.9436-1.945-1.9436-1.0753 0-1.945.8706-1.945 1.9436 0 1.0746.8697 1.9453 1.945 1.9453z"};
+const SHARE_ICON = n => `<svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="${SI_PATH[n]}"/></svg>`;
+const LINK_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+function shareHTML(g) {
+  const url = encodeURIComponent(location.href.split('#')[0] + '#/game/' + g.slug), txt = encodeURIComponent(g.title + (g.tagline ? ' — ' + g.tagline : ''));
+  return `<div class="gp-share"><span class="gp-k">Chia sẻ game</span><div class="gp-share-row">
+    <a class="sh" href="https://www.facebook.com/sharer/sharer.php?u=${url}" target="_blank" rel="noopener" aria-label="Chia sẻ lên Facebook">${SHARE_ICON('facebook')}</a>
+    <a class="sh" href="https://twitter.com/intent/tweet?url=${url}&text=${txt}" target="_blank" rel="noopener" aria-label="Chia sẻ lên X">${SHARE_ICON('x')}</a>
+    <button type="button" class="sh" data-act="share" data-net="Instagram" aria-label="Chia sẻ lên Instagram">${SHARE_ICON('instagram')}</button>
+    <button type="button" class="sh" data-act="share" data-net="Zalo" aria-label="Chia sẻ qua Zalo">${SHARE_ICON('zalo')}</button>
+    <button type="button" class="sh" data-act="share" data-net="" aria-label="Sao chép link">${LINK_ICON}</button>
+  </div></div>`;
+}
+function playBtn(g, cls = '') {
+  const free = g.is_free !== false;
+  if (!g.play_url) return `<span class="gp-btn ${cls} soon" aria-disabled="true">Sắp ra mắt</span>`;
+  const direct = touchOnly();
+  return `<a class="gp-btn ${cls}" href="${direct ? esc(g.play_url) : '#/play/' + esc(g.slug)}"${direct ? ` data-direct data-gid="${esc(g.id)}"` : ''}><span class="play-ico"></span>Chơi ngay${free ? '<span class="gp-free"> · Miễn phí</span>' : ''}</a>`;
 }
 function viewGame(slug) {
   const g = D.games.find(x => x.slug === slug && (x.status === 'published' || isAdmin()));
   if (!g) return notFound();
   const gens = (g.genre_ids || []).map(genreById).filter(Boolean);
-  const legacyYt = ytId(g.video_url) ? g.video_url : '';
-  const yt = ytId(g.youtube_url || legacyYt);
-  const clip = g.clip_url || (!legacyYt ? g.video_url : '');
-  const imgs = (g.screenshots || []).filter(Boolean);
-  curMedia = imgs.map(src => ({ type: 'img', src }));
-  if (clip) curMedia.splice(Math.min(1, curMedia.length), 0, /\.(mp4|webm|ogg)(\?|$)/i.test(clip) ? { type: 'video', src: clip } : { type: 'img', src: clip });
-  if (!curMedia.length) curMedia = [g.cover ? { type: 'img', src: g.cover } : { type: 'gen', game: g }];
+  const media = gameMedia(g);
+  curMedia = media.length ? media : [g.cover ? { src: g.cover, caption: '' } : { type: 'gen', game: g }];
   mediaIdx = 0;
+  curGallery = g.show_gallery === false ? [] : media.filter(m => m.caption && !isVid(m.src));
   const many = curMedia.length > 1;
-  const perks = String(g.highlights || '').split('\n').map(x => x.replace(/\s*\|\s*/, ' — ').trim()).filter(Boolean);
-  return `<div class="wrap">
+  const feats = (Array.isArray(g.features) && g.features.length ? g.features : pairs(g.highlights).map(([title, text]) => ({ title, text }))).filter(f => f && (f.title || f.text)).slice(0, 3);
+  const steps = (g.howto || []).filter(x => x && (x.title || x.text));
+  const keys = pairs(g.controls_detail);
+  const others = pubGames().filter(x => x.id !== g.id).map(x => ({ x, s: (x.genre_ids || []).filter(id => (g.genre_ids || []).includes(id)).length }))
+    .sort((a, b) => b.s - a.s || (a.x.sort ?? 0) - (b.x.sort ?? 0)).slice(0, 4).map(o => o.x);
+  const sec = (eyebrow, title, id) => `<p class="gp-eyebrow">${eyebrow}</p><h2 class="gp-h2" id="${id}">${esc(title)}</h2>`;
+  return `<div class="gp" style="--ac:${okAccent(g.accent)}">
+  <section class="wrap gp-hero" aria-labelledby="gp-title">
     <nav class="crumbs"><a href="#/">Thư viện</a><span>/</span>${gens[0] ? `<a href="#/the-loai/${esc(gens[0].slug)}">${esc(gens[0].name)}</a><span>/</span>` : ''}<span>${esc(g.title)}</span></nav>
-    <header class="gd-head">
-      ${gens.length ? `<p class="eyebrow"><span class="dot"></span>${esc(gens.map(x => x.name).join(' · '))}${g.status !== 'published' ? ' · Bản nháp' : ''}</p>` : ''}
-      <h1>${esc(g.title)}</h1>
-    </header>
-    <section class="gd">
-      <div class="gd-media">
-        <div class="stage" id="stage">
+    <div class="gp-grid">
+      <div class="gp-media">
+        <div class="stage gp-stage" id="stage">
           <div class="stage-media">${mediaHTML(curMedia[0])}</div>
           ${many ? `<button class="stage-nav prev" data-act="media-step" data-d="-1" aria-label="Ảnh trước">${ARROW}</button>
           <button class="stage-nav next" data-act="media-step" data-d="1" aria-label="Ảnh sau">${ARROW}</button>
           <span class="stage-count num">1 / ${curMedia.length}</span>` : ''}
         </div>
-        ${many ? `<div class="thumbs">${curMedia.map((m, i) => `<button data-act="media" data-i="${i}" class="${i ? '' : 'on'}" aria-label="${m.type === 'video' ? 'Video' : 'Ảnh ' + (i + 1)}">${mediaHTML(m, true)}</button>`).join('')}</div>` : ''}
+        ${many ? `<div class="gp-dots">${curMedia.map((m, i) => `<button type="button" data-act="media" data-i="${i}" class="${i ? '' : 'on'}${isVid(m.src) ? ' vid' : ''}" aria-label="${isVid(m.src) ? 'Video' : 'Ảnh'} ${i + 1}" aria-current="${i ? 'false' : 'true'}"></button>`).join('')}</div>` : ''}
       </div>
-      <article class="gd-article">
-        ${g.description ? `<div class="prose rich">${richHTML(g.description)}</div>` : (g.tagline ? `<p class="prose">${esc(g.tagline)}</p>` : '')}
-        ${perks.length ? `<ul class="perks">${perks.map(t => `<li><span class="tick">${CHECK}</span><span>${esc(t)}</span></li>`).join('')}</ul>` : ''}
-        <div class="gd-play">
-          ${g.play_url ? `<a class="btn primary" href="${touchOnly() ? esc(g.play_url) : '#/play/' + esc(g.slug)}"${touchOnly() ? ` data-direct data-gid="${esc(g.id)}"` : ''}><span class="play-ico"></span>Chơi ngay</a>
-            <small>Miễn phí, chơi ngay trên trình duyệt · <a href="${esc(g.play_url)}" target="_blank" rel="noopener">Mở tab mới</a></small>`
-            : `<span class="btn primary" aria-disabled="true" style="opacity:.55;pointer-events:none">Sắp ra mắt</span><small>Game đang được hoàn thiện</small>`}
-        </div>
-      </article>
-    </section>
-    ${yt ? `<section class="yt"><p class="eyebrow">Video</p><h2>Video giới thiệu</h2>
-      <div class="yt-frame"><iframe src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="Video giới thiệu ${esc(g.title)}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
-      <a class="chip" href="https://www.youtube.com/watch?v=${yt}" target="_blank" rel="noopener">Xem trên YouTube</a>
-    </section>` : ''}
-  </div>
-  ${adHTML('gd-sp', 'game', g)}`;
+      <div class="gp-info">
+        ${gens.length || g.hot ? `<div class="gp-tags">${gens.map(x => `<a class="gp-tag" href="#/the-loai/${esc(x.slug)}">${esc(x.name)}</a>`).join('')}${g.hot ? '<span class="gp-tag hot">● Hot</span>' : ''}${g.status !== 'published' ? '<span class="gp-tag">Bản nháp</span>' : ''}</div>` : ''}
+        <div><h1 class="gp-title" id="gp-title">${esc(g.title)}</h1>${g.subtitle ? `<p class="gp-sub">${esc(g.subtitle)}</p>` : ''}</div>
+        ${g.tagline ? `<p class="gp-hook">${esc(g.tagline)}</p>` : ''}
+        ${g.summary ? `<p class="gp-sum">${esc(g.summary)}</p>` : ''}
+        <div id="gpPlay">${playBtn(g, 'big')}</div>
+        ${shareHTML(g)}
+      </div>
+    </div>
+  </section>
+
+  ${feats.length ? `<section class="gp-band" aria-labelledby="gp-feat"><div class="wrap gp-sec">
+    ${sec('Điểm nổi bật', 'Vì sao bạn sẽ thích', 'gp-feat')}
+    <div class="gp-feats">${feats.map(f => `<article class="gp-feat">${f.image ? `<div class="gp-feat-img"><img src="${esc(f.image)}" alt="" loading="lazy"></div>` : ''}<div class="gp-feat-b"><h3>${esc(f.title || '')}</h3>${f.text ? `<p>${esc(f.text)}</p>` : ''}</div></article>`).join('')}</div>
+  </div></section>` : ''}
+
+  ${g.show_howto && (steps.length || keys.length || g.touch_note) ? `<section class="wrap gp-sec" aria-labelledby="gp-how"><div class="gp-how">
+    <div>${sec('Cách chơi', 'Bắt đầu chơi', 'gp-how')}
+      ${steps.length ? `<ol class="gp-steps">${steps.map((x, i) => `<li><span class="gp-step-n">${i + 1}</span><div><h3>${esc(x.title || '')}</h3>${x.text ? `<p>${esc(x.text)}</p>` : ''}</div></li>`).join('')}</ol>` : ''}</div>
+    ${keys.length || g.touch_note ? `<aside class="gp-keys" aria-label="Điều khiển"><h3>Điều khiển</h3>${keys.map(([a, k]) => `<div><span>${esc(a)}</span><kbd>${esc(k)}</kbd></div>`).join('')}${g.touch_note ? `<p>Trên điện thoại: ${esc(g.touch_note)}</p>` : ''}</aside>` : ''}
+  </div></section>` : ''}
+
+  ${g.show_story && g.description ? `<section class="gp-story" aria-labelledby="gp-story"><div class="gp-story-in">${sec('Câu chuyện', g.story_title || g.title, 'gp-story')}<div class="rich">${richHTML(g.description)}</div></div></section>` : ''}
+
+  ${curGallery.length ? `<section class="wrap gp-sec" aria-labelledby="gp-gal">
+    <div class="gp-sec-head"><div>${sec('Hình ảnh', 'Hình ảnh trong game', 'gp-gal')}</div><span class="gp-k">Bấm ảnh để xem lớn</span></div>
+    <div class="gp-gal">${curGallery.map((m, i) => `<figure><button type="button" data-act="lb" data-i="${i}" aria-label="Xem lớn: ${esc(m.caption)}"><img src="${esc(m.src)}" alt="${esc(m.caption)}" loading="lazy"></button><figcaption>${esc(m.caption)}</figcaption></figure>`).join('')}</div>
+  </section>` : ''}
+
+  ${adHTML('gd-sp', 'game', g)}
+
+  ${g.play_url ? `<section class="wrap gp-sec gp-cta-wrap" aria-label="Kêu gọi chơi"><div class="gp-cta">
+    <div><p class="gp-cta-t">${esc(g.cta_title || g.tagline || 'Sẵn sàng chưa?')}</p>${g.cta_sub ? `<p class="gp-cta-s">${esc(g.cta_sub)}</p>` : ''}</div>
+    ${playBtn(g, 'inv')}
+  </div></section>` : ''}
+
+  ${others.length ? `<section class="gp-band gp-more" aria-labelledby="gp-more"><div class="wrap gp-sec">
+    <div class="gp-sec-head"><h2 class="gp-h2 sm" id="gp-more">Game khác của studio</h2><a class="gp-all" href="#/">Xem tất cả →</a></div>
+    <div class="grid" style="--cols-d:4">${others.map(card).join('')}</div>
+  </div></section>` : ''}
+
+  ${g.play_url ? `<div class="gp-mbar" id="gpBar" aria-hidden="true"><b>${esc(g.title)}</b>${playBtn(g)}</div>` : ''}
+  </div>`;
+}
+// Thanh "Chơi ngay" dính đáy màn hình trên điện thoại khi nút chính đã cuộn khỏi màn hình
+let gpObs = null;
+function watchPlayBar() {
+  gpObs?.disconnect(); const btn = $('#gpPlay'), bar = $('#gpBar');
+  if (!btn || !bar || !('IntersectionObserver' in window)) return;
+  gpObs = new IntersectionObserver(([en]) => { const show = !en.isIntersecting && en.boundingClientRect.top < 0; bar.classList.toggle('show', show); bar.setAttribute('aria-hidden', String(!show)); });
+  gpObs.observe(btn);
+}
+function openLB(i) {
+  if (!curGallery.length) return;
+  lbIdx = (i + curGallery.length) % curGallery.length;
+  let m = $('#lb');
+  if (!m) { m = document.createElement('div'); m.id = 'lb'; m.className = 'lb'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); document.body.appendChild(m); document.body.style.overflow = 'hidden'; }
+  const it = curGallery[lbIdx];
+  m.innerHTML = `<button type="button" class="lb-x" data-act="lb-close" aria-label="Đóng">×</button>
+    ${curGallery.length > 1 ? `<button type="button" class="stage-nav prev" data-act="lb-step" data-d="-1" aria-label="Ảnh trước">${ARROW}</button><button type="button" class="stage-nav next" data-act="lb-step" data-d="1" aria-label="Ảnh sau">${ARROW}</button>` : ''}
+    <figure><img src="${esc(it.src)}" alt="${esc(it.caption)}"><figcaption>${esc(it.caption)} <span class="num">${lbIdx + 1} / ${curGallery.length}</span></figcaption></figure>`;
+}
+function closeLB() { $('#lb')?.remove(); document.body.style.overflow = ''; }
+document.addEventListener('keydown', e => { if (!$('#lb')) return; if (e.key === 'Escape') closeLB(); if (e.key === 'ArrowRight') openLB(lbIdx + 1); if (e.key === 'ArrowLeft') openLB(lbIdx - 1); });
+document.addEventListener('click', e => { if (e.target.id === 'lb') closeLB(); });
+async function shareGame(net) {
+  const g = D.games.find(x => location.hash.includes(x.slug)); const url = location.href;
+  if (net && navigator.share && touchOnly()) { try { await navigator.share({ title: g?.title || document.title, url }); return; } catch (_) { return; } }
+  try { await navigator.clipboard.writeText(url); toast(net ? `Đã chép link, mở ${net} và dán để chia sẻ` : 'Đã chép link game'); }
+  catch (_) { toast('Hãy chép link trên thanh địa chỉ.', true); }
 }
 
 function viewPlay(slug) {
@@ -1174,7 +1354,7 @@ function render() {
     if (g0 && r === 'game') Track.push('game_view', g0.id);
     if (g0 && r === 'play' && !touchOnly()) Track.push('play', g0.id);
   }
-  Track.watch(); Track.heroView();
+  Track.watch(); Track.heroView(); watchPlayBar(); if (prev !== routeKey) closeLB();
   if (r === 'the-loai' && prev !== routeKey) $('#library')?.scrollIntoView({ block: 'start' });
   else if (prev !== routeKey) window.scrollTo(0, 0);
   document.querySelectorAll('[data-nav]').forEach(el => el.classList.toggle('on', el.dataset.nav === r));
@@ -1215,6 +1395,10 @@ document.addEventListener('click', async e => {
       case 'page': libPage = Number(t.dataset.p) || 1; render(); $('#library')?.scrollIntoView({ block: 'start' }); break;
       case 'media': showMedia(Number(t.dataset.i)); break;
       case 'media-step': showMedia(mediaIdx + Number(t.dataset.d)); break;
+      case 'lb': openLB(Number(t.dataset.i)); break;
+      case 'lb-step': openLB(lbIdx + Number(t.dataset.d)); break;
+      case 'lb-close': closeLB(); break;
+      case 'share': await shareGame(t.dataset.net); break;
       case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
       case 'fs': {
         const f = $('#frame'), req = f.requestFullscreen || f.webkitRequestFullscreen;
@@ -1226,15 +1410,18 @@ document.addEventListener('click', async e => {
       case 'fs-close': document.body.classList.remove('pseudo-fs'); break;
       case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
       case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
-      case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) };
+        if (tab === 'games') { const g = editing.item; g.screenshots = gameMedia(g); if (!(g.features || []).length && g.highlights) g.features = pairs(g.highlights).slice(0, 3).map(([title, text]) => ({ image: '', title, text })); } confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'cancel': editing = null; render(); break;
       case 'del': confirmDel = id; render(); break;
       case 'del-no': confirmDel = null; render(); break;
       case 'del-yes': await Store.remove(tab, id); confirmDel = null; if (editing?.item.id === id) editing = null; render(); toast('Đã xoá'); break;
       case 'flip': { const it = { ...D[t.dataset.kind].find(x => x.id === id) }; const k = t.dataset.k; it[k] = k === 'show' ? it[k] === false : !it[k]; await Store.save(t.dataset.kind, it); render(); break; }
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
-      case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
+      case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = getShots(w); arr.push({ src: inp.value.trim(), caption: '' }); inp.value = ''; setShots(w, arr); break; }
       case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'gs-jump': $('#gs-' + t.dataset.i)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); break;
+      case 'acc-pick': { const row = t.closest('.acc-row'); row.querySelector('.acc-in').value = t.dataset.v; row.querySelector('.acc-prev').style.background = t.dataset.v; row.querySelectorAll('.acc-sw').forEach(b => b.classList.toggle('on', b === t)); break; }
       case 'stats-days': statsDays = Number(t.dataset.v); STATS = null; statsErr = ''; render(); break;
       case 'stats-metric': statsMetric = t.dataset.v; render(); break;
       case 'stats-refresh': STATS = null; ADSTATS = null; statsErr = ''; render(); break;
@@ -1265,7 +1452,7 @@ document.addEventListener('click', async e => {
       case 'pick': {
         const field = t.closest('.field');
         if (t.dataset.target === 'img') openPicker({ kind: 'image', onPick: ([u]) => { const w = field.querySelector('[data-img]'); setImg(w, u); w.querySelector('[data-img-url]').value = u; toast('Đã chọn ảnh từ kho'); } });
-        else if (t.dataset.target === 'shots') openPicker({ kind: 'image', multi: true, onPick: urls => { const w = field.querySelector('[data-imgs]'); setShots(w, [...getShots(w), ...urls]); toast(`Đã thêm ${urls.length} ảnh từ kho`); } });
+        else if (t.dataset.target === 'shots') openPicker({ kind: 'media', multi: true, onPick: urls => { const w = field.querySelector('[data-imgs]'); setShots(w, [...getShots(w), ...urls]); toast(`Đã thêm ${urls.length} ảnh từ kho`); } });
         else openPicker({ kind: 'video', onPick: ([u]) => { t.closest('form').elements[t.dataset.field].value = u; toast('Đã chọn video từ kho'); } });
         break;
       }
@@ -1273,7 +1460,7 @@ document.addEventListener('click', async e => {
       case 'pk-toggle': if (!PICK.multi) { finishPick([id]); break; } { const i = PICK.sel.indexOf(id); i >= 0 ? PICK.sel.splice(i, 1) : PICK.sel.push(id); drawPicker(); } break;
       case 'pk-done': finishPick(PICK.sel); break;
       case 'shot-move': { const w = t.closest('[data-imgs]'); const arr = getShots(w); const i = Number(t.dataset.i), j = i + Number(t.dataset.d); if (j < 0 || j >= arr.length) break; [arr[i], arr[j]] = [arr[j], arr[i]]; setShots(w, arr); break; }
-      case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
+      case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = getShots(w); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
       case 'copy-backup': { const b = $('#backupBox'); try { await navigator.clipboard.writeText(b.value); toast('Đã sao chép JSON'); } catch { b.select(); toast('Đã bôi đen — nhấn Ctrl/Cmd + C.'); } break; }
       case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
       case 'reset': confirmDel = '__reset'; render(); break;

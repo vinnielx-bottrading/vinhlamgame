@@ -101,18 +101,21 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 
 ## 6. Nội dung từng phần
 
-**Trang game:**
-- Bố cục: tiêu đề → 2 cột (slide ảnh/video bên trái; bài viết, cụm marketing có dấu tích và nút **Chơi ngay** bên phải) → video YouTube ở giữa (nếu có) → banner quảng cáo (nếu bật).
-- **Slide** dùng tỉ lệ chuẩn **16:9 (1920 × 1080)**. Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ của chính ảnh đó.
-- Slide chỉ dùng **ảnh slide** của game. Game chưa có ảnh slide thì hiện thumbnail.
-- **Ảnh slide giới thiệu**:
-  - Chọn hoặc **kéo thả nhiều ảnh cùng lúc**. Mỗi ảnh xử lý riêng, ảnh lỗi không làm hỏng ảnh khác. Có báo "Đã thêm 7/8 ảnh" kèm tên ảnh lỗi.
-  - **Kéo từng ảnh để đổi vị trí**, hoặc dùng nút ‹ › trên điện thoại.
-- **Bài viết giới thiệu**: trình soạn thảo có:
-  - Tiêu đề H2/H3, đậm, nghiêng, gạch chân, danh sách, trích dẫn, đường kẻ, link.
-  - Chèn ảnh: chọn file, kéo thả hoặc dán. Ảnh tự nén WebP.
-  - Dán từ Word / Google Docs được, định dạng lạ và mã độc tự lọc bỏ.
-- Mọi ô ảnh và video đều nhận **kéo thả file**.
+**Trang game (một template chung, mỗi game đổi một màu nhấn):**
+- Từ trên xuống:
+  1. Đầu trang: slide ảnh/video (vuốt được trên điện thoại) bên trái; nhãn, tên game, tên phụ, câu hook, mô tả ngắn, nút **Chơi ngay** và nút chia sẻ (Facebook, X, Instagram, Zalo, chép link) bên phải.
+  2. Điểm nổi bật: tối đa 3 thẻ.
+  3. Cách chơi: mặc định tắt.
+  4. Câu chuyện (bài viết dài): mặc định tắt.
+  5. Hình ảnh: tự lấy các ảnh có caption trong slide, bấm để xem lớn.
+  6. Banner quảng cáo theo game.
+  7. Dải kêu gọi chơi.
+  8. Game khác của studio (ưu tiên cùng thể loại).
+- Trên điện thoại: tên game và nút Chơi ngay lên trước slide; cuộn qua thì hiện thanh **Chơi ngay** dính đáy màn hình.
+- Tick **Miễn phí** thì nút ghi "Chơi ngay · Miễn phí", bỏ tick thì chỉ "Chơi ngay". Chưa có link chơi thì hiện "Sắp ra mắt".
+- Form sửa game trong admin xếp các khối đúng thứ tự trên trang (đánh số 1 → 7), có thanh đi nhanh và nút Lưu dính đáy.
+- **Slide**: ảnh, video .mp4/.webm và link YouTube xếp chung một danh sách, kéo để đổi thứ tự, mỗi mục có ô caption. Video và link YouTube cũ của game tự gộp vào slide khi mở form sửa. Cụm marketing cũ tự chuyển thành thẻ Điểm nổi bật.
+- Icon mạng xã hội lấy từ bộ Simple Icons (giấy phép CC0), nhúng sẵn trong trang. Instagram và Zalo không có link chia sẻ trên web: trên điện thoại mở bảng chia sẻ của máy, trên máy tính tự chép link.
 
 **Banner trang chủ (hero):**
 - Chỉ hiện hình hoặc video, tự trượt mờ dần, không có chữ.

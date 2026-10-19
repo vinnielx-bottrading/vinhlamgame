@@ -124,6 +124,19 @@ alter table games   add column if not exists youtube_url text default '';
 alter table games   add column if not exists clip_url text default '';
 alter table games   add column if not exists kv_in_slide boolean default false;
 alter table games   add column if not exists hero boolean default false;   -- KV chính hiện trên banner trang chủ
+-- Template trang game mới
+alter table games   add column if not exists subtitle     text default '';
+alter table games   add column if not exists summary      text default '';
+alter table games   add column if not exists is_free      boolean default true;
+alter table games   add column if not exists accent       text default '';
+alter table games   add column if not exists features     jsonb default '[]'::jsonb;
+alter table games   add column if not exists show_howto   boolean default false;
+alter table games   add column if not exists howto        jsonb default '[]'::jsonb;
+alter table games   add column if not exists touch_note   text default '';
+alter table games   add column if not exists show_story   boolean default false;
+alter table games   add column if not exists show_gallery boolean default true;
+alter table games   add column if not exists cta_title    text default '';
+alter table games   add column if not exists cta_sub      text default '';
 alter table games   alter column kv_in_slide set default false;
 alter table games   add column if not exists highlights text default '';
 alter table games   add column if not exists released text default '';

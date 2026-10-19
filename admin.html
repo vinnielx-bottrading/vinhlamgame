@@ -8,7 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
@@ -286,6 +286,96 @@ p{margin:0}
 .yt-frame{position:relative;width:100%;aspect-ratio:16/9;background:#140A0E;max-width:100%}
 .yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .gd-sp{padding-top:clamp(24px,4vw,40px)}
+/* ---- Trang game (template chung, màu nhấn --ac theo từng game) ---- */
+.gp{--gt:'Bricolage Grotesque',var(--body)}
+.gp-hero{padding-bottom:clamp(40px,6vw,64px)}
+.gp-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,44px);align-items:start}
+.gp-stage{border-radius:6px;box-shadow:0 24px 50px -28px rgba(74,15,31,.55)}
+.gp-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.gp-dots{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:12px}
+.gp-dots button{width:8px;height:8px;padding:0;border-radius:999px;background:#D9C9CE;transition:width .2s,background .2s;position:relative}
+.gp-dots button.vid{width:14px;height:14px;display:grid;place-items:center}
+.gp-dots button.vid::after{content:'';border-left:5px solid #fff;border-top:3px solid transparent;border-bottom:3px solid transparent;margin-left:1px}
+.gp-dots button.on{background:var(--ac);width:22px}
+.gp-dots button.vid.on{width:22px}
+.gp-info{display:flex;flex-direction:column;gap:18px;min-width:0}
+.gp-tags{display:flex;flex-wrap:wrap;gap:8px}
+.gp-tag{font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--wine-tint);color:var(--wine)}
+.gp-tag.hot{background:var(--wine);color:#fff;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.gp-title{font:800 clamp(2.6rem,5.2vw,4rem)/.95 var(--gt);letter-spacing:-.01em;color:var(--ink);overflow-wrap:anywhere}
+.gp-sub{margin-top:8px;font-size:16px;color:var(--muted)}
+.gp-hook{font:700 clamp(1.25rem,2vw,1.55rem)/1.22 var(--gt);color:var(--ac)}
+.gp-sum{font-size:16px;line-height:1.65;color:#4A3A41}
+.gp-btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:6px;background:var(--ac);color:#fff;font-weight:700;font-size:16px;align-self:flex-start;transition:filter .15s,transform .15s}
+.gp-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.gp-btn.big{min-height:56px;padding:0 32px;font-size:17px}
+.gp-btn.inv{background:#fff;color:var(--ac)}
+.gp-btn.soon{background:var(--paper-2);color:var(--muted);pointer-events:none}
+.gp-free{font-weight:600;opacity:.9}
+.gp-share{display:flex;flex-direction:column;gap:10px;padding-top:18px;border-top:1px solid var(--line)}
+.gp-k{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gp-share-row{display:flex;flex-wrap:wrap;gap:10px}
+.sh{width:44px;height:44px;border-radius:999px;border:1px solid var(--line);display:grid;place-items:center;color:var(--ac);background:#fff;transition:background .15s,border-color .15s}
+.sh:hover{background:var(--wine-tint);border-color:var(--ac)}
+.si{width:18px;height:18px;fill:currentColor;display:block}
+.gp-band{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.gp-sec{padding-block:clamp(48px,6vw,64px)}
+.gp-sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:24px}
+.gp-sec-head .gp-h2{margin-bottom:0}
+.gp-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
+.gp-h2{font:800 clamp(1.8rem,3.4vw,2.5rem)/1.05 var(--gt);margin-bottom:28px}
+.gp-h2.sm{font-size:clamp(1.5rem,2.4vw,1.8rem)}
+.gp-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.gp-feat{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.gp-feat-img{aspect-ratio:16/9;background:#1E1418}
+.gp-feat-img img{width:100%;height:100%;object-fit:cover;display:block}
+.gp-feat-b{padding:20px 22px 24px;display:grid;gap:8px}
+.gp-feat-b h3{font:700 1.3rem/1.2 var(--gt)}
+.gp-feat-b p{font-size:15px;line-height:1.6;color:#4A3A41}
+.gp-how{display:flex;flex-wrap:wrap;gap:40px}
+.gp-how > div{flex:999 1 520px;min-width:0}
+.gp-steps{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.gp-steps li{display:flex;gap:18px;align-items:flex-start}
+.gp-step-n{flex:none;width:44px;height:44px;border-radius:6px;background:var(--wine-tint);color:var(--ac);font:800 20px/44px var(--gt);text-align:center}
+.gp-steps h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.gp-steps p{font-size:15px;line-height:1.6;color:#4A3A41}
+.gp-keys{flex:1 1 300px;min-width:0;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:24px;display:grid;gap:12px;align-content:start}
+.gp-keys h3{font-size:16px;font-weight:700}
+.gp-keys div{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:15px;color:#4A3A41}
+.gp-keys kbd{font-family:inherit;padding:6px 10px;border-radius:6px;border:1px solid #D9C9CE;border-bottom-width:3px;background:#fff;font-size:13px;white-space:nowrap}
+.gp-keys p{margin-top:4px;padding-top:14px;border-top:1px solid var(--line);font-size:14px;line-height:1.5;color:var(--muted)}
+.gp-story{border-top:1px solid var(--line)}
+.gp-story-in{max-width:720px;margin:0 auto;padding:clamp(48px,6vw,64px) var(--gut,24px)}
+.gp-story .rich{font-size:17px;line-height:1.75;color:#4A3A41}
+.gp-gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.gp-gal figure{margin:0}
+.gp-gal button{display:block;width:100%;padding:0;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:#1E1418}
+.gp-gal img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.gp-gal button:hover img{transform:scale(1.03)}
+.gp-gal figcaption{margin-top:10px;font-size:14px;color:#4A3A41}
+.gp-cta-wrap{padding-top:clamp(32px,4vw,48px)}
+.gp-cta{border-radius:6px;background:var(--ac);color:#fff;padding:clamp(28px,4vw,48px) clamp(24px,4vw,44px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px}
+.gp-cta > div{flex:1 1 380px;min-width:0}
+.gp-cta-t{font:800 clamp(1.6rem,3vw,2.25rem)/1.1 var(--gt)}
+.gp-cta-s{margin-top:8px;font-size:17px;color:rgba(255,255,255,.85)}
+.gp-cta .gp-btn{align-self:center}
+.gp-more{border-bottom:0}
+.gp-all{font-size:14px;font-weight:600;color:var(--wine)}
+.gp-mbar{display:none}
+.lb{position:fixed;inset:0;z-index:80;background:rgba(20,10,14,.92);display:grid;place-items:center;padding:56px 16px 24px}
+.lb figure{margin:0;display:grid;gap:12px;justify-items:center;max-width:min(1400px,100%)}
+.lb img{max-width:100%;max-height:calc(100vh - 140px);object-fit:contain}
+.lb figcaption{color:#fff;font-size:15px;text-align:center}
+.lb figcaption .num{opacity:.6;margin-left:8px;font-size:13px}
+.lb-x{position:absolute;top:12px;right:16px;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:26px;line-height:44px}
+@media (max-width:900px){ .gp-grid{grid-template-columns:minmax(0,1fr)} .gp-info{order:-1} }
+@media (max-width:760px){
+  .gp-mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid var(--line);align-items:center;justify-content:space-between;gap:12px;transform:translateY(110%);transition:transform .25s}
+  .gp-mbar.show{transform:none}
+  .gp-mbar b{font:800 18px/1.1 var(--gt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gp-mbar .gp-btn{min-height:46px;padding:0 20px;flex:none}
+  .gp-mbar .gp-free{display:none}
+}
 @media (max-width:900px){ .gd{grid-template-columns:minmax(0,1fr)} .gd-article{position:static} }
 
 /* Play */
@@ -445,7 +535,45 @@ textarea{min-height:120px;resize:vertical}
 .img-btns{display:flex;gap:8px;flex-wrap:wrap}
 .file-btn{position:relative;overflow:hidden}
 .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.shot-list{display:flex;flex-wrap:wrap;gap:10px}
+.shot-list{display:flex;flex-wrap:wrap;gap:12px}
+.shot-cell{display:grid;gap:6px;width:150px}
+.shot-cell .shot-item{width:150px}
+.shot-cell .cap{font-size:12px;padding:6px 8px}
+.shot-item video{width:100%;height:100%;object-fit:cover;pointer-events:none;display:block;background:#1E1418}
+.gform{display:grid;gap:18px}
+.gform-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.gform-nav{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:0;z-index:5;background:var(--paper);padding:8px 0;border-bottom:1px solid var(--line)}
+.gform-nav button{font-size:12.5px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--ink)}
+.gform-nav button:hover{border-color:var(--wine);color:var(--wine)}
+.gsec{border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:16px;scroll-margin-top:64px}
+.gsec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+.gsec-h h3{font-size:17px;font-weight:700}
+.gsec-h span{font-size:12px;color:var(--muted)}
+.gform-act{position:sticky;bottom:0;z-index:5;background:rgba(255,255,255,.97);padding:12px 0;border-top:1px solid var(--line);margin:0}
+.tagchips{display:flex;flex-wrap:wrap;gap:8px}
+.tchip{position:relative;cursor:pointer}
+.tchip input{position:absolute;opacity:0;width:1px;height:1px}
+.tchip span{display:inline-block;font-size:13px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);transition:all .15s}
+.tchip input:checked + span{border-color:var(--wine);background:var(--wine-tint);color:var(--wine);font-weight:600}
+.tchip.hot input:checked + span{background:var(--wine);color:#fff}
+.tchip input:focus-visible + span{outline:2px solid var(--wine);outline-offset:2px}
+.acc-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.acc-sw{width:32px;height:32px;border-radius:999px;background:var(--c);border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.acc-sw.on{box-shadow:0 0 0 2px var(--c)}
+.acc-in{width:96px !important;font-family:ui-monospace,monospace;font-size:13px}
+.acc-prev{color:#fff;font-size:13px;font-weight:700;padding:8px 14px;border-radius:6px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.feat-ed{display:grid;gap:10px;align-content:start;padding:12px;background:var(--paper-2);border-radius:4px}
+.feat-ed > b{font-size:13px}
+.feat-ed textarea{min-height:64px}
+.feat-ed .img-field{grid-template-columns:minmax(0,1fr)}
+.feat-ed .img-prev{aspect-ratio:16/9;width:100%}
+.feat-ed .img-btns{flex-wrap:wrap}
+.steps-ed{display:grid;gap:8px}
+.step-ed{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,2fr);gap:8px;align-items:center}
+.step-ed .num{font-weight:700;color:var(--wine);text-align:center}
+.cnt-l{display:block;text-align:right}
+@media (max-width:700px){ .step-ed{grid-template-columns:24px minmax(0,1fr)} .step-ed input:last-child{grid-column:2} }
 .shot-item{position:relative;width:132px;aspect-ratio:16/9;border:1px solid var(--line);overflow:hidden;background:var(--paper-2);cursor:grab;transition:transform .15s,opacity .15s,box-shadow .15s;user-select:none}
 .shot-item:active{cursor:grabbing}
 .shot-item img{width:100%;height:100%;object-fit:cover;pointer-events:none}
@@ -856,6 +984,20 @@ const gameById = id => D.games.find(g => g.id === id);
 const genreById = id => D.genres.find(g => g.id === id);
 const genreNames = g => (g.genre_ids || []).map(genreById).filter(Boolean).map(x => x.name);
 const genresSorted = () => [...D.genres].sort(bySort);
+const isVid = u => !!ytId(u) || /\.(mp4|webm|mov|ogg)(\?|#|$)/i.test(String(u || ''));
+const normMedia = x => typeof x === 'string' ? { src: x, caption: '' } : { src: String(x?.src || ''), caption: String(x?.caption || '') };
+const okAccent = c => /^#[0-9a-f]{6}$/i.test(String(c || '').trim()) ? String(c).trim() : '#6B1A2D';
+const lines = t => String(t || '').split('\n').map(x => x.trim()).filter(Boolean);
+const pairs = t => lines(t).map(l => { const i = l.indexOf('|'); return i < 0 ? [l, ''] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
+function gameMedia(g) {
+  const list = (g.screenshots || []).map(normMedia).filter(m => m.src);
+  const has = u => list.some(m => m.src === u);
+  const clip = g.clip_url || (g.video_url && !ytId(g.video_url) ? g.video_url : '');
+  const yt = g.youtube_url || (ytId(g.video_url) ? g.video_url : '');
+  if (clip && !has(clip)) list.splice(Math.min(1, list.length), 0, { src: clip, caption: '' });
+  if (yt && !has(yt)) list.push({ src: yt, caption: '' });
+  return list;
+}
 const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
 const visibleGenres = () => genresSorted().filter(x => x.show !== false);
 
@@ -892,26 +1034,39 @@ let confirmDel = null;       // id
 
 const FIELDS = {
   games: [
-    { type: 'heading', label: 'Cơ bản' },
+    { type: 'heading', sec: true, label: '1 · Đầu trang', note: 'Slide ảnh / video và thông tin chính' },
+    { k: 'screenshots', label: 'Slide ảnh / video (16:9 · 1920 × 1080) · kéo để đổi thứ tự', type: 'images', max: 1920, full: true, hint: 'Thứ tự ở đây là thứ tự khách vuốt xem. Nhận ảnh, video .mp4 / .webm và link YouTube. Ảnh có caption sẽ hiện thêm ở mục Hình ảnh.' },
     { k: 'title', label: 'Tên game', type: 'text', req: true },
-    { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo từ tên game.' },
-    { k: 'tagline', label: 'Câu giới thiệu ngắn', type: 'text', full: true, hint: 'Hiện dưới tên game ở trang giới thiệu.' },
-    { k: 'genre_ids', label: 'Thể loại', type: 'genres', full: true },
-    { k: 'play_url', label: 'Link chơi game', type: 'url', full: true, hint: 'Link bản game đã deploy (Vercel, GitHub Pages…). Để trống = “Sắp ra mắt”.' },
+    { k: 'subtitle', label: 'Tên phụ', type: 'text', hint: 'VD: Đập Phá. Hiện nhỏ dưới tên game.' },
+    { k: 'genre_ids', label: 'Nhãn trên trang (bấm để bật / tắt)', type: 'tags', full: true, hint: 'Thể loại thêm / sửa ở tab Thể loại.' },
+    { k: 'tagline', label: 'Câu hook (dòng màu nhấn)', type: 'text', full: true },
+    { k: 'summary', label: 'Mô tả ngắn', type: 'textarea', max: 160, full: true, hint: 'Khoảng 2 dòng.' },
+    { k: 'play_url', label: 'Link chơi game', type: 'url', hint: 'Để trống = nút “Sắp ra mắt”.' },
+    { k: 'accent', label: 'Màu nhấn của game', type: 'accent' },
+    { k: 'is_free', label: 'Miễn phí', type: 'checkbox', default: true, hint: 'Tick: nút hiện “Chơi ngay · Miễn phí”. Bỏ tick: chỉ “Chơi ngay”.' },
+    { type: 'heading', sec: true, label: '2 · Điểm nổi bật', note: 'Tối đa 3 thẻ · ảnh 16:9 + tiêu đề + 1 câu' },
+    { k: 'features', type: 'features', full: true },
+    { type: 'heading', sec: true, label: '3 · Cách chơi', note: 'Mặc định tắt' },
+    { k: 'show_howto', label: 'Hiện khối Cách chơi trên trang', type: 'checkbox', default: false },
+    { k: 'howto', type: 'steps', full: true, when: 'show_howto=on' },
+    { k: 'controls_detail', label: 'Phím điều khiển', type: 'textarea', full: true, when: 'show_howto=on', hint: 'Mỗi dòng: Hành động | Phím. VD: Di chuyển | W A S D' },
+    { k: 'touch_note', label: 'Điều khiển trên điện thoại', type: 'text', full: true, when: 'show_howto=on' },
+    { type: 'heading', sec: true, label: '4 · Câu chuyện', note: 'Mặc định tắt' },
+    { k: 'show_story', label: 'Hiện khối Câu chuyện trên trang', type: 'checkbox', default: false },
+    { k: 'description', label: 'Bài viết', type: 'richtext', full: true, when: 'show_story=on', hint: 'Dán từ Word / Google Docs được, định dạng lạ sẽ tự lọc bỏ.' },
+    { type: 'heading', sec: true, label: '5 · Hình ảnh', note: 'Tự lấy các ảnh có caption ở khối 1' },
+    { k: 'show_gallery', label: 'Hiện lưới hình ảnh trên trang', type: 'checkbox', default: true },
+    { type: 'heading', sec: true, label: '6 · Dải kêu gọi chơi', note: 'Bỏ trống câu lớn thì dùng câu hook' },
+    { k: 'cta_title', label: 'Câu lớn', type: 'text' },
+    { k: 'cta_sub', label: 'Câu nhỏ', type: 'text' },
+    { type: 'heading', sec: true, label: '7 · Ảnh ngoài trang game', note: 'Dùng ở trang chủ' },
+    { k: 'kv', label: 'KV chính — banner lớn trang chủ (21:8 · 2100 × 800)', type: 'image', max: 2400, full: true, hint: 'Để chữ và nhân vật chính ở giữa vì điện thoại cắt bớt hai bên.' },
+    { k: 'hero', label: 'Hiện KV chính trên banner trang chủ', type: 'checkbox', hint: 'Thứ tự slide theo ô “Thứ tự” bên dưới.' },
+    { k: 'cover', label: 'Thumbnail — ô game trong thư viện (4:3 · 1200 × 900)', type: 'image', max: 1200, full: true, hint: 'Cũng dùng làm ảnh thay khi game chưa có slide.' },
+    { type: 'heading', sec: true, label: 'Xuất bản' },
     { k: 'status', label: 'Trạng thái', type: 'select', options: [['published', 'Đã đăng'], ['draft', 'Bản nháp']] },
     { k: 'sort', label: 'Thứ tự', type: 'number' },
-    { k: 'hot', label: 'Gắn nhãn Hot (tag nổi bật trên thẻ game)', type: 'checkbox' },
-    { k: 'hero', label: 'Hiện KV chính trên banner trang chủ', type: 'checkbox', hint: 'Cần có ảnh KV chính. Thứ tự slide theo ô “Thứ tự”.' },
-    { type: 'heading', label: 'Hình ảnh · 3 loại, mỗi loại một chỗ dùng' },
-    { k: 'kv', label: '① KV chính — banner lớn trang chủ (21:8 · 2100 × 800)', type: 'image', max: 2400, full: true, hint: 'Chỉ dùng cho banner trang chủ, khi tick “Hiện KV chính trên banner trang chủ”. Để chữ và nhân vật chính ở giữa vì điện thoại cắt bớt hai bên.' },
-    { k: 'cover', label: '② Thumbnail — ô game trong thư viện (4:3 · 1200 × 900)', type: 'image', max: 1200, full: true, hint: 'Cũng là ảnh đại diện khi chia sẻ link và khi game chưa có ảnh slide.' },
-    { k: 'screenshots', label: '③ Ảnh slide — trang giới thiệu game (16:9 · 1920 × 1080)', type: 'images', max: 1920, full: true, hint: 'Tỉ lệ chuẩn 16:9 (1920 × 1080). Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ. Chọn hoặc kéo thả nhiều ảnh cùng lúc; kéo ảnh để đổi thứ tự.' },
-    { k: 'clip_url', label: 'Video ngắn trong slide', type: 'media-url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
-    { type: 'heading', label: 'Bài viết' },
-    { k: 'description', label: 'Bài viết giới thiệu game', type: 'richtext', full: true, hint: 'Dán từ Word / Google Docs được, định dạng lạ sẽ tự lọc bỏ.' },
-    { k: 'highlights', label: 'Cụm từ marketing (có dấu tích)', type: 'textarea', full: true, hint: 'Mỗi dòng một cụm ngắn gọn. VD: Không cần cài đặt' },
-    { type: 'heading', label: 'Video giới thiệu' },
-    { k: 'youtube_url', label: 'Link YouTube', type: 'url', full: true, hint: 'Hiện ở giữa, dưới phần bài viết. Để trống thì ẩn.' }
+    { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo từ tên game.' }
   ],
   banners: [
     { type: 'heading', label: 'Loại banner' },
@@ -1010,7 +1165,7 @@ const FIELDS = {
   ]
 };
 const BLANK = {
-  games: () => ({ hero: false, status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
+  games: () => ({ hero: false, is_free: true, show_gallery: true, show_howto: false, show_story: false, features: [], howto: [], accent: '#6B1A2D', status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
   banners: () => ({ active: true, kind: 'game', media_type: 'image', duration: 0, sort: D.banners.length + 1 }),
   genres: () => ({ sort: D.genres.length + 1, show: true, description: '' }),
   ads: () => ({ active: true, placement: 'all', game_ids: [], weight: 1, start_at: today(), hero_on: false, hero_sort: 99 }),
@@ -1024,7 +1179,28 @@ function fieldHTML(f, v) {
   const cls = `field${f.full ? ' full' : ''}`;
   switch (f.type) {
     case 'heading': return `<div class="field full form-sec">${f.label}</div>`;
-    case 'textarea': return `<div class="${cls}">${lab}<textarea id="${id}" name="${f.k}">${esc(v)}</textarea>${hint}</div>`;
+    case 'textarea': return `<div class="${cls}">${lab}<textarea id="${id}" name="${f.k}"${f.max ? ` maxlength="${f.max}" rows="2" data-count` : ''}>${esc(v)}</textarea>${f.max ? `<span class="hint cnt-l num"><span>${String(v || '').length}</span> / ${f.max}</span>` : ''}${hint}</div>`;
+    case 'tags': {
+      const it = editing?.item || {};
+      return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="tagchips">${genresSorted().map(g => `<label class="tchip"><input type="checkbox" name="genre_ids" value="${esc(g.id)}" ${(v || []).includes(g.id) ? 'checked' : ''}><span>${esc(g.name)}</span></label>`).join('')}<label class="tchip hot"><input type="checkbox" name="hot" ${it.hot ? 'checked' : ''}><span>● HOT</span></label></div>${hint}</div>`;
+    }
+    case 'accent': {
+      const c = okAccent(v);
+      return `<div class="${cls}">${lab}<div class="acc-row">${['#6B1A2D', '#A8431F', '#1F5A85', '#2F6B4A'].map(x => `<button type="button" class="acc-sw ${x.toLowerCase() === c.toLowerCase() ? 'on' : ''}" style="--c:${x}" data-act="acc-pick" data-v="${x}" aria-label="Màu ${x}"></button>`).join('')}<input id="${id}" name="${f.k}" type="text" value="${esc(c)}" maxlength="7" class="acc-in" aria-label="Mã màu"><span class="acc-prev" style="background:${esc(c)}">Chơi ngay</span></div>${hint || '<span class="hint">Dùng cho nút Chơi ngay, câu hook, dải kêu gọi chơi. Chọn màu đậm để chữ trắng dễ đọc.</span>'}</div>`;
+    }
+    case 'features': {
+      const arr = Array.isArray(v) ? v : [];
+      return `<div class="${cls}"><div class="feat-grid">${[1, 2, 3].map(n => { const x = arr[n - 1] || {};
+        return `<div class="feat-ed"><b>Thẻ ${n}</b>${fieldHTML({ k: `feat${n}_image`, label: 'Ảnh (16:9)', type: 'image', max: 1600 }, x.image || '')}
+          <div class="field"><label for="ft${n}">Tiêu đề</label><input id="ft${n}" name="feat${n}_title" type="text" value="${esc(x.title || '')}"></div>
+          <div class="field"><label for="fx${n}">Một câu mô tả</label><textarea id="fx${n}" name="feat${n}_text" rows="2">${esc(x.text || '')}</textarea></div></div>`; }).join('')}</div>
+        <span class="hint">Thẻ bỏ trống tiêu đề và mô tả sẽ không hiện.</span></div>`;
+    }
+    case 'steps': {
+      const arr = Array.isArray(v) ? v : [];
+      return `<div class="${cls}"><span class="lbl">Các bước chơi</span><div class="steps-ed">${[1, 2, 3].map(n => { const x = arr[n - 1] || {};
+        return `<div class="step-ed"><span class="num">${n}</span><input name="step${n}_title" type="text" placeholder="Tiêu đề bước ${n}" value="${esc(x.title || '')}" aria-label="Tiêu đề bước ${n}"><input name="step${n}_text" type="text" placeholder="Một câu mô tả" value="${esc(x.text || '')}" aria-label="Mô tả bước ${n}"></div>`; }).join('')}</div></div>`;
+    }
     case 'number': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="number" value="${esc(v ?? 0)}">${hint}</div>`;
     case 'checkbox': return `<div class="${cls}" style="align-self:end"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input id="${id}" name="${f.k}" type="checkbox" ${(v ?? f.default) ? 'checked' : ''}> ${f.label}</label>${hint}</div>`;
     case 'select': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}">${f.options.map(o => `<option value="${o[0]}" ${String(v) === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select>${hint}</div>`;
@@ -1048,9 +1224,9 @@ function fieldHTML(f, v) {
       return `<div class="${cls}"><span class="lbl">${f.label}</span><div data-imgs="${f.k}" data-drop style="display:grid;gap:10px;padding:8px;margin:-8px">
         <input type="hidden" name="${f.k}" value="${esc(JSON.stringify(arr))}">
         <div class="shot-list">${shotItemsHTML(arr)}</div>
-        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải nhiều ảnh lên B2' : 'Chọn nhiều ảnh'}<input type="file" accept="image/*" multiple data-shots-file data-max="${f.max || 1920}"></span><button type="button" class="btn small line" data-act="pick" data-kind="image" data-target="shots" data-multi="1">Chọn từ tư liệu</button></div>
+        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh, video .mp4 hoặc YouTube rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải ảnh / video lên B2' : 'Chọn nhiều ảnh'}<input type="file" accept="image/*,video/mp4,video/webm,video/quicktime" multiple data-shots-file data-max="${f.max || 1920}"></span><button type="button" class="btn small line" data-act="pick" data-kind="image" data-target="shots" data-multi="1">Chọn từ tư liệu</button></div>
         ${hint}
-        <span class="drop-hint">Kéo thả nhiều ảnh vào khung này · tự nén WebP ${f.max || 1920}px</span>
+        <span class="drop-hint">Kéo thả nhiều ảnh / video vào khung này · ảnh tự nén WebP ${f.max || 1920}px</span>
       </div></div>`;
     }
     case 'richtext': {
@@ -1096,6 +1272,9 @@ function readForm(form, fields) {
   const o = {};
   for (const f of fields) {
     if (f.type === 'heading') continue;
+    if (f.type === 'tags') { o.genre_ids = [...form.querySelectorAll('input[name=genre_ids]:checked')].map(i => i.value); o.hot = !!form.elements.hot?.checked; continue; }
+    if (f.type === 'features') { o.features = [1, 2, 3].map(n => ({ image: String(form.elements[`feat${n}_image`]?.value || '').trim(), title: String(form.elements[`feat${n}_title`]?.value || '').trim(), text: String(form.elements[`feat${n}_text`]?.value || '').trim() })).filter(x => x.title || x.text); continue; }
+    if (f.type === 'steps') { o.howto = [1, 2, 3].map(n => ({ title: String(form.elements[`step${n}_title`]?.value || '').trim(), text: String(form.elements[`step${n}_text`]?.value || '').trim() })).filter(x => x.title || x.text); continue; }
     if (f.type === 'gamepick') { o[f.k] = [...form.querySelectorAll('input[name=game_ids]:checked')].map(i => i.value); continue; }
     if (f.type === 'genres') { o[f.k] = [...form.querySelectorAll('input[name=genre_ids]:checked')].map(i => i.value); continue; }
     const el = form.elements[f.k];
@@ -1111,6 +1290,17 @@ function readForm(form, fields) {
 const LABELS = { games: 'game', banners: 'banner', genres: 'thể loại', assets: 'tư liệu', ads: 'quảng cáo' };
 function formPanel(kind) {
   const it = editing.item;
+  const fh = f => { const h = fieldHTML(f, it[f.k] ?? (f.type === 'select' ? f.options[0][0] : it[f.k])); return f.when ? h.replace('<div ', `<div data-when="${f.when}" `) : h; };
+  if (kind === 'games') {
+    const secs = []; FIELDS.games.forEach(f => { if (f.sec) secs.push({ h: f, fs: [] }); else secs[secs.length - 1].fs.push(f); });
+    return `<form class="panel gform" data-form="games" novalidate>
+      <div class="gform-head"><h2>${it.id ? 'Sửa game' : 'Thêm game'}${it.title ? ' · ' + esc(it.title) : ''}</h2>${it.id && it.slug ? `<a class="btn small line" href="index.html#/game/${esc(it.slug)}" target="_blank" rel="noopener">Xem trang game ↗</a>` : ''}</div>
+      <p class="hint" style="color:var(--muted)">Các khối xếp đúng thứ tự trên trang game. Khối nào bỏ trống hoặc tắt thì trang không hiện khối đó.</p>
+      <nav class="gform-nav" aria-label="Đi nhanh">${secs.map((x, i) => `<button type="button" data-act="gs-jump" data-i="${i}">${esc(x.h.label)}</button>`).join('')}</nav>
+      ${secs.map((x, i) => `<section class="gsec" id="gs-${i}"><div class="gsec-h"><h3>${esc(x.h.label)}</h3>${x.h.note ? `<span>${esc(x.h.note)}</span>` : ''}</div><div class="form-grid">${x.fs.map(fh).join('')}</div></section>`).join('')}
+      <div class="form-act gform-act"><button type="button" class="btn line" data-act="cancel">Huỷ</button><button class="btn primary" type="submit">${it.id ? 'Lưu thay đổi' : 'Thêm game'}</button></div>
+    </form>`;
+  }
   return `<form class="panel" data-form="${kind}" novalidate>
     <h2>${it.id ? 'Sửa ' : 'Thêm '}${LABELS[kind]}</h2>
     <div class="form-grid">${FIELDS[kind].map(f => { const h = fieldHTML(f, it[f.k] ?? (f.type === 'select' ? f.options[0][0] : it[f.k])); return f.when ? h.replace('<div ', `<div data-when="${f.when}" `) : h; }).join('')}</div>
@@ -1122,7 +1312,8 @@ function applyWhen(root = document) {
   root.querySelectorAll('[data-when]').forEach(el => {
     const [k, vals] = el.dataset.when.split('=');
     const form = el.closest('form'); const ctl = form?.elements[k];
-    el.hidden = !!ctl && !vals.split('|').includes(ctl.value);
+    const val = ctl?.type === 'checkbox' ? (ctl.checked ? 'on' : 'off') : ctl?.value;
+    el.hidden = !!ctl && !vals.split('|').includes(val);
   });
 }
 function delCell(id) {
@@ -1482,7 +1673,7 @@ const assetCats = () => [...new Set([...ASSET_CATS, ...(ASSETS || []).map(a => a
 const kindLabel = k => (ASSET_KINDS.find(x => x[0] === k) || [k, k])[1];
 function filterAssets(list, f = AF) {
   const q = f.q.trim().toLowerCase();
-  return list.filter(a => (!f.group || f.group === 'all' || inGroup(a, f.group)) && (f.kind === 'all' || a.kind === f.kind) && (f.cat === 'all' || (a.category || 'Chưa phân loại') === f.cat)
+  return list.filter(a => (!f.group || f.group === 'all' || inGroup(a, f.group)) && (f.kind === 'all' || a.kind === f.kind || (f.kind === 'media' && (a.kind === 'image' || a.kind === 'video'))) && (f.cat === 'all' || (a.category || 'Chưa phân loại') === f.cat)
     && (f.game === 'all' || (f.game === 'none' ? !a.game_id : a.game_id === f.game))
     && (!q || [a.title, a.tags, a.note, a.content, a.url, a.category, a.group_name].join(' ').toLowerCase().includes(q)));
 }
@@ -1665,12 +1856,13 @@ function drawPicker() {
   if (!PICK) { m?.remove(); document.body.style.overflow = ''; return; }
   if (!m) { m = document.createElement('div'); m.id = 'picker'; m.className = 'pk-wrap'; document.body.appendChild(m); document.body.style.overflow = 'hidden'; }
   const list = ASSETS ? filterAssets(ASSETS, PICK.f) : null;
-  const cats = assetCats().filter(c => (ASSETS || []).some(a => a.kind === PICK.kind && (a.category || 'Chưa phân loại') === c));
+  const kOk = a => a.kind === PICK.kind || (PICK.kind === 'media' && (a.kind === 'image' || a.kind === 'video'));
+  const cats = assetCats().filter(c => (ASSETS || []).some(a => kOk(a) && (a.category || 'Chưa phân loại') === c));
   m.innerHTML = `<div class="pk" role="dialog" aria-modal="true" aria-label="Chọn từ kho tư liệu">
-    <div class="pk-head"><h2>Chọn ${PICK.kind === 'video' ? 'video' : 'ảnh'} từ kho tư liệu</h2><button class="btn small line" data-act="pk-close">Đóng</button></div>
+    <div class="pk-head"><h2>Chọn ${PICK.kind === 'video' ? 'video' : PICK.kind === 'media' ? 'ảnh / video' : 'ảnh'} từ kho tư liệu</h2><button class="btn small line" data-act="pk-close">Đóng</button></div>
     <div class="lib-filter-row" style="padding:0 18px">
       <input type="search" placeholder="Tìm…" value="${esc(PICK.f.q)}" data-pk="q" aria-label="Tìm">
-      <select data-pk="group" aria-label="Nhóm"><option value="all">Mọi nhóm</option>${groupList((ASSETS || []).filter(a => a.kind === PICK.kind)).map(g => `<option value="${esc(g.name)}" ${PICK.f.group === g.name ? 'selected' : ''}>${esc(groupLabel(g.name))} (${g.items.length})</option>`).join('')}</select>
+      <select data-pk="group" aria-label="Nhóm"><option value="all">Mọi nhóm</option>${groupList((ASSETS || []).filter(kOk)).map(g => `<option value="${esc(g.name)}" ${PICK.f.group === g.name ? 'selected' : ''}>${esc(groupLabel(g.name))} (${g.items.length})</option>`).join('')}</select>
       <select data-pk="cat" aria-label="Danh mục"><option value="all">Mọi danh mục</option>${cats.map(c => `<option ${PICK.f.cat === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>
       <select data-pk="game" aria-label="Game"><option value="all">Mọi game</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${PICK.f.game === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>
     </div>
@@ -1900,18 +2092,26 @@ function setImg(wrap, v) {
   wrap.querySelector('input[type=hidden]').value = v;
   wrap.querySelector('.img-prev').innerHTML = v ? `<img src="${esc(v)}" alt="">` : 'Chưa có ảnh';
 }
+function shotThumb(src) {
+  const yt = ytId(src);
+  if (yt) return `<img src="https://i.ytimg.com/vi/${yt}/mqdefault.jpg" alt="">`;
+  if (isVid(src)) return `<video src="${esc(src)}#t=0.5" muted preload="metadata" playsinline></video>`;
+  return `<img src="${esc(src)}" alt="">`;
+}
 function shotItemsHTML(arr) {
-  if (!arr.length) return '<span class="hint">Chưa có ảnh. Kéo thả ảnh vào đây hoặc bấm “Chọn nhiều ảnh”.</span>';
-  return arr.map((s, i) => `<div class="shot-item" draggable="true" data-i="${i}" title="Kéo để đổi vị trí">
-      <img src="${esc(s)}" alt="Ảnh ${i + 1}">
-      <span class="no num">${i + 1}</span>
+  arr = arr.map(normMedia);
+  if (!arr.length) return '<span class="hint">Chưa có ảnh / video. Kéo thả vào đây hoặc bấm “Chọn file”.</span>';
+  return arr.map((m, i) => `<div class="shot-cell"><div class="shot-item" draggable="true" data-i="${i}" title="Kéo để đổi vị trí">
+      ${shotThumb(m.src)}
+      <span class="no num">${i + 1} · ${isVid(m.src) ? 'VIDEO' : 'ẢNH'}</span>
       <button type="button" class="rm" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh ${i + 1}">×</button>
       ${i > 0 ? `<button type="button" class="mv l" data-act="shot-move" data-i="${i}" data-d="-1" aria-label="Đưa ảnh ${i + 1} lên trước">‹</button>` : ''}
       ${i < arr.length - 1 ? `<button type="button" class="mv r" data-act="shot-move" data-i="${i}" data-d="1" aria-label="Đưa ảnh ${i + 1} ra sau">›</button>` : ''}
-    </div>`).join('');
+    </div><input class="cap" type="text" data-cap="${i}" value="${esc(m.caption)}" placeholder="Caption (không bắt buộc)" aria-label="Caption mục ${i + 1}"></div>`).join('');
 }
-function getShots(wrap) { try { return JSON.parse(wrap.querySelector('input[type=hidden]').value || '[]'); } catch (_) { return []; } }
+function getShots(wrap) { try { return JSON.parse(wrap.querySelector('input[type=hidden]').value || '[]').map(normMedia); } catch (_) { return []; } }
 function setShots(wrap, arr) {
+  arr = arr.map(normMedia);
   wrap.querySelector('input[type=hidden]').value = JSON.stringify(arr);
   wrap.querySelector('.shot-list').innerHTML = shotItemsHTML(arr);
 }
@@ -1934,6 +2134,19 @@ async function processFiles(input, files) {
       if (!uploadOn()) throw new Error('Cần đăng nhập và cấu hình Worker để tải video lên.');
       const url = await uploadWithButton(btn, f, folder);
       form.elements[input.dataset.urlFile].value = url; toast('Đã tải video lên'); return;
+    }
+    if (input.matches('[data-shots-file]')) {
+      const vids = files.filter(x => /^video\//.test(x.type));
+      if (vids.length) {
+        if (!uploadOn()) throw new Error('Cần đăng nhập và cấu hình Worker để tải video lên.');
+        const w = input.closest('[data-imgs]');
+        for (let i = 0; i < vids.length; i++) {
+          try { const url = await uploadToB2(vids[i], folder, p => btnText(btn, `Video ${i + 1}/${vids.length} · ${p}%`)); const arr = getShots(w); arr.push({ src: url, caption: '' }); setShots(w, arr); }
+          catch (e) { toast(`Không tải được ${vids[i].name}: ${reasonOf(e)}`, true, 5000); }
+        }
+        files = files.filter(x => !/^video\//.test(x.type));
+        if (!files.length) { toast(`Đã thêm ${vids.length} video`); return; }
+      }
     }
     const imgs = files.filter(x => /^image\//.test(x.type));
     if (!imgs.length) throw new Error('Chỉ nhận file ảnh (JPG, PNG, WebP, GIF).');
@@ -1968,7 +2181,7 @@ async function processFiles(input, files) {
         } else {
           const r = await fileToData(imgs[i], input); url = r.data; file = r.file;
         }
-        const arr = getShots(w); arr.push(url); setShots(w, arr);   // hiện ngay từng ảnh
+        const arr = getShots(w); arr.push({ src: url, caption: '' }); setShots(w, arr);   // hiện ngay từng ảnh
         done.push(file);
       } catch (e) { failed.push(`${imgs[i].name || 'ảnh'} (${reasonOf(e)})`); }
     }
@@ -2168,6 +2381,10 @@ document.addEventListener('click', async e => {
       case 'page': libPage = Number(t.dataset.p) || 1; render(); $('#library')?.scrollIntoView({ block: 'start' }); break;
       case 'media': showMedia(Number(t.dataset.i)); break;
       case 'media-step': showMedia(mediaIdx + Number(t.dataset.d)); break;
+      case 'lb': openLB(Number(t.dataset.i)); break;
+      case 'lb-step': openLB(lbIdx + Number(t.dataset.d)); break;
+      case 'lb-close': closeLB(); break;
+      case 'share': await shareGame(t.dataset.net); break;
       case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
       case 'fs': {
         const f = $('#frame'), req = f.requestFullscreen || f.webkitRequestFullscreen;
@@ -2179,15 +2396,18 @@ document.addEventListener('click', async e => {
       case 'fs-close': document.body.classList.remove('pseudo-fs'); break;
       case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
       case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
-      case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) };
+        if (tab === 'games') { const g = editing.item; g.screenshots = gameMedia(g); if (!(g.features || []).length && g.highlights) g.features = pairs(g.highlights).slice(0, 3).map(([title, text]) => ({ image: '', title, text })); } confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'cancel': editing = null; render(); break;
       case 'del': confirmDel = id; render(); break;
       case 'del-no': confirmDel = null; render(); break;
       case 'del-yes': await Store.remove(tab, id); confirmDel = null; if (editing?.item.id === id) editing = null; render(); toast('Đã xoá'); break;
       case 'flip': { const it = { ...D[t.dataset.kind].find(x => x.id === id) }; const k = t.dataset.k; it[k] = k === 'show' ? it[k] === false : !it[k]; await Store.save(t.dataset.kind, it); render(); break; }
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
-      case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
+      case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = getShots(w); arr.push({ src: inp.value.trim(), caption: '' }); inp.value = ''; setShots(w, arr); break; }
       case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'gs-jump': $('#gs-' + t.dataset.i)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); break;
+      case 'acc-pick': { const row = t.closest('.acc-row'); row.querySelector('.acc-in').value = t.dataset.v; row.querySelector('.acc-prev').style.background = t.dataset.v; row.querySelectorAll('.acc-sw').forEach(b => b.classList.toggle('on', b === t)); break; }
       case 'stats-days': statsDays = Number(t.dataset.v); STATS = null; statsErr = ''; render(); break;
       case 'stats-metric': statsMetric = t.dataset.v; render(); break;
       case 'stats-refresh': STATS = null; ADSTATS = null; statsErr = ''; render(); break;
@@ -2218,7 +2438,7 @@ document.addEventListener('click', async e => {
       case 'pick': {
         const field = t.closest('.field');
         if (t.dataset.target === 'img') openPicker({ kind: 'image', onPick: ([u]) => { const w = field.querySelector('[data-img]'); setImg(w, u); w.querySelector('[data-img-url]').value = u; toast('Đã chọn ảnh từ kho'); } });
-        else if (t.dataset.target === 'shots') openPicker({ kind: 'image', multi: true, onPick: urls => { const w = field.querySelector('[data-imgs]'); setShots(w, [...getShots(w), ...urls]); toast(`Đã thêm ${urls.length} ảnh từ kho`); } });
+        else if (t.dataset.target === 'shots') openPicker({ kind: 'media', multi: true, onPick: urls => { const w = field.querySelector('[data-imgs]'); setShots(w, [...getShots(w), ...urls]); toast(`Đã thêm ${urls.length} ảnh từ kho`); } });
         else openPicker({ kind: 'video', onPick: ([u]) => { t.closest('form').elements[t.dataset.field].value = u; toast('Đã chọn video từ kho'); } });
         break;
       }
@@ -2226,7 +2446,7 @@ document.addEventListener('click', async e => {
       case 'pk-toggle': if (!PICK.multi) { finishPick([id]); break; } { const i = PICK.sel.indexOf(id); i >= 0 ? PICK.sel.splice(i, 1) : PICK.sel.push(id); drawPicker(); } break;
       case 'pk-done': finishPick(PICK.sel); break;
       case 'shot-move': { const w = t.closest('[data-imgs]'); const arr = getShots(w); const i = Number(t.dataset.i), j = i + Number(t.dataset.d); if (j < 0 || j >= arr.length) break; [arr[i], arr[j]] = [arr[j], arr[i]]; setShots(w, arr); break; }
-      case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
+      case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = getShots(w); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
       case 'copy-backup': { const b = $('#backupBox'); try { await navigator.clipboard.writeText(b.value); toast('Đã sao chép JSON'); } catch { b.select(); toast('Đã bôi đen — nhấn Ctrl/Cmd + C.'); } break; }
       case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
       case 'reset': confirmDel = '__reset'; render(); break;
@@ -2242,9 +2462,12 @@ document.addEventListener('click', async e => {
 
 document.addEventListener('input', e => {
   if (e.target.matches('[data-img-url]')) setImg(e.target.closest('[data-img]'), e.target.value.trim());
+  if (e.target.matches('[data-cap]')) { const w = e.target.closest('[data-imgs]'), arr = getShots(w), i = Number(e.target.dataset.cap); if (arr[i]) { arr[i].caption = e.target.value; w.querySelector('input[type=hidden]').value = JSON.stringify(arr); } }
+  if (e.target.matches('[data-count]')) { const c = e.target.parentElement.querySelector('.cnt-l span'); if (c) c.textContent = e.target.value.length; }
+  if (e.target.matches('.acc-in')) { const ok = /^#[0-9a-f]{6}$/i.test(e.target.value); if (ok) e.target.closest('.acc-row').querySelector('.acc-prev').style.background = e.target.value; }
 });
 document.addEventListener('change', async e => {
-  if (e.target.matches('select')) applyWhen(e.target.closest('form') || document);
+  if (e.target.matches('select, input[type=checkbox]')) applyWhen(e.target.closest('form') || document);
   try {
     if (e.target.matches('[data-rte-img]') && e.target.files[0]) { await rteInsertImage(e.target, e.target.files[0]); return; }
     if (e.target.matches('[data-img-file],[data-shots-file],[data-url-file]') && e.target.files.length) {
@@ -2343,6 +2566,7 @@ document.addEventListener('submit', async e => {
       editing = null; render(); toast('Đã lưu tư liệu'); return;
     }
     const item = { ...editing.item, ...v };
+    if (kind === 'games') { item.clip_url = ''; item.youtube_url = ''; item.video_url = ''; item.highlights = ''; item.accent = okAccent(item.accent); item.summary = String(item.summary || '').slice(0, 160); item.screenshots = (item.screenshots || []).map(normMedia).filter(m => m.src); }
     if (!item.id) item.id = uid();
     if ('slug' in v) {
       let s = slugify(v.slug || item.title || item.name) || item.id.slice(0, 8), base = s, n = 2;

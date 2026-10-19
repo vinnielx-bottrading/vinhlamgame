@@ -166,6 +166,30 @@ Tab **Kho tư liệu** trong admin lưu ảnh, video, nội dung/caption và lin
 - **Dùng:** nút **Chép link** / **Chép nội dung**. Mọi ô ảnh, ô slide và ô video trong form đều có nút **Từ tư liệu** để chọn thẳng từ kho; ô slide chọn được nhiều ảnh, theo thứ tự bấm. Hộp chọn có bộ lọc theo nhóm.
 - Tư liệu chỉ quản trị viên xem được (bảng `assets` trong Supabase). File nằm trong thư mục `library/` trên B2. Xoá tư liệu thì xoá luôn file trên B2.
 
+## Quảng cáo theo chiến dịch
+
+Tab **Quảng cáo** quản lý banner của khách hàng ở hai vị trí: dưới thư viện (trang chủ) và dưới bài giới thiệu (trang game). Banner đầu trang chủ vẫn quản lý ở tab **Banner** (loại Quảng cáo).
+
+- **Gói vị trí:** Toàn trang (trang chủ + mọi trang game) · Chỉ trang chủ · Mọi trang game · Trang của game chọn riêng. Ở trang của một game, quảng cáo mua riêng cho game đó được ưu tiên hơn quảng cáo toàn trang.
+- **Thời gian:** ngày bắt đầu / kết thúc, hết hạn tự tắt. Nhiều quảng cáo cùng vị trí thì luân phiên theo **mức ưu tiên** (1–10).
+- **Ảnh:** ảnh chính theo tỉ lệ ở tab Giao diện (mặc định 6:1, 1200 × 200); thêm **ảnh cho điện thoại** 3:1 (900 × 300) để banner không bị quá thấp trên điện thoại.
+- **Ghi chú nội bộ** (giá, hợp đồng) chỉ quản trị viên đọc được, khách không thấy kể cả qua API.
+- Dưới mỗi banner có dòng nhỏ **Liên hệ đặt quảng cáo**, dẫn về trang Liên hệ với nội dung điền sẵn đúng vị trí khách đang xem. Vị trí chưa có quảng cáo hiện ô chào bán (bật / tắt ở tab Giao diện).
+- Nút **Báo cáo** ở mỗi quảng cáo chép số liệu (lượt hiển thị, người xem, lượt bấm, CTR) để gửi khách.
+- Tên lớp CSS và thư mục ảnh không dùng chữ "ad" để trình chặn quảng cáo (AdBlock, uBlock…) không ẩn banner. Ảnh quảng cáo tải lên trước đây nằm trong thư mục `ads/` vẫn có thể bị chặn: hãy tải lại ảnh đó.
+
+## Thống kê
+
+Tab **Thống kê** (nhóm Khách hàng) cho số liệu 7 ngày / 30 ngày / 90 ngày / 1 năm:
+
+- Khách truy cập (người khác nhau), lượt xem trang, lượt chơi game, người chơi, tỉ lệ khách dùng điện thoại.
+- Biểu đồ theo ngày (khách / lượt xem / lượt chơi), có dạng bảng.
+- Game được chơi nhiều nhất: lượt xem trang game, lượt chơi, người chơi, tỉ lệ bấm chơi.
+- Quảng cáo: hiển thị, người xem, lượt bấm, CTR cho cả banner đầu trang và banner theo chiến dịch.
+- Khách đến từ đâu (Google, Facebook, Zalo… hoặc truy cập trực tiếp).
+
+Cách tính: mỗi trình duyệt có một mã ngẫu nhiên, không thu thông tin cá nhân. Một lượt hiển thị quảng cáo được tính khi banner hiện ít nhất một nửa trên màn hình, mỗi lần mở trang. Trình duyệt đã đăng nhập admin không bị tính. Dữ liệu lưu trong bảng `events`; mỗi sự kiện khoảng 150 byte, 100.000 sự kiện khoảng 15 MB. Muốn xoá dữ liệu cũ hơn 1 năm, chạy: `delete from events where at < now() - interval '1 year';`
+
 ## Cập nhật trực tiếp
 
 Admin bấm **Lưu** thì trang khách đang mở tự cập nhật sau khoảng 1 giây, không cần tải lại (Supabase Realtime, đã bật trong `schema.sql`). Khách đang chơi game thì trang chờ đến khi họ rời trang chơi mới cập nhật, để không làm gián đoạn game. Nếu Realtime chưa bật, trang vẫn tự tải lại dữ liệu khi khách quay lại tab sau hơn 1 phút.
@@ -174,6 +198,7 @@ Admin bấm **Lưu** thì trang khách đang mở tự cập nhật sau khoảng
 
 - Khi đã cấu hình Supabase mà trang không kết nối được (mạng lỗi, Supabase bảo trì), khách thấy thông báo "Trang đang được cập nhật" kèm nút tải lại. Trang **không** hiện dữ liệu mẫu.
 
-- Link chơi game được nhúng bằng iframe. Nếu game nào chặn nhúng, khách vẫn có nút "Mở tab mới".
+- Trên máy tính, game được nhúng bằng iframe; nút "Toàn màn hình" phủ kín cửa sổ nếu trình duyệt không cho toàn màn hình thật. Trên điện thoại và máy tính bảng, nút "Chơi ngay" mở thẳng link game trong cùng tab (iPhone không cho iframe toàn màn hình, và chặn đăng nhập / lưu tiến độ của game trong iframe khác tên miền).
+- Khung quảng cáo chưa có khách đặt dẫn về Liên hệ, điền sẵn nội dung đặt quảng cáo. Tin nhắn này có nhãn "Quảng cáo" trong admin.
 - Không có Worker thì ảnh tải lên trong admin được nén và lưu thẳng vào database, nên chỉ hợp với ảnh nhỏ. Có Worker thì mọi ảnh và video đều lên B2.
 - `wrangler.toml` chỉ chứa biến không bí mật. Key B2 và service_role key **không bao giờ** ghi vào file hay commit lên GitHub.

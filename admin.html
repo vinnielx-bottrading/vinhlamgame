@@ -102,8 +102,8 @@ p{margin:0}
 .slide-media img{transition:transform 8s ease}
 .slide.on .slide-media img{transform:scale(1.03)}
 .slide-link{position:absolute;inset:0;z-index:1}
-.ad-tag{position:absolute;top:12px;left:12px;z-index:2;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:4px 8px;pointer-events:none}
-.ad-tag b{color:var(--ink);font-weight:600;letter-spacing:.04em;text-transform:none;margin-left:4px}
+.sp-tag{position:absolute;top:12px;left:12px;z-index:2;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:4px 8px;pointer-events:none}
+.sp-tag b{color:var(--ink);font-weight:600;letter-spacing:.04em;text-transform:none;margin-left:4px}
 .dots{position:absolute;left:50%;bottom:clamp(10px,2vw,18px);transform:translateX(-50%);display:flex;gap:8px;z-index:3}
 .dots button{width:28px;height:3px;padding:0;background:rgba(255,255,255,.5);border-radius:2px;transition:background .3s,width .3s;position:relative}
 .dots button.on{background:#fff;width:44px}
@@ -167,13 +167,18 @@ p{margin:0}
 .pager button:hover{border-color:var(--ink)}
 .pager button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .pager button[disabled]{opacity:.35;pointer-events:none}
-.ad-slot{padding-bottom:clamp(48px,7vw,88px)}
-.ad{position:relative;display:block;aspect-ratio:var(--ar,6/1);min-height:90px;max-width:100%;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
-.ad img{width:100%;height:100%;object-fit:cover}
-.ad-label{position:absolute;top:8px;right:8px;z-index:1;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:3px 7px}
-.ad-empty{height:100%;display:grid;place-content:center;justify-items:center;text-align:center;gap:6px;padding:16px;background:repeating-linear-gradient(135deg,var(--paper-2) 0 14px,var(--wine-tint) 14px 15px)}
-.ad-empty b{font:500 clamp(1.2rem,2.4vw,1.8rem)/1.2 var(--display);color:var(--wine)}
-.ad-empty span{font-size:13px;color:var(--muted)}
+.sp-slot{padding-bottom:clamp(48px,7vw,88px)}
+.sp-box{position:relative;display:block;aspect-ratio:var(--ar,6/1);min-height:90px;max-width:100%;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
+.sp-box img{width:100%;height:100%;object-fit:cover;display:block}
+.sp-box picture{display:block;width:100%;height:100%}
+@media (max-width:700px){ .sp-box.has-m{aspect-ratio:3/1} }
+.sp-foot{display:flex;justify-content:flex-end;margin-top:6px}
+.sp-foot a{font-size:11px;letter-spacing:.06em;color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
+.sp-foot a:hover{color:var(--wine);border-bottom-color:currentColor}
+.sp-label{position:absolute;top:8px;right:8px;z-index:1;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:3px 7px}
+.sp-empty{height:100%;display:grid;place-content:center;justify-items:center;text-align:center;gap:6px;padding:16px;background:repeating-linear-gradient(135deg,var(--paper-2) 0 14px,var(--wine-tint) 14px 15px)}
+.sp-empty b{font:500 clamp(1.2rem,2.4vw,1.8rem)/1.2 var(--display);color:var(--wine)}
+.sp-empty span{font-size:13px;color:var(--muted)}
 .card:hover img,.card:hover .gen{transform:scale(1.035)}
 .card-body{display:grid;gap:6px}
 .card-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);letter-spacing:.04em}
@@ -280,12 +285,43 @@ p{margin:0}
 .yt h2{font-size:clamp(1.8rem,3vw,2.4rem)}
 .yt-frame{position:relative;width:100%;aspect-ratio:16/9;background:#140A0E;max-width:100%}
 .yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.gd-ad{padding-top:clamp(24px,4vw,40px)}
+.gd-sp{padding-top:clamp(24px,4vw,40px)}
 @media (max-width:900px){ .gd{grid-template-columns:minmax(0,1fr)} .gd-article{position:static} }
 
 /* Play */
 .play{padding-block:20px 48px;display:grid;gap:16px}
 .play-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.fs-close{display:none}
+body.pseudo-fs{overflow:hidden}
+body.pseudo-fs .frame{position:fixed;inset:0;z-index:100;max-height:none;aspect-ratio:auto;width:100vw;height:100vh;height:100dvh;border:0}
+body.pseudo-fs .fs-close{display:inline-flex;position:fixed;top:max(10px,env(safe-area-inset-top,0px));right:max(10px,env(safe-area-inset-right,0px));z-index:101}
+.play-start{position:relative;display:grid;place-items:center;aspect-ratio:4/5;max-height:70vh;width:100%;margin-top:16px;background:#140A0E;overflow:hidden;color:#fff;text-align:center}
+.play-start img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.play-start-in{position:relative;display:grid;gap:10px;justify-items:center;padding:24px}
+.play-start-in b{font:500 2rem/1.1 var(--display)}
+.play-start-in > span:last-child{font-size:14px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.play-big{width:76px;height:76px;border-radius:50%;background:var(--wine);display:grid;place-items:center;box-shadow:0 10px 30px -8px rgba(0,0,0,.6)}
+.play-big .play-ico{border-left-width:24px;border-top-width:15px;border-bottom-width:15px;margin-left:7px;color:#fff}
+.ad-pill{background:var(--wine);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{border:1px solid var(--line);padding:16px 18px;display:grid;gap:4px;background:var(--paper)}
+.kpi b{font:500 2.1rem/1 var(--display);color:var(--ink)}
+.kpi span{font-size:13px;color:var(--ink)}
+.kpi small{font-size:12px;color:var(--muted)}
+.st-card{border:1px solid var(--line);padding:18px;display:grid;gap:14px;background:var(--paper);min-width:0}
+.st-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.st-head h3{font:500 1.35rem/1.2 var(--display)}
+.seg.small button{padding:6px 10px;font-size:12.5px}
+.chart{position:relative}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.ch-grid{stroke:var(--line);stroke-width:1}
+.ch-ax{font-size:11px;fill:var(--muted);font-family:inherit}
+.ch-bar{fill:var(--wine)}
+.ch-hit{fill:transparent}
+.ch-col.on .ch-hit{fill:var(--wine-tint)}
+.ch-tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;padding:6px 9px;border-radius:3px;white-space:nowrap;z-index:2}
+.st-table summary{cursor:pointer;font-size:13px;color:var(--muted)}
+.st-table .tbl-wrap{margin-top:10px;max-height:320px;overflow:auto}
 .play-bar h1{font-size:1.9rem;margin-right:auto}
 .frame{position:relative;background:#140A0E;aspect-ratio:16/9;max-height:calc(100vh - 220px);width:100%;max-width:100%;border:1px solid var(--line)}
 .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#140A0E}
@@ -659,8 +695,10 @@ const SEED = {
 
 /* ============ LỚP DỮ LIỆU (Supabase hoặc localStorage) ============ */
 const LS_KEY = 'vlg_data_v1';
-const TABLES = { games: 'games', banners: 'banners', genres: 'genres' };
-let D = { settings: {}, genres: [], games: [], banners: [] };
+const TABLES = { games: 'games', banners: 'banners', genres: 'genres', ads: 'ads' };
+let D = { settings: {}, genres: [], games: [], banners: [], ads: [] };
+// Cột quảng cáo khách được đọc (cột ghi chú giá / hợp đồng chỉ quản trị viên thấy)
+const AD_COLS = 'id,advertiser,title,image,image_mobile,link_url,placement,game_ids,start_at,end_at,active,weight';
 let sb = null, session = null;
 const MODE = (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase) ? 'cloud' : 'local';
 
@@ -668,22 +706,24 @@ const Store = {
   async load() {
     if (MODE === 'cloud') {
       if (!sb) sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-      const [s, g, ge, b, ss] = await Promise.all([
+      const [s, g, ge, b, ss, ad] = await Promise.all([
         sb.from('settings').select('data').eq('id', 1).maybeSingle(),
         sb.from('games').select('*'),
         sb.from('genres').select('*'),
         sb.from('banners').select('*'),
-        sb.auth.getSession()
+        sb.auth.getSession(),
+        sb.from('ads').select(isAdmin() ? '*' : AD_COLS)
       ]);
       const err = [s, g, ge, b].find(r => r.error);
       if (err) throw err.error;
       session = ss.data.session;
-      D = { settings: { ...SEED.settings, ...(s.data?.data || {}) }, games: g.data || [], genres: ge.data || [], banners: b.data || [] };
+      D = { settings: { ...SEED.settings, ...(s.data?.data || {}) }, games: g.data || [], genres: ge.data || [], banners: b.data || [], ads: ad.error ? [] : (ad.data || []) };   // bảng ads chưa tạo thì bỏ qua
     } else {
       let raw = null;
       try { raw = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
       D = raw && raw.games ? raw : structuredClone(SEED);
       D.settings = { ...SEED.settings, ...D.settings };
+      D.ads = D.ads || [];
     }
   },
   persist() { try { localStorage.setItem(LS_KEY, JSON.stringify(D)); } catch (e) { toast('Bộ nhớ trình duyệt đầy — hãy dùng ảnh nhỏ hơn hoặc link ảnh.', true); } },
@@ -783,7 +823,13 @@ const Msg = {
   local() { try { return JSON.parse(localStorage.getItem(MSG_KEY)) || []; } catch (e) { return []; } },
   saveLocal(arr) { try { localStorage.setItem(MSG_KEY, JSON.stringify(arr)); } catch (e) { throw new Error('Không lưu được tin nhắn trên trình duyệt này.'); } },
   async add(m) {
-    if (MODE === 'cloud') { const { error } = await sb.from('messages').insert(m); if (error) throw new Error('Gửi không thành công, bạn thử lại sau nhé.'); return; }
+    if (MODE === 'cloud') {
+      let { error } = await sb.from('messages').insert(m);
+      if (error && m.topic && /topic/i.test(error.message || '')) {   // database chưa có cột topic: gửi kèm nhãn trong nội dung
+        const { topic, ...rest } = m; ({ error } = await sb.from('messages').insert({ ...rest, message: '[Quảng cáo] ' + rest.message }));
+      }
+      if (error) throw new Error('Gửi không thành công, bạn thử lại sau nhé.'); return;
+    }
     const arr = this.local(); arr.unshift({ ...m, id: uid(), handled: false, created_at: new Date().toISOString() }); this.saveLocal(arr);
   },
   async list() {
@@ -888,6 +934,24 @@ const FIELDS = {
     { k: 'end_at', label: 'Ngày kết thúc', type: 'date', hint: 'Để trống = không hết hạn. Hợp cho hợp đồng quảng cáo.' },
     { k: 'active', label: 'Đang hiển thị', type: 'checkbox' }
   ],
+  ads: [
+    { type: 'heading', label: 'Khách hàng' },
+    { k: 'advertiser', label: 'Tên khách hàng / nhãn hàng', type: 'text', req: true },
+    { k: 'title', label: 'Tên chiến dịch', type: 'text', hint: 'Để quản lý và làm mô tả ảnh. VD: Khuyến mãi Tết 2027' },
+    { k: 'link_url', label: 'Link trang web của khách', type: 'url', full: true, req: true, hint: 'Bấm vào banner mở trang này trong tab mới. Bắt đầu bằng https://' },
+    { type: 'heading', label: 'Hình ảnh' },
+    { k: 'image', label: 'Ảnh banner (đúng tỉ lệ ở tab Giao diện, mặc định 6:1 · 1200 × 200)', type: 'image', max: 2000, full: true },
+    { k: 'image_mobile', label: 'Ảnh riêng cho điện thoại (3:1 · 900 × 300), không bắt buộc', type: 'image', max: 1200, full: true, hint: 'Banner 6:1 trên điện thoại rất thấp. Có ảnh này thì điện thoại hiện ảnh này.' },
+    { type: 'heading', label: 'Vị trí hiển thị' },
+    { k: 'placement', label: 'Gói vị trí', type: 'select', options: [['all', 'Toàn trang: trang chủ + mọi trang game'], ['home', 'Chỉ trang chủ (dưới thư viện)'], ['games', 'Mọi trang giới thiệu game'], ['game', 'Trang của game chọn riêng']] },
+    { k: 'game_ids', label: 'Chọn game hiển thị quảng cáo', type: 'gamepick', when: 'placement=game', hint: 'Quảng cáo theo game được ưu tiên hơn quảng cáo toàn trang ở trang game đó.' },
+    { k: 'weight', label: 'Mức ưu tiên (1–10)', type: 'number', hint: 'Nhiều quảng cáo cùng vị trí thì luân phiên; số lớn hiện nhiều hơn.' },
+    { type: 'heading', label: 'Thời gian chạy' },
+    { k: 'start_at', label: 'Ngày bắt đầu', type: 'date', hint: 'Để trống = chạy ngay.' },
+    { k: 'end_at', label: 'Ngày kết thúc', type: 'date', hint: 'Hết ngày này quảng cáo tự tắt.' },
+    { k: 'active', label: 'Đang bật', type: 'checkbox' },
+    { k: 'note', label: 'Ghi chú nội bộ (giá, hợp đồng, người liên hệ)', type: 'textarea', full: true, hint: 'Chỉ quản trị viên thấy.' }
+  ],
   assets: [
     { k: 'kind', label: 'Loại tư liệu', type: 'select', options: [['image', 'Ảnh'], ['video', 'Video (file hoặc YouTube)'], ['text', 'Nội dung / caption'], ['link', 'Link để dành']] },
     { k: 'title', label: 'Tên tư liệu', type: 'text', req: true },
@@ -916,13 +980,11 @@ const FIELDS = {
     { k: 'pagination_on', label: 'Bật phân trang', type: 'checkbox' },
     { type: 'heading', label: 'Thể loại' },
     { k: 'genre_show_count', label: 'Hiện số game cạnh tên thể loại trong menu', type: 'checkbox' },
-    { type: 'heading', label: 'Banner quảng cáo (dưới thư viện)' },
-    { k: 'ad_on', label: 'Hiện banner quảng cáo', type: 'checkbox' },
+    { type: 'heading', label: 'Vị trí quảng cáo (dưới thư viện và trang game)' },
+    { k: 'ad_on', label: 'Hiện ô chào bán khi vị trí chưa có quảng cáo', type: 'checkbox', hint: 'Quảng cáo của khách quản lý ở tab Quảng cáo, luôn hiện khi đang chạy.' },
     { k: 'ad_size', label: 'Tỉ lệ banner', type: 'select', options: [['6/1', 'Ngang rộng 6:1 (1200 × 200)'], ['4/1', 'Ngang 4:1 (1200 × 300)'], ['970/250', 'Billboard 970 × 250'], ['728/90', 'Leaderboard 728 × 90']] },
-    { k: 'ad_image', label: 'Ảnh quảng cáo', type: 'image', max: 2000, full: true, hint: 'Để trống sẽ hiện ô “Vị trí đặt banner quảng cáo” để chào bán.' },
-    { k: 'ad_link', label: 'Link khi bấm vào quảng cáo', type: 'url', full: true },
-    { k: 'ad_title', label: 'Chữ khi chưa có ảnh', type: 'text' },
-    { k: 'ad_note', label: 'Dòng phụ khi chưa có ảnh', type: 'text' }
+    { k: 'ad_title', label: 'Chữ trên ô chào bán', type: 'text' },
+    { k: 'ad_note', label: 'Dòng phụ trên ô chào bán', type: 'text' }
   ],
   settings: [
     { k: 'studio_name', label: 'Tên studio (logo)', type: 'text', req: true },
@@ -950,6 +1012,7 @@ const BLANK = {
   games: () => ({ kv_in_slide: false, status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
   banners: () => ({ active: true, kind: 'game', media_type: 'image', duration: 0, sort: D.banners.length + 1 }),
   genres: () => ({ sort: D.genres.length + 1, show: true, description: '' }),
+  ads: () => ({ active: true, placement: 'all', game_ids: [], weight: 1, start_at: today() }),
   assets: () => ({ kind: 'text', group_name: realGroup() || '', category: AF.cat !== 'all' ? AF.cat : (AF.upCat || 'Chưa phân loại'), game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : '' })
 };
 
@@ -965,6 +1028,7 @@ function fieldHTML(f, v) {
     case 'checkbox': return `<div class="${cls}" style="align-self:end"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input id="${id}" name="${f.k}" type="checkbox" ${(v ?? f.default) ? 'checked' : ''}> ${f.label}</label>${hint}</div>`;
     case 'select': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}">${f.options.map(o => `<option value="${o[0]}" ${String(v) === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select>${hint}</div>`;
     case 'game': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}"><option value="">— Không —</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${v === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>${hint}</div>`;
+    case 'gamepick': return `<div class="${cls} full" data-when-target><span class="lbl">${f.label}</span><div class="checks">${[...D.games].sort(bySort).map(g => `<label class="check"><input type="checkbox" name="game_ids" value="${esc(g.id)}" ${(v || []).includes(g.id) ? 'checked' : ''}> ${esc(g.title)}</label>`).join('') || '<span class="hint">Chưa có game.</span>'}</div>${hint}</div>`;
     case 'genres': return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="checks">${genresSorted().map(g => `<label class="check"><input type="checkbox" name="genre_ids" value="${esc(g.id)}" ${(v || []).includes(g.id) ? 'checked' : ''}> ${esc(g.name)}</label>`).join('') || '<span class="hint">Chưa có thể loại — thêm ở tab Thể loại.</span>'}</div></div>`;
     case 'image': {
       const isData = String(v || '').startsWith('data:');
@@ -1031,6 +1095,7 @@ function readForm(form, fields) {
   const o = {};
   for (const f of fields) {
     if (f.type === 'heading') continue;
+    if (f.type === 'gamepick') { o[f.k] = [...form.querySelectorAll('input[name=game_ids]:checked')].map(i => i.value); continue; }
     if (f.type === 'genres') { o[f.k] = [...form.querySelectorAll('input[name=genre_ids]:checked')].map(i => i.value); continue; }
     const el = form.elements[f.k];
     if (f.type === 'checkbox') o[f.k] = el.checked;
@@ -1042,7 +1107,7 @@ function readForm(form, fields) {
   return o;
 }
 
-const LABELS = { games: 'game', banners: 'banner', genres: 'thể loại', assets: 'tư liệu' };
+const LABELS = { games: 'game', banners: 'banner', genres: 'thể loại', assets: 'tư liệu', ads: 'quảng cáo' };
 function formPanel(kind) {
   const it = editing.item;
   return `<form class="panel" data-form="${kind}" novalidate>
@@ -1091,6 +1156,132 @@ function adminBanners() {
     <td><div class="row-act">${delCell(b.id)}</div></td></tr>`; }).join('');
   return tableWrap(['', 'Banner', 'Loại', 'Bấm vào mở', 'Thời gian chạy', 'Hiện', 'Thứ tự', ''], rows, 'Chưa có banner. Trang chủ sẽ tự lấy các game gắn nhãn Hot.');
 }
+/* ---------- Quảng cáo theo chiến dịch ---------- */
+const PLACE_LABEL = { all: 'Toàn trang', home: 'Trang chủ', games: 'Mọi trang game', game: 'Game chọn riêng' };
+const adState = a => { const td = today(); return !a.active ? ['Đã tắt', 'draft'] : a.end_at && a.end_at < td ? ['Hết hạn', 'draft'] : a.start_at && a.start_at > td ? ['Chờ chạy', 'draft'] : ['Đang chạy', 'pub']; };
+const pct = (a, b) => !b ? '—' : !a ? '0%' : (a / b * 100).toFixed(a / b < 0.1 ? 2 : 1).replace('.', ',') + '%';
+const nfmt = n => Number(n || 0).toLocaleString('vi-VN');
+function adStatsOf(ref) { return (ADSTATS?.ads || []).find(x => x.ref === ref) || { views: 0, clicks: 0, reach: 0 }; }
+function adReport(a) {
+  const st = adStatsOf('c:' + a.id);
+  return `Báo cáo quảng cáo · Vinh Làm Game\nKhách hàng: ${a.advertiser}${a.title ? '\nChiến dịch: ' + a.title : ''}\nVị trí: ${PLACE_LABEL[a.placement] || ''}${a.placement === 'game' ? ' (' + (a.game_ids || []).map(id => gameById(id)?.title).filter(Boolean).join(', ') + ')' : ''}\nThời gian: ${a.start_at || '…'} → ${a.end_at || '…'}\nLượt hiển thị: ${nfmt(st.views)}\nSố người xem: ${nfmt(st.reach)}\nLượt bấm: ${nfmt(st.clicks)}\nTỉ lệ bấm (CTR): ${pct(st.clicks, st.views)}\nSố liệu tính đến ${new Date().toLocaleString('vi-VN')}`;
+}
+function adminAds() {
+  if ((!ADSTATS || Date.now() - ADSTATS.at > 60000) && !statsBusy.ads) loadStats(400, 'ads');
+  const s = D.settings;
+  const legacy = s.ad_image && s.ad_link ? `<div class="notice">Banner quảng cáo cũ (cài ở tab Giao diện) đang hiện khi không có chiến dịch nào. <button class="btn small primary" data-act="ad-migrate">Chuyển thành chiến dịch</button></div>` : '';
+  const rows = [...(D.ads || [])].sort((a, b) => (b.start_at || '').localeCompare(a.start_at || '')).map(a => {
+    const [st, cls] = adState(a), m = adStatsOf('c:' + a.id);
+    const games = a.placement === 'game' ? (a.game_ids || []).map(id => gameById(id)?.title).filter(Boolean).join(', ') : '';
+    return `<tr>
+      <td><div class="thumb" style="aspect-ratio:3/1;width:120px">${a.image ? `<img src="${esc(a.image)}" alt="">` : ''}</div></td>
+      <td><span style="font-weight:500">${esc(a.advertiser)}</span>${a.title ? `<div class="hint" style="color:var(--muted)">${esc(a.title)}</div>` : ''}${a.note ? `<div class="hint" style="color:var(--muted)" title="${esc(a.note)}">📝 ${esc(a.note.slice(0, 40))}${a.note.length > 40 ? '…' : ''}</div>` : ''}</td>
+      <td>${PLACE_LABEL[a.placement] || '—'}${games ? `<div class="hint" style="color:var(--muted)">${esc(games)}</div>` : ''}</td>
+      <td class="num" style="white-space:nowrap">${esc(a.start_at || '…')} → ${esc(a.end_at || '…')}<br><span class="pill ${cls}">${st}</span></td>
+      <td class="num" style="white-space:nowrap">${ADSTATS ? `${nfmt(m.views)} xem<br>${nfmt(m.clicks)} bấm · ${pct(m.clicks, m.views)}` : '…'}</td>
+      <td><button class="toggle ${a.active ? 'on' : ''}" data-act="flip" data-kind="ads" data-k="active" data-id="${esc(a.id)}" aria-label="Bật quảng cáo"></button></td>
+      <td><div class="row-act"><button class="btn small line" data-act="copy" data-v="${esc(adReport(a))}" title="Chép báo cáo gửi khách">Báo cáo</button>${delCell(a.id)}</div></td></tr>`; }).join('');
+  return `${legacy}<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Banner quảng cáo hiện dưới thư viện (trang chủ) và dưới bài giới thiệu ở trang game. Banner đầu trang chủ quản lý ở tab Banner (loại Quảng cáo). Nút <b>Báo cáo</b> chép số liệu để gửi khách.</p>
+    ${tableWrap(['', 'Khách hàng', 'Vị trí', 'Thời gian', 'Hiệu quả', 'Bật', ''], rows, 'Chưa có quảng cáo nào. Bấm “+ Thêm quảng cáo” khi có khách đặt.')}`;
+}
+
+/* ---------- Thống kê ---------- */
+let STATS = null, ADSTATS = null, statsDays = 30, statsMetric = 'visitors', statsErr = '';
+const statsBusy = {};
+function localStats(days) {
+  let ev = []; try { ev = JSON.parse(localStorage.getItem('vlg_events_v1') || '[]'); } catch (_) {}
+  const dkey = d => new Date(new Date(d).getTime() + 7 * 3600e3).toISOString().slice(0, 10);   // giờ Việt Nam
+  const end = dkey(Date.now()), d0 = dkey(Date.now() - (days - 1) * 86400e3);
+  ev = ev.filter(e => dkey(e.at) >= d0);
+  const uniq = (arr, f = () => true) => new Set(arr.filter(f).map(e => e.vid)).size;
+  const cnt = (arr, t) => arr.filter(e => e.type === t).length;
+  const daily = []; for (let i = days - 1; i >= 0; i--) { const d = dkey(Date.now() - i * 86400e3), x = ev.filter(e => dkey(e.at) === d); daily.push({ d, visitors: uniq(x), views: cnt(x, 'view'), plays: cnt(x, 'play') }); }
+  const by = (types, map) => { const m = {}; ev.filter(e => types.includes(e.type) && e.ref).forEach(e => (m[e.ref] = m[e.ref] || []).push(e)); return Object.entries(m).map(([ref, x]) => map(ref, x)); };
+  const src = {}; ev.filter(e => e.type === 'view').forEach(e => { const k = e.src || '(trực tiếp)'; (src[k] = src[k] || new Set()).add(e.vid); });
+  return { days, totals: { visitors: uniq(ev), views: cnt(ev, 'view'), game_views: cnt(ev, 'game_view'), plays: cnt(ev, 'play'), players: uniq(ev, e => e.type === 'play'), ad_views: cnt(ev, 'ad_view'), ad_clicks: cnt(ev, 'ad_click'), mobile: uniq(ev, e => e.device === 'mobile'), desktop: uniq(ev, e => e.device === 'desktop') },
+    daily, games: by(['game_view', 'play'], (ref, x) => ({ ref, views: cnt(x, 'game_view'), plays: cnt(x, 'play'), players: uniq(x, e => e.type === 'play') })).sort((a, b) => b.plays - a.plays || b.views - a.views),
+    ads: by(['ad_view', 'ad_click'], (ref, x) => ({ ref, views: cnt(x, 'ad_view'), clicks: cnt(x, 'ad_click'), reach: uniq(x, e => e.type === 'ad_view') })).sort((a, b) => b.views - a.views),
+    sources: Object.entries(src).map(([k, v]) => ({ src: k, visitors: v.size })).sort((a, b) => b.visitors - a.visitors).slice(0, 8) };
+}
+async function loadStats(days, which = 'main') {
+  statsBusy[which] = true;
+  await Promise.resolve();                       // không render lại giữa lúc đang render
+  try {
+    let r;
+    if (MODE === 'cloud') { const { data, error } = await sb.rpc('site_stats', { days }); if (error) throw error; r = data; }
+    else r = localStats(days);
+    if (r) r.at = Date.now();
+    if (which === 'ads') ADSTATS = r; else { STATS = r; statsErr = ''; }
+  } catch (e) {
+    const m = /site_stats|function/i.test(e.message || '') ? 'Chưa có hàm thống kê. Hãy chạy lại schema.sql trong Supabase › SQL Editor.' : 'Không tải được thống kê: ' + (e.message || e);
+    if (which === 'ads') ADSTATS = { ads: [], at: Date.now() }; else { STATS = null; statsErr = m; }
+  } finally { statsBusy[which] = false; if (TAB === 'stats' || TAB === 'ads') render(); }
+}
+const refName = ref => { const [k, id] = [ref.slice(0, 2), ref.slice(2)];
+  if (ref === 'legacy') return ['Banner cũ (tab Giao diện)', 'Dưới thư viện'];
+  if (k === 'c:') { const a = (D.ads || []).find(x => x.id === id); return [a ? a.advertiser + (a.title ? ' · ' + a.title : '') : '(quảng cáo đã xoá)', a ? PLACE_LABEL[a.placement] : '']; }
+  if (k === 'b:') { const b = D.banners.find(x => x.id === id); return [b ? (b.sponsor ? b.sponsor + ' · ' : '') + b.title : '(banner đã xoá)', 'Banner đầu trang']; }
+  return [ref, ''];
+};
+function barChart(daily, key, label) {
+  const W = 760, H = 220, L = 36, B = 26, T = 10, n = daily.length;
+  const max = Math.max(1, ...daily.map(d => d[key]));
+  const step = Math.pow(10, Math.floor(Math.log10(max))); const top = Math.ceil(max / step) * step || 1;
+  const bw = (W - L) / n, w = Math.max(2, bw - (n > 45 ? 1 : 2));
+  const y = v => T + (H - T - B) * (1 - v / top);
+  const ticks = [0, top / 2, top].filter(v => Number.isInteger(v)).map(v => `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" class="ch-grid"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" class="ch-ax">${nfmt(Math.round(v))}</text>`).join('');
+  const every = Math.ceil(n / 8);
+  const bars = daily.map((d, i) => { const x = L + i * bw + (bw - w) / 2, v = d[key], h = Math.max(0, y(0) - y(v)), r = Math.min(4, w / 2, h);
+    const path = v ? `M${x},${y(0)} V${y(v) + r} Q${x},${y(v)} ${x + r},${y(v)} H${x + w - r} Q${x + w},${y(v)} ${x + w},${y(v) + r} V${y(0)} Z` : '';
+    const dl = d.d.slice(8, 10) + '/' + d.d.slice(5, 7);
+    return `<g class="ch-col" data-tip="${dl}: ${nfmt(v)} ${label.toLowerCase()}"><rect x="${L + i * bw}" y="${T}" width="${bw}" height="${H - T - B}" class="ch-hit"/>${path ? `<path d="${path}" class="ch-bar"/>` : ''}${(i % every === 0 && n - 1 - i >= every / 2) || i === n - 1 ? `<text x="${x + w / 2}" y="${H - 8}" text-anchor="middle" class="ch-ax">${dl}</text>` : ''}</g>`; }).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${label} theo ngày">${ticks}${bars}</svg><div class="ch-tip" hidden></div></div>`;
+}
+function adminStats() {
+  if (!STATS && !statsErr && !statsBusy.main) { loadStats(statsDays); return `<div class="empty">Đang tải thống kê…</div>`; }
+  const range = `<div class="seg">${[[7, '7 ngày'], [30, '30 ngày'], [90, '90 ngày'], [365, '1 năm']].map(([d, l]) => `<button class="${statsDays === d ? 'on' : ''}" data-act="stats-days" data-v="${d}">${l}</button>`).join('')}</div>`;
+  const head = `<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">${range}<button class="btn small line" data-act="stats-refresh">Tải lại</button></div>`;
+  if (statsErr) return `${head}<div class="notice">${esc(statsErr)}</div>`;
+  const t = STATS.totals || {};
+  const tile = (v, l, sub = '') => `<div class="kpi"><b class="num">${v}</b><span>${l}</span>${sub ? `<small>${sub}</small>` : ''}</div>`;
+  const metrics = [['visitors', 'Khách truy cập'], ['views', 'Lượt xem trang'], ['plays', 'Lượt chơi']];
+  const curM = metrics.find(m => m[0] === statsMetric) || metrics[0];
+  const games = (STATS.games || []).map(x => ({ ...x, g: D.games.find(g => g.id === x.ref) })).filter(x => x.g);
+  const gRows = games.map((x, i) => `<tr><td class="num">${i + 1}</td><td style="font-weight:500">${esc(x.g.title)}</td><td class="num">${nfmt(x.views)}</td><td class="num">${nfmt(x.plays)}</td><td class="num">${nfmt(x.players)}</td><td class="num">${pct(x.players, x.views || x.players)}</td></tr>`).join('');
+  const aRows = (STATS.ads || []).map(x => { const [n, pos] = refName(x.ref); return `<tr><td style="font-weight:500">${esc(n)}</td><td>${esc(pos)}</td><td class="num">${nfmt(x.views)}</td><td class="num">${nfmt(x.reach)}</td><td class="num">${nfmt(x.clicks)}</td><td class="num">${pct(x.clicks, x.views)}</td></tr>`; }).join('');
+  const sRows = (STATS.sources || []).map(x => `<tr><td>${esc(x.src)}</td><td class="num">${nfmt(x.visitors)}</td></tr>`).join('');
+  const dev = (t.mobile || 0) + (t.desktop || 0);
+  return `${head}
+  <div class="kpis">
+    ${tile(nfmt(t.visitors), 'Khách truy cập', 'người khác nhau')}
+    ${tile(nfmt(t.views), 'Lượt xem trang', t.visitors ? (t.views / t.visitors).toFixed(1).replace('.', ',') + ' trang / khách' : '')}
+    ${tile(nfmt(t.plays), 'Lượt chơi game', nfmt(t.players) + ' người chơi')}
+    ${tile(nfmt(t.ad_views), 'Lượt hiển thị QC', nfmt(t.ad_clicks) + ' lượt bấm · CTR ' + pct(t.ad_clicks, t.ad_views))}
+    ${tile(dev ? Math.round(t.mobile / dev * 100) + '%' : '—', 'Khách dùng điện thoại', dev ? nfmt(t.desktop) + ' khách máy tính' : '')}
+  </div>
+  <section class="st-card">
+    <div class="st-head"><h3>${curM[1]} theo ngày</h3><div class="seg small">${metrics.map(([k, l]) => `<button class="${k === curM[0] ? 'on' : ''}" data-act="stats-metric" data-v="${k}">${l}</button>`).join('')}</div></div>
+    ${barChart(STATS.daily || [], curM[0], curM[1])}
+    <details class="st-table"><summary>Xem dạng bảng</summary>${tableWrap(['Ngày', 'Khách', 'Lượt xem', 'Lượt chơi'], [...(STATS.daily || [])].reverse().map(d => `<tr><td class="num">${d.d.split('-').reverse().join('/')}</td><td class="num">${nfmt(d.visitors)}</td><td class="num">${nfmt(d.views)}</td><td class="num">${nfmt(d.plays)}</td></tr>`).join(''), '')}</details>
+  </section>
+  <section class="st-card"><div class="st-head"><h3>Game được chơi nhiều nhất</h3></div>
+    ${tableWrap(['#', 'Game', 'Xem trang game', 'Lượt chơi', 'Người chơi', 'Tỉ lệ bấm chơi'], gRows, 'Chưa có lượt chơi nào trong khoảng này.')}</section>
+  <section class="st-card"><div class="st-head"><h3>Quảng cáo</h3></div>
+    ${tableWrap(['Quảng cáo', 'Vị trí', 'Hiển thị', 'Người xem', 'Lượt bấm', 'CTR'], aRows, 'Chưa có lượt hiển thị quảng cáo nào.')}</section>
+  <section class="st-card"><div class="st-head"><h3>Khách đến từ đâu</h3></div>
+    ${tableWrap(['Nguồn', 'Khách'], sRows, 'Chưa có dữ liệu.')}</section>
+  <p class="hint" style="color:var(--muted);font-size:12.5px">Khách được nhận diện bằng mã ngẫu nhiên lưu trên trình duyệt, không thu thập thông tin cá nhân. Lượt xem của quản trị viên (đã đăng nhập admin trên trình duyệt đó) không được tính. Ngày tính theo giờ Việt Nam.</p>`;
+}
+document.addEventListener('mousemove', e => {
+  const col = e.target.closest?.('.ch-col'), tip = e.target.closest?.('.chart')?.querySelector('.ch-tip');
+  document.querySelectorAll('.ch-col.on').forEach(c => c !== col && c.classList.remove('on'));
+  if (!tip) { document.querySelectorAll('.ch-tip').forEach(t => t.hidden = true); return; }
+  if (!col) { tip.hidden = true; return; }
+  col.classList.add('on'); tip.hidden = false; tip.textContent = col.dataset.tip;
+  const box = tip.parentElement.getBoundingClientRect();
+  tip.style.left = Math.min(box.width - tip.offsetWidth, Math.max(0, e.clientX - box.left - tip.offsetWidth / 2)) + 'px';
+  tip.style.top = Math.max(0, e.clientY - box.top - 44) + 'px';
+});
 function adminGenres() {
   const rows = genresSorted().map(x => `<tr>
     <td style="font-weight:500">${esc(x.name)}${x.description ? `<div class="hint" style="color:var(--muted);font-weight:400">${esc(x.description).slice(0, 80)}</div>` : ''}</td><td class="mono">${esc(x.slug)}</td>
@@ -1118,9 +1309,10 @@ function loadMsgs() {
 const fmtTime = iso => { try { return new Date(iso).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } };
 function adminMessages() {
   if (!MSGS) return `<div class="empty">Đang tải tin nhắn…</div>`;
-  const counts = { all: MSGS.length, new: MSGS.filter(m => !m.handled).length, done: MSGS.filter(m => m.handled).length };
-  const list = MSGS.filter(m => msgFilter === 'all' || (msgFilter === 'new' ? !m.handled : m.handled));
-  const chips = [['all', 'Tất cả'], ['new', 'Chưa liên hệ'], ['done', 'Đã liên hệ']].map(([k, l]) => `<button class="chip ${msgFilter === k ? 'on' : ''}" data-act="msg-filter" data-f="${k}">${l} <span class="num" style="opacity:.7">${counts[k]}</span></button>`).join('');
+  const isAd = m => m.topic === 'ads' || /^\[Quảng cáo\]/.test(m.message || '');
+  const counts = { all: MSGS.length, new: MSGS.filter(m => !m.handled).length, done: MSGS.filter(m => m.handled).length, ads: MSGS.filter(isAd).length };
+  const list = MSGS.filter(m => msgFilter === 'all' || (msgFilter === 'ads' ? isAd(m) : msgFilter === 'new' ? !m.handled : m.handled));
+  const chips = [['all', 'Tất cả'], ['new', 'Chưa liên hệ'], ['done', 'Đã liên hệ'], ['ads', 'Quảng cáo']].map(([k, l]) => `<button class="chip ${msgFilter === k ? 'on' : ''}" data-act="msg-filter" data-f="${k}">${l} <span class="num" style="opacity:.7">${counts[k]}</span></button>`).join('');
   return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div class="chips" style="margin:0;padding:0;border:0">${chips}</div><button class="btn small line" data-act="msg-refresh">Tải lại</button></div>
     ${MODE === 'local' ? `<p class="hint" style="color:var(--muted);font-size:13px">Chế độ demo: chỉ thấy tin nhắn gửi từ trình duyệt này. Kết nối Supabase để nhận tin nhắn của mọi khách.</p>` : ''}
     ${list.length ? `<div class="msg-list">${list.map(m => `<article class="msg ${m.handled ? '' : 'new'}">
@@ -1128,7 +1320,7 @@ function adminMessages() {
         <div class="msg-who"><b>${esc(m.name)}</b>
           <div class="msg-contact"><span>${esc(m.email)}</span>${m.phone ? `<span class="num">${esc(m.phone)}</span>` : ''}</div>
         </div>
-        <span class="pill ${m.handled ? 'draft' : 'pub'}">${m.handled ? 'Đã liên hệ' : 'Mới'}</span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap">${isAd(m) ? '<span class="pill ad-pill">Quảng cáo</span>' : ''}<span class="pill ${m.handled ? 'draft' : 'pub'}">${m.handled ? 'Đã liên hệ' : 'Mới'}</span></span>
       </div>
       <div class="msg-body">${esc(m.message)}</div>
       <div class="msg-meta"><span class="num">${fmtTime(m.created_at)}</span>
@@ -1161,9 +1353,9 @@ function adminBackup() {
 }
 
 const TAB_GROUPS = () => [
-  ['Nội dung', [['games', 'Game', D.games.length], ['banners', 'Banner', D.banners.length], ['genres', 'Thể loại', D.genres.length]]],
+  ['Nội dung', [['games', 'Game', D.games.length], ['banners', 'Banner', D.banners.length], ['ads', 'Quảng cáo', (D.ads || []).length], ['genres', 'Thể loại', D.genres.length]]],
   ['Tư liệu', [['assets', 'Kho tư liệu', ASSETS ? ASSETS.length : null]]],
-  ['Khách hàng', [['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0]]],
+  ['Khách hàng', [['stats', 'Thống kê'], ['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0]]],
   ['Cài đặt', [['display', 'Giao diện'], ['settings', 'Thông tin trang'], ['admins', 'Quản trị viên'], ['backup', 'Sao lưu']]]
 ];
 function authView() {
@@ -1202,8 +1394,8 @@ function viewAdmin(tab = 'games') {
   }
   const groups = TAB_GROUPS();
   const flat = groups.flatMap(g => g[1]);
-  const canAdd = ['games', 'banners', 'genres'].includes(tab);
-  const body = { games: adminGames, banners: adminBanners, genres: adminGenres, messages: adminMessages, assets: adminAssets, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup }[tab] || adminGames;
+  const canAdd = ['games', 'banners', 'genres', 'ads'].includes(tab);
+  const body = { games: adminGames, banners: adminBanners, ads: adminAds, stats: adminStats, genres: adminGenres, messages: adminMessages, assets: adminAssets, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup }[tab] || adminGames;
   const side = `<aside class="admin-side" aria-label="Mục quản trị">
       <div class="side-groups">${groups.map(([name, tabs]) => `<div class="side-group"><span>${name}</span>${tabs.map(t => `<button class="side-tab ${t[0] === tab ? 'on' : ''}" data-act="tab" data-tab="${t[0]}" ${t[0] === tab ? 'aria-current="page"' : ''}><span>${t[1]}</span>${t[3] ? `<span class="tab-badge num">${t[3]}</span>` : t[2] != null ? `<span class="cnt num">${t[2]}</span>` : ''}</button>`).join('')}</div>`).join('')}</div>
       <div class="side-me">
@@ -1535,6 +1727,7 @@ async function checkAdmin() {
   ME = session.user?.email || '';
   const { data, error } = await sb.rpc('is_admin');
   IS_ADMIN = !error && data === true;
+  try { if (IS_ADMIN) localStorage.setItem('vlg_no_track', '1'); } catch (_) {}   // không tính lượt xem của quản trị viên
   if (IS_ADMIN) {
     const r = await sb.from('admins').select('role').eq('email', ME.toLowerCase()).maybeSingle();
     MY_ROLE = r.data?.role || 'admin';
@@ -1553,7 +1746,7 @@ function onAuthEvent(ev) {
 
 /* ---------- Tải file lên Backblaze B2 qua Cloudflare Worker ---------- */
 const uploadOn = () => workerOn() && !!session;
-const FOLDER_OF = { banners: 'banner', games: 'games', display: 'ads', settings: 'donate', assets: 'library', lib: 'library' };
+const FOLDER_OF = { banners: 'banner', games: 'games', ads: 'banner', display: 'banner', settings: 'donate', assets: 'library', lib: 'library' };
 async function uploadToB2(file, folder, onProgress) {
   const { data } = await sb.auth.getSession();
   const tok = data.session?.access_token;
@@ -1606,7 +1799,7 @@ async function uploadWithButton(btn, file, folder) {
 }
 
 let TAB = location.hash.replace(/^#\/?/, '') || 'games';
-if (!['games', 'banners', 'genres', 'assets', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
+if (!['games', 'banners', 'ads', 'stats', 'genres', 'assets', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
 function render() {
   if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
   if (ASSETS === null && TAB !== 'assets' && (MODE === 'local' || (session && IS_ADMIN))) loadAssets();
@@ -1967,7 +2160,14 @@ document.addEventListener('click', async e => {
       case 'media': showMedia(Number(t.dataset.i)); break;
       case 'media-step': showMedia(mediaIdx + Number(t.dataset.d)); break;
       case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
-      case 'fs': { const f = $('#frame'); (f.requestFullscreen || f.webkitRequestFullscreen)?.call(f)?.catch?.(() => toast('Trình duyệt không cho phép toàn màn hình ở đây.', true)); break; }
+      case 'fs': {
+        const f = $('#frame'), req = f.requestFullscreen || f.webkitRequestFullscreen;
+        const fake = () => { document.body.classList.add('pseudo-fs'); addEventListener('keydown', function k(e) { if (e.key === 'Escape') { document.body.classList.remove('pseudo-fs'); removeEventListener('keydown', k); } }); };
+        if (!req) { fake(); break; }
+        try { const r = req.call(f); if (r && r.catch) r.catch(fake); } catch (_) { fake(); }
+        break;
+      }
+      case 'fs-close': document.body.classList.remove('pseudo-fs'); break;
       case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
       case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
@@ -1979,6 +2179,14 @@ document.addEventListener('click', async e => {
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
       case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
       case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'stats-days': statsDays = Number(t.dataset.v); STATS = null; statsErr = ''; render(); break;
+      case 'stats-metric': statsMetric = t.dataset.v; render(); break;
+      case 'stats-refresh': STATS = null; ADSTATS = null; statsErr = ''; render(); break;
+      case 'ad-migrate': {
+        const s = D.settings;
+        await Store.save('ads', { id: uid(), advertiser: s.ad_title || 'Khách hàng', title: '', image: s.ad_image, image_mobile: '', link_url: s.ad_link, placement: 'home', game_ids: [], start_at: today(), end_at: '', active: true, weight: 1, note: '' });
+        await Store.saveSettings({ ...s, ad_image: '', ad_link: '' }); render(); toast('Đã chuyển thành chiến dịch, hãy bổ sung tên khách và ngày kết thúc.'); break;
+      }
       case 'ag-open': AF.group = t.dataset.v; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; AF.sel = []; AF.renaming = false; editing = null; confirmDel = null; render(); $('#admin-main, main')?.scrollIntoView?.({ block: 'start' }); break;
       case 'ag-back': AF.group = null; AF.sel = []; AF.renaming = false; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; editing = null; confirmDel = null; LIB_PENDING = []; render(); break;
       case 'ag-rename': AF.renaming = true; render(); $('[data-ag-rename] input')?.select(); break;
@@ -2100,7 +2308,14 @@ document.addEventListener('submit', async e => {
     const missing = FIELDS[kind].find(f => f.req && !v[f.k]);
     if (kind === 'banners' && v.kind === 'ad' && !/^https?:\/\//i.test(v.link_url)) { toast('Banner quảng cáo cần link trang web của khách, bắt đầu bằng https://', true); form.elements.link_url?.focus(); return; }
     if (kind === 'banners' && v.media_type !== 'image' && !v.video_url) { toast('Hãy dán link video cho banner dạng video.', true); form.elements.video_url?.focus(); return; }
-    if (kind === 'banners' && v.start_at && v.end_at && v.end_at < v.start_at) { toast('Ngày kết thúc phải sau ngày bắt đầu.', true); return; }
+    if ((kind === 'banners' || kind === 'ads') && v.start_at && v.end_at && v.end_at < v.start_at) { toast('Ngày kết thúc phải sau ngày bắt đầu.', true); return; }
+    if (kind === 'ads') {
+      if (!/^https?:\/\//i.test(v.link_url)) { toast('Link trang web của khách phải bắt đầu bằng https://', true); form.elements.link_url?.focus(); return; }
+      if (!v.image) { toast('Hãy thêm ảnh banner quảng cáo.', true); return; }
+      if (v.placement === 'game' && !v.game_ids.length) { toast('Hãy chọn ít nhất một game.', true); return; }
+      if (v.placement !== 'game') v.game_ids = [];
+      v.weight = Math.min(10, Math.max(1, Number(v.weight) || 1));
+    }
     if (missing) { toast(`Hãy điền “${missing.label}”.`, true); form.elements[missing.k]?.focus(); return; }
     if (kind === 'display') v.banner_speed = Math.max(2, Number(v.banner_speed) || 6), v.grid_rows = Math.max(1, Number(v.grid_rows) || 3);
     if (kind === 'settings' || kind === 'display') { await Store.saveSettings({ ...D.settings, ...v }); render(); toast(kind === 'display' ? 'Đã lưu giao diện' : 'Đã lưu thông tin trang'); return; }
@@ -2133,7 +2348,7 @@ document.addEventListener('submit', async e => {
 (async () => {
   try { await Store.load(); }
   catch (err) {
-    if (MODE === 'cloud') { LOAD_ERROR = true; D = { settings: { ...SEED.settings }, genres: [], games: [], banners: [] }; }   // KHÔNG hiện dữ liệu mẫu cho khách
+    if (MODE === 'cloud') { LOAD_ERROR = true; D = { settings: { ...SEED.settings }, genres: [], games: [], banners: [], ads: [] }; }   // KHÔNG hiện dữ liệu mẫu cho khách
     else D = structuredClone(SEED);
   }
   if (sb) sb.auth.onAuthStateChange((ev, s) => { session = s; if (typeof onAuthEvent === 'function') onAuthEvent(ev, s); });

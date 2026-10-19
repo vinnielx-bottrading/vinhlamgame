@@ -181,6 +181,7 @@ create table if not exists messages (
   handled    boolean default false,
   created_at timestamptz default now()
 );
+alter table messages add column if not exists topic text default '';
 alter table messages enable row level security;
 
 drop policy if exists "public send messages"  on messages;
@@ -192,6 +193,7 @@ create policy "public send messages" on messages for insert
     and char_length(coalesce(phone, '')) <= 20
     and char_length(message) between 1 and 5000
     and handled = false
+    and coalesce(topic, '') in ('', 'ads')
   );
 create policy "admin manage messages" on messages for all
   using (public.is_admin()) with check (public.is_admin());
@@ -223,6 +225,100 @@ create index if not exists assets_category_idx on assets (category);
 alter table assets enable row level security;
 drop policy if exists "admin manage assets" on assets;
 create policy "admin manage assets" on assets for all using (public.is_admin()) with check (public.is_admin());
+
+-- ---------- Quảng cáo theo chiến dịch (vị trí / game / thời gian) ----------
+-- placement: all = toàn trang (trang chủ + mọi trang game) · home = trang chủ · games = mọi trang game · game = các game chọn trong game_ids
+create table if not exists ads (
+  id           text primary key default gen_random_uuid()::text,
+  advertiser   text not null default '',
+  title        text default '',
+  image        text default '',
+  image_mobile text default '',
+  link_url     text default '',
+  placement    text default 'all' check (placement in ('all','home','games','game')),
+  game_ids     jsonb default '[]'::jsonb,
+  start_at     text default '',
+  end_at       text default '',
+  active       boolean default true,
+  weight       int default 1,
+  note         text default '',
+  created_at   timestamptz default now()
+);
+alter table ads enable row level security;
+-- Khách chỉ đọc được các cột hiển thị; cột ghi chú (giá, hợp đồng) chỉ quản trị viên thấy
+revoke all on ads from anon;
+grant select (id, advertiser, title, image, image_mobile, link_url, placement, game_ids, start_at, end_at, active, weight) on ads to anon;
+grant select, insert, update, delete on ads to authenticated;
+drop policy if exists "public read ads" on ads;
+drop policy if exists "admin read ads"  on ads;
+drop policy if exists "admin write ads" on ads;
+create policy "public read ads" on ads for select to anon using (active);
+create policy "admin read ads"  on ads for select to authenticated using (public.is_admin());
+create policy "admin write ads" on ads for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+-- ---------- Thống kê lượt truy cập / lượt chơi / quảng cáo ----------
+-- Khách chỉ GHI sự kiện (không đọc được). Quản trị viên xem qua hàm site_stats().
+create table if not exists events (
+  id     bigint generated always as identity primary key,
+  at     timestamptz not null default now(),
+  vid    text not null check (char_length(vid) between 6 and 40),
+  type   text not null check (type in ('view','game_view','play','ad_view','ad_click')),
+  ref    text default '' check (char_length(ref) <= 80),
+  path   text default '' check (char_length(path) <= 200),
+  device text default '' check (device in ('','mobile','desktop')),
+  src    text default '' check (char_length(src) <= 120)
+);
+create index if not exists events_at_idx on events (at);
+alter table events enable row level security;
+drop policy if exists "public log events"   on events;
+drop policy if exists "admin manage events" on events;
+create policy "public log events" on events for insert to anon, authenticated
+  with check (at between now() - interval '2 minutes' and now() + interval '2 minutes');
+create policy "admin manage events" on events for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+create or replace function public.site_stats(days int default 30)
+returns jsonb
+language plpgsql stable security definer set search_path = public
+as $$
+declare
+  n     int := least(greatest(coalesce(days, 30), 1), 400);
+  d0    date := (now() at time zone 'Asia/Ho_Chi_Minh')::date - (n - 1);
+  since timestamptz := d0::timestamp at time zone 'Asia/Ho_Chi_Minh';
+begin
+  if not public.is_admin() then raise exception 'Chỉ quản trị viên xem được thống kê'; end if;
+  return jsonb_build_object(
+    'days', n,
+    'totals', (select jsonb_build_object(
+        'visitors',   count(distinct vid),
+        'views',      count(*) filter (where type = 'view'),
+        'game_views', count(*) filter (where type = 'game_view'),
+        'plays',      count(*) filter (where type = 'play'),
+        'players',    count(distinct vid) filter (where type = 'play'),
+        'ad_views',   count(*) filter (where type = 'ad_view'),
+        'ad_clicks',  count(*) filter (where type = 'ad_click'),
+        'mobile',     count(distinct vid) filter (where device = 'mobile'),
+        'desktop',    count(distinct vid) filter (where device = 'desktop'))
+      from events where at >= since),
+    'daily', (select coalesce(jsonb_agg(jsonb_build_object('d', to_char(g.d, 'YYYY-MM-DD'), 'visitors', coalesce(x.v, 0), 'views', coalesce(x.pv, 0), 'plays', coalesce(x.p, 0)) order by g.d), '[]'::jsonb)
+      from generate_series(d0, d0 + (n - 1), interval '1 day') as g(d)
+      left join (select (at at time zone 'Asia/Ho_Chi_Minh')::date as d, count(distinct vid) v,
+                        count(*) filter (where type = 'view') pv, count(*) filter (where type = 'play') p
+                 from events where at >= since group by 1) x on x.d = g.d::date),
+    'games', (select coalesce(jsonb_agg(jsonb_build_object('ref', ref, 'views', v, 'plays', p, 'players', pl) order by p desc, v desc), '[]'::jsonb)
+      from (select ref, count(*) filter (where type = 'game_view') v, count(*) filter (where type = 'play') p,
+                   count(distinct vid) filter (where type = 'play') pl
+            from events where at >= since and type in ('game_view', 'play') and ref <> '' group by ref) t),
+    'ads', (select coalesce(jsonb_agg(jsonb_build_object('ref', ref, 'views', v, 'clicks', c, 'reach', r) order by v desc), '[]'::jsonb)
+      from (select ref, count(*) filter (where type = 'ad_view') v, count(*) filter (where type = 'ad_click') c,
+                   count(distinct vid) filter (where type = 'ad_view') r
+            from events where at >= since and type in ('ad_view', 'ad_click') and ref <> '' group by ref) t),
+    'sources', (select coalesce(jsonb_agg(jsonb_build_object('src', src, 'visitors', v) order by v desc), '[]'::jsonb)
+      from (select coalesce(nullif(src, ''), '(trực tiếp)') src, count(distinct vid) v
+            from events where at >= since and type = 'view' group by 1 order by 2 desc limit 8) t)
+  );
+end $$;
+revoke all on function public.site_stats(int) from public;
+grant execute on function public.site_stats(int) to authenticated;
 
 -- ---------- Cập nhật trực tiếp: bật Realtime cho các bảng trang khách đọc ----------
 do $$

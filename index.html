@@ -102,8 +102,8 @@ p{margin:0}
 .slide-media img{transition:transform 8s ease}
 .slide.on .slide-media img{transform:scale(1.03)}
 .slide-link{position:absolute;inset:0;z-index:1}
-.ad-tag{position:absolute;top:12px;left:12px;z-index:2;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:4px 8px;pointer-events:none}
-.ad-tag b{color:var(--ink);font-weight:600;letter-spacing:.04em;text-transform:none;margin-left:4px}
+.sp-tag{position:absolute;top:12px;left:12px;z-index:2;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:4px 8px;pointer-events:none}
+.sp-tag b{color:var(--ink);font-weight:600;letter-spacing:.04em;text-transform:none;margin-left:4px}
 .dots{position:absolute;left:50%;bottom:clamp(10px,2vw,18px);transform:translateX(-50%);display:flex;gap:8px;z-index:3}
 .dots button{width:28px;height:3px;padding:0;background:rgba(255,255,255,.5);border-radius:2px;transition:background .3s,width .3s;position:relative}
 .dots button.on{background:#fff;width:44px}
@@ -167,13 +167,18 @@ p{margin:0}
 .pager button:hover{border-color:var(--ink)}
 .pager button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .pager button[disabled]{opacity:.35;pointer-events:none}
-.ad-slot{padding-bottom:clamp(48px,7vw,88px)}
-.ad{position:relative;display:block;aspect-ratio:var(--ar,6/1);min-height:90px;max-width:100%;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
-.ad img{width:100%;height:100%;object-fit:cover}
-.ad-label{position:absolute;top:8px;right:8px;z-index:1;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:3px 7px}
-.ad-empty{height:100%;display:grid;place-content:center;justify-items:center;text-align:center;gap:6px;padding:16px;background:repeating-linear-gradient(135deg,var(--paper-2) 0 14px,var(--wine-tint) 14px 15px)}
-.ad-empty b{font:500 clamp(1.2rem,2.4vw,1.8rem)/1.2 var(--display);color:var(--wine)}
-.ad-empty span{font-size:13px;color:var(--muted)}
+.sp-slot{padding-bottom:clamp(48px,7vw,88px)}
+.sp-box{position:relative;display:block;aspect-ratio:var(--ar,6/1);min-height:90px;max-width:100%;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
+.sp-box img{width:100%;height:100%;object-fit:cover;display:block}
+.sp-box picture{display:block;width:100%;height:100%}
+@media (max-width:700px){ .sp-box.has-m{aspect-ratio:3/1} }
+.sp-foot{display:flex;justify-content:flex-end;margin-top:6px}
+.sp-foot a{font-size:11px;letter-spacing:.06em;color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
+.sp-foot a:hover{color:var(--wine);border-bottom-color:currentColor}
+.sp-label{position:absolute;top:8px;right:8px;z-index:1;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.92);color:var(--muted);padding:3px 7px}
+.sp-empty{height:100%;display:grid;place-content:center;justify-items:center;text-align:center;gap:6px;padding:16px;background:repeating-linear-gradient(135deg,var(--paper-2) 0 14px,var(--wine-tint) 14px 15px)}
+.sp-empty b{font:500 clamp(1.2rem,2.4vw,1.8rem)/1.2 var(--display);color:var(--wine)}
+.sp-empty span{font-size:13px;color:var(--muted)}
 .card:hover img,.card:hover .gen{transform:scale(1.035)}
 .card-body{display:grid;gap:6px}
 .card-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);letter-spacing:.04em}
@@ -280,12 +285,43 @@ p{margin:0}
 .yt h2{font-size:clamp(1.8rem,3vw,2.4rem)}
 .yt-frame{position:relative;width:100%;aspect-ratio:16/9;background:#140A0E;max-width:100%}
 .yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.gd-ad{padding-top:clamp(24px,4vw,40px)}
+.gd-sp{padding-top:clamp(24px,4vw,40px)}
 @media (max-width:900px){ .gd{grid-template-columns:minmax(0,1fr)} .gd-article{position:static} }
 
 /* Play */
 .play{padding-block:20px 48px;display:grid;gap:16px}
 .play-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.fs-close{display:none}
+body.pseudo-fs{overflow:hidden}
+body.pseudo-fs .frame{position:fixed;inset:0;z-index:100;max-height:none;aspect-ratio:auto;width:100vw;height:100vh;height:100dvh;border:0}
+body.pseudo-fs .fs-close{display:inline-flex;position:fixed;top:max(10px,env(safe-area-inset-top,0px));right:max(10px,env(safe-area-inset-right,0px));z-index:101}
+.play-start{position:relative;display:grid;place-items:center;aspect-ratio:4/5;max-height:70vh;width:100%;margin-top:16px;background:#140A0E;overflow:hidden;color:#fff;text-align:center}
+.play-start img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.play-start-in{position:relative;display:grid;gap:10px;justify-items:center;padding:24px}
+.play-start-in b{font:500 2rem/1.1 var(--display)}
+.play-start-in > span:last-child{font-size:14px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.play-big{width:76px;height:76px;border-radius:50%;background:var(--wine);display:grid;place-items:center;box-shadow:0 10px 30px -8px rgba(0,0,0,.6)}
+.play-big .play-ico{border-left-width:24px;border-top-width:15px;border-bottom-width:15px;margin-left:7px;color:#fff}
+.ad-pill{background:var(--wine);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{border:1px solid var(--line);padding:16px 18px;display:grid;gap:4px;background:var(--paper)}
+.kpi b{font:500 2.1rem/1 var(--display);color:var(--ink)}
+.kpi span{font-size:13px;color:var(--ink)}
+.kpi small{font-size:12px;color:var(--muted)}
+.st-card{border:1px solid var(--line);padding:18px;display:grid;gap:14px;background:var(--paper);min-width:0}
+.st-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.st-head h3{font:500 1.35rem/1.2 var(--display)}
+.seg.small button{padding:6px 10px;font-size:12.5px}
+.chart{position:relative}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.ch-grid{stroke:var(--line);stroke-width:1}
+.ch-ax{font-size:11px;fill:var(--muted);font-family:inherit}
+.ch-bar{fill:var(--wine)}
+.ch-hit{fill:transparent}
+.ch-col.on .ch-hit{fill:var(--wine-tint)}
+.ch-tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;padding:6px 9px;border-radius:3px;white-space:nowrap;z-index:2}
+.st-table summary{cursor:pointer;font-size:13px;color:var(--muted)}
+.st-table .tbl-wrap{margin-top:10px;max-height:320px;overflow:auto}
 .play-bar h1{font-size:1.9rem;margin-right:auto}
 .frame{position:relative;background:#140A0E;aspect-ratio:16/9;max-height:calc(100vh - 220px);width:100%;max-width:100%;border:1px solid var(--line)}
 .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#140A0E}
@@ -466,8 +502,10 @@ const SEED = {
 
 /* ============ LỚP DỮ LIỆU (Supabase hoặc localStorage) ============ */
 const LS_KEY = 'vlg_data_v1';
-const TABLES = { games: 'games', banners: 'banners', genres: 'genres' };
-let D = { settings: {}, genres: [], games: [], banners: [] };
+const TABLES = { games: 'games', banners: 'banners', genres: 'genres', ads: 'ads' };
+let D = { settings: {}, genres: [], games: [], banners: [], ads: [] };
+// Cột quảng cáo khách được đọc (cột ghi chú giá / hợp đồng chỉ quản trị viên thấy)
+const AD_COLS = 'id,advertiser,title,image,image_mobile,link_url,placement,game_ids,start_at,end_at,active,weight';
 let sb = null, session = null;
 const MODE = (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase) ? 'cloud' : 'local';
 
@@ -475,22 +513,24 @@ const Store = {
   async load() {
     if (MODE === 'cloud') {
       if (!sb) sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-      const [s, g, ge, b, ss] = await Promise.all([
+      const [s, g, ge, b, ss, ad] = await Promise.all([
         sb.from('settings').select('data').eq('id', 1).maybeSingle(),
         sb.from('games').select('*'),
         sb.from('genres').select('*'),
         sb.from('banners').select('*'),
-        sb.auth.getSession()
+        sb.auth.getSession(),
+        sb.from('ads').select(isAdmin() ? '*' : AD_COLS)
       ]);
       const err = [s, g, ge, b].find(r => r.error);
       if (err) throw err.error;
       session = ss.data.session;
-      D = { settings: { ...SEED.settings, ...(s.data?.data || {}) }, games: g.data || [], genres: ge.data || [], banners: b.data || [] };
+      D = { settings: { ...SEED.settings, ...(s.data?.data || {}) }, games: g.data || [], genres: ge.data || [], banners: b.data || [], ads: ad.error ? [] : (ad.data || []) };   // bảng ads chưa tạo thì bỏ qua
     } else {
       let raw = null;
       try { raw = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
       D = raw && raw.games ? raw : structuredClone(SEED);
       D.settings = { ...SEED.settings, ...D.settings };
+      D.ads = D.ads || [];
     }
   },
   persist() { try { localStorage.setItem(LS_KEY, JSON.stringify(D)); } catch (e) { toast('Bộ nhớ trình duyệt đầy — hãy dùng ảnh nhỏ hơn hoặc link ảnh.', true); } },
@@ -590,7 +630,13 @@ const Msg = {
   local() { try { return JSON.parse(localStorage.getItem(MSG_KEY)) || []; } catch (e) { return []; } },
   saveLocal(arr) { try { localStorage.setItem(MSG_KEY, JSON.stringify(arr)); } catch (e) { throw new Error('Không lưu được tin nhắn trên trình duyệt này.'); } },
   async add(m) {
-    if (MODE === 'cloud') { const { error } = await sb.from('messages').insert(m); if (error) throw new Error('Gửi không thành công, bạn thử lại sau nhé.'); return; }
+    if (MODE === 'cloud') {
+      let { error } = await sb.from('messages').insert(m);
+      if (error && m.topic && /topic/i.test(error.message || '')) {   // database chưa có cột topic: gửi kèm nhãn trong nội dung
+        const { topic, ...rest } = m; ({ error } = await sb.from('messages').insert({ ...rest, message: '[Quảng cáo] ' + rest.message }));
+      }
+      if (error) throw new Error('Gửi không thành công, bạn thử lại sau nhé.'); return;
+    }
     const arr = this.local(); arr.unshift({ ...m, id: uid(), handled: false, created_at: new Date().toISOString() }); this.saveLocal(arr);
   },
   async list() {
@@ -673,9 +719,9 @@ function bannerHTML() {
     const ext = b.kind === 'ad' || (!b.game && /^https?:/i.test(b.link_url || ''));
     const href = b.kind === 'ad' ? (b.link_url || '#/lien-he') : (b.game ? `#/game/${b.game.slug}` : (b.link_url || '#/'));
     const label = b.title || b.game?.title || 'Banner';
-    return `<div class="slide ${i === slideIdx ? 'on' : ''}" data-slide="${i}" data-ms="${Math.max(0, Number(b.duration) || 0) * 1000}">
+    return `<div class="slide ${i === slideIdx ? 'on' : ''}" data-slide="${i}" data-ms="${Math.max(0, Number(b.duration) || 0) * 1000}"${b.kind === 'ad' ? ` data-adref="b:${esc(b.id)}"` : ''}>
       <div class="slide-media">${slideMedia(b, i)}</div>
-      ${b.kind === 'ad' ? `<span class="ad-tag">Quảng cáo${b.sponsor ? `<b>${esc(b.sponsor)}</b>` : ''}</span>` : ''}
+      ${b.kind === 'ad' ? `<span class="sp-tag">Quảng cáo${b.sponsor ? `<b>${esc(b.sponsor)}</b>` : ''}</span>` : ''}
       <a class="slide-link" href="${esc(href)}" aria-label="${esc(label)}${ext ? ' (mở trang ngoài)' : ''}" ${ext ? `target="_blank" rel="noopener${b.kind === 'ad' ? ' sponsored' : ''}"` : ''} ${i === slideIdx ? '' : 'tabindex="-1"'}></a>
     </div>`;
   }).join('');
@@ -697,6 +743,7 @@ function goSlide(d, abs) {
     if (v) { if (on) { v.currentTime = 0; v.play?.()?.catch?.(() => {}); } else v.pause?.(); }
   });
   document.querySelectorAll('.dots button').forEach((b, i) => b.classList.toggle('on', i === slideIdx));
+  if (typeof Track !== 'undefined') Track.heroView();
   startSlides();
 }
 function startSlides() {
@@ -708,16 +755,88 @@ function startSlides() {
 }
 
 /* ============ TRANG CÔNG KHAI ============ */
-function adHTML(extra = '') {
-  const s = D.settings;
+// Điện thoại / máy tính bảng (chỉ cảm ứng): mở thẳng game, không nhúng khung
+const touchOnly = () => { try { return matchMedia('(pointer: coarse)').matches && !matchMedia('(hover: hover)').matches; } catch (_) { return false; } };
+const AD_SLOT_TEXT = { home: 'banner dưới thư viện game (trang chủ)', game: 'banner trang giới thiệu game' };
+let adIntent = '';
+const adMsg = () => `Tôi muốn đặt quảng cáo trên Vinh Làm Game.\nVị trí quan tâm: ${adIntent || 'banner dưới thư viện game / trang game / banner đầu trang'}\nThời gian dự kiến: \nWebsite / sản phẩm: `;
+// Chọn quảng cáo cho một vị trí: home (trang chủ) | game (trang giới thiệu game)
+function slotAd(slot, game) {
+  const fit = D.ads.filter(a => a.active && a.image && /^https?:\/\//i.test(a.link_url || '') && inWindow(a) && (
+    a.placement === 'all' || (a.placement === 'home' && slot === 'home') || (a.placement === 'games' && slot === 'game')
+    || (a.placement === 'game' && slot === 'game' && game && (a.game_ids || []).includes(game.id))));
+  if (!fit.length) return null;
+  // Quảng cáo chọn riêng theo game được ưu tiên hơn quảng cáo toàn trang
+  const pool = fit.some(a => a.placement === 'game') ? fit.filter(a => a.placement === 'game') : fit;
+  let r = Math.random() * pool.reduce((t, a) => t + Math.max(1, Number(a.weight) || 1), 0);
+  for (const a of pool) { r -= Math.max(1, Number(a.weight) || 1); if (r <= 0) return a; }
+  return pool[0];
+}
+function adHTML(extra = '', slot = 'home', game = null) {
+  const s = D.settings, ar = esc(s.ad_size || '6/1');
+  const c = slotAd(slot, game);
+  const legacy = !c && s.ad_on && s.ad_image && /^https?:\/\//i.test(s.ad_link || '') ? { id: 'legacy', image: s.ad_image, link_url: s.ad_link, title: s.ad_title } : null;
+  const a = c || legacy;
+  const intent = slot === 'game' && game ? `banner trang game “${game.title}”` : AD_SLOT_TEXT[slot];
+  const foot = `<div class="sp-foot"><a href="#/lien-he/quang-cao" data-ad-intent="${esc(intent)}">Liên hệ đặt quảng cáo</a></div>`;
+  if (a) return `<section class="wrap sp-slot ${extra}" aria-label="Nhà tài trợ">
+      <a class="sp-box${a.image_mobile ? ' has-m' : ''}" style="--ar:${ar}" href="${esc(a.link_url)}" target="_blank" rel="noopener sponsored" data-adref="${c ? 'c:' + esc(c.id) : 'legacy'}" data-adslot="${slot}">
+        <span class="sp-label">Quảng cáo</span>
+        <picture>${a.image_mobile ? `<source media="(max-width:700px)" srcset="${esc(a.image_mobile)}">` : ''}<img src="${esc(a.image)}" alt="${esc(a.title || a.advertiser || 'Nhà tài trợ')}" loading="lazy"></picture>
+      </a>${foot}</section>`;
   if (!s.ad_on) return '';
-  return `<section class="wrap ad-slot ${extra}" aria-label="Quảng cáo">
-      <a class="ad" style="--ar:${esc(s.ad_size || '6/1')}" ${s.ad_link ? `href="${esc(s.ad_link)}" target="_blank" rel="noopener sponsored"` : 'href="#/about"'}>
-        <span class="ad-label">Quảng cáo</span>
-        ${s.ad_image ? `<img src="${esc(s.ad_image)}" alt="${esc(s.ad_title || 'Quảng cáo')}" loading="lazy">`
-          : `<div class="ad-empty"><b>${esc(s.ad_title || 'Vị trí đặt banner quảng cáo')}</b>${s.ad_note ? `<span>${esc(s.ad_note)}</span>` : ''}</div>`}
+  return `<section class="wrap sp-slot ${extra}" aria-label="Nhà tài trợ">
+      <a class="sp-box" style="--ar:${ar}" href="#/lien-he/quang-cao" data-ad-intent="${esc(intent)}">
+        <span class="sp-label">Quảng cáo</span>
+        <div class="sp-empty"><b>${esc(s.ad_title || 'Vị trí đặt banner quảng cáo')}</b>${s.ad_note ? `<span>${esc(s.ad_note)}</span>` : ''}</div>
       </a></section>`;
 }
+document.addEventListener('click', e => { const t = e.target.closest?.('[data-ad-intent]'); if (t) adIntent = t.dataset.adIntent; }, true);
+
+/* ---------- Thống kê: ghi lượt xem, lượt chơi, lượt xem / bấm quảng cáo ---------- */
+const Track = {
+  q: [], timer: null, seen: new Set(),
+  off() { try { return navigator.webdriver && !window.__trackTest || localStorage.getItem('vlg_no_track') === '1'; } catch (_) { return false; } },
+  vid() {
+    let v = ''; try { v = localStorage.getItem('vlg_vid') || ''; } catch (_) {}
+    if (!/^[\w-]{6,40}$/.test(v)) { v = (crypto.randomUUID?.() || uid()).replace(/-/g, '').slice(0, 24); try { localStorage.setItem('vlg_vid', v); } catch (_) {} }
+    return v;
+  },
+  src() {
+    try { if (sessionStorage.getItem('vlg_src') !== null) return ''; const h = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''; sessionStorage.setItem('vlg_src', h); return h === location.hostname.replace(/^www\./, '') ? '' : h.slice(0, 120); } catch (_) { return ''; }
+  },
+  push(type, ref = '', now = false) {
+    if (this.off()) return;
+    this.q.push({ vid: this.vid(), type, ref: String(ref).slice(0, 80), path: (location.hash || '#/').slice(0, 200), device: touchOnly() ? 'mobile' : 'desktop', src: type === 'view' ? this.src() : '' });
+    clearTimeout(this.timer);
+    if (now || this.q.length >= 20) this.flush(now); else this.timer = setTimeout(() => this.flush(), 4000);
+  },
+  flush(leaving) {
+    clearTimeout(this.timer);
+    const batch = this.q.splice(0); if (!batch.length) return;
+    if (MODE === 'cloud') {
+      fetch(CONFIG.SUPABASE_URL.replace(/\/+$/, '') + '/rest/v1/events', { method: 'POST', keepalive: !!leaving,
+        headers: { apikey: CONFIG.SUPABASE_ANON_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(batch) }).catch(() => {});
+    } else {
+      try { const at = new Date().toISOString(); const old = JSON.parse(localStorage.getItem('vlg_events_v1') || '[]'); localStorage.setItem('vlg_events_v1', JSON.stringify(old.concat(batch.map(x => ({ ...x, at }))).slice(-5000))); } catch (_) {}
+    }
+  },
+  // Quảng cáo: tính 1 lượt xem khi hiện ít nhất một nửa, mỗi lần mở trang
+  watch() {
+    this.io?.disconnect();
+    const els = [...document.querySelectorAll('.sp-box[data-adref]')]; if (!els.length || !('IntersectionObserver' in window)) return;
+    this.io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { this.adView(en.target.dataset.adref); this.io.unobserve(en.target); } }), { threshold: 0.5 });
+    els.forEach(el => this.io.observe(el));
+  },
+  adView(ref) { if (ref && !this.seen.has(ref)) { this.seen.add(ref); this.push('ad_view', ref); } },
+  heroView() { const cur = document.querySelector(`[data-slide="${slideIdx}"][data-adref]`); if (cur && !document.hidden) { const r = cur.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight) this.adView(cur.dataset.adref); } }
+};
+document.addEventListener('click', e => {
+  const a = e.target.closest?.('[data-adref]'); if (a) Track.push('ad_click', a.dataset.adref, true);
+  const d = e.target.closest?.('a[data-direct][data-gid]'); if (d) Track.push('play', d.dataset.gid, true);
+}, true);
+addEventListener('pagehide', () => Track.flush(true));
+document.addEventListener('visibilitychange', () => { if (document.hidden) Track.flush(true); });
 let libPage = 1;
 function viewHome(genreSlug) {
   const s = D.settings;
@@ -811,7 +930,7 @@ function viewGame(slug) {
         ${g.description ? `<div class="prose rich">${richHTML(g.description)}</div>` : (g.tagline ? `<p class="prose">${esc(g.tagline)}</p>` : '')}
         ${perks.length ? `<ul class="perks">${perks.map(t => `<li><span class="tick">${CHECK}</span><span>${esc(t)}</span></li>`).join('')}</ul>` : ''}
         <div class="gd-play">
-          ${g.play_url ? `<a class="btn primary" href="#/play/${esc(g.slug)}"><span class="play-ico"></span>Chơi ngay</a>
+          ${g.play_url ? `<a class="btn primary" href="${touchOnly() ? esc(g.play_url) : '#/play/' + esc(g.slug)}"${touchOnly() ? ` data-direct data-gid="${esc(g.id)}"` : ''}><span class="play-ico"></span>Chơi ngay</a>
             <small>Miễn phí, chơi ngay trên trình duyệt · <a href="${esc(g.play_url)}" target="_blank" rel="noopener">Mở tab mới</a></small>`
             : `<span class="btn primary" aria-disabled="true" style="opacity:.55;pointer-events:none">Sắp ra mắt</span><small>Game đang được hoàn thiện</small>`}
         </div>
@@ -822,18 +941,27 @@ function viewGame(slug) {
       <a class="chip" href="https://www.youtube.com/watch?v=${yt}" target="_blank" rel="noopener">Xem trên YouTube</a>
     </section>` : ''}
   </div>
-  ${adHTML('gd-ad')}`;
+  ${adHTML('gd-sp', 'game', g)}`;
 }
 
 function viewPlay(slug) {
   const g = D.games.find(x => x.slug === slug);
   if (!g) return notFound();
   if (!g.play_url) return `<div class="wrap play"><div class="empty">Game này chưa có link chơi. <a href="#/game/${esc(g.slug)}" style="color:var(--wine)">Quay lại trang giới thiệu</a></div></div>`;
+  if (touchOnly()) return `<div class="wrap play">
+    <nav class="crumbs" style="padding-top:8px"><a href="#/">Thư viện</a><span>/</span><a href="#/game/${esc(g.slug)}">${esc(g.title)}</a><span>/</span><span>Chơi</span></nav>
+    <a class="play-start" href="${esc(g.play_url)}" data-direct data-gid="${esc(g.id)}">
+      ${g.kv || g.cover ? `<img src="${esc(g.kv || g.cover)}" alt="">` : ''}
+      <span class="play-start-in"><span class="play-big"><span class="play-ico"></span></span><b>${esc(g.title)}</b><span>Chạm để chơi toàn màn hình</span></span>
+    </a>
+    <p class="play-note">Game mở toàn màn hình. Bấm nút Quay lại của trình duyệt để về trang giới thiệu.</p>
+  </div>`;
   return `<div class="wrap play">
     <nav class="crumbs" style="padding-top:8px"><a href="#/">Thư viện</a><span>/</span><a href="#/game/${esc(g.slug)}">${esc(g.title)}</a><span>/</span><span>Chơi</span></nav>
     <div class="play-bar">
       <h1>${esc(g.title)}</h1>
       <button class="btn small line" data-act="fs">Toàn màn hình</button>
+      <button class="btn small primary fs-close" data-act="fs-close" aria-label="Thoát toàn màn hình">✕ Thoát</button>
       <a class="btn small line" href="${esc(g.play_url)}" target="_blank" rel="noopener">Mở tab mới</a>
     </div>
     <div class="frame" id="frame"><iframe src="${esc(g.play_url)}" title="${esc(g.title)}" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe></div>
@@ -946,8 +1074,8 @@ function viewDonate() {
 }
 
 let contactSent = false;
-function viewContact() {
-  const s = D.settings;
+function viewContact(topic) {
+  const s = D.settings, ads = topic === 'quang-cao';
   if (contactSent) return `<section class="wrap page">
     <div><p class="eyebrow"><span class="dot"></span>Liên hệ</p><h1>Cảm ơn <em style="color:var(--wine)">bạn</em></h1></div>
     <div class="sent"><span class="tick">${CHECK}</span><h2>Đã gửi lời nhắn</h2><p class="prose">Mình đã nhận được lời nhắn và sẽ phản hồi qua email hoặc số điện thoại bạn để lại.</p>
@@ -955,9 +1083,10 @@ function viewContact() {
   </section>`;
   return `<section class="wrap page">
     <div>
-      <p class="eyebrow"><span class="dot"></span>Liên hệ</p>
-      <h1>Gửi lời nhắn<br><em style="color:var(--wine)">cho Vinh</em></h1>
-      ${s.contact_note ? `<p class="prose" style="margin-top:20px;color:var(--muted)">${esc(s.contact_note)}</p>` : ''}
+      <p class="eyebrow"><span class="dot"></span>${ads ? 'Đặt quảng cáo' : 'Liên hệ'}</p>
+      <h1>${ads ? 'Đặt banner<br><em style="color:var(--wine)">quảng cáo</em>' : 'Gửi lời nhắn<br><em style="color:var(--wine)">cho Vinh</em>'}</h1>
+      ${ads ? `<p class="prose" style="margin-top:20px;color:var(--muted)">Để lại thông tin, mình sẽ gửi báo giá và lịch trống qua email hoặc điện thoại.</p>` : ''}
+      ${s.contact_note && !ads ? `<p class="prose" style="margin-top:20px;color:var(--muted)">${esc(s.contact_note)}</p>` : ''}
       ${s.email ? `<div class="kv"><div><span class="k">Email</span><span class="v">${esc(s.email)}</span></div></div>` : ''}
     </div>
     <form class="cform" data-form="contact" novalidate>
@@ -966,7 +1095,7 @@ function viewContact() {
         <div class="cfield"><label for="c-phone">Số điện thoại</label><input id="c-phone" name="phone" type="tel" autocomplete="tel" maxlength="20" inputmode="tel"></div>
       </div>
       <div class="cfield"><label for="c-email">Email <b>*</b></label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="200" required></div>
-      <div class="cfield"><label for="c-msg">Nội dung <b>*</b></label><textarea id="c-msg" name="message" maxlength="5000" required placeholder="Bạn muốn nhắn gì cho mình?"></textarea></div>
+      <div class="cfield"><label for="c-msg">Nội dung <b>*</b></label><textarea id="c-msg" name="message" maxlength="5000" required placeholder="Bạn muốn nhắn gì cho mình?" ${ads ? 'rows="6"' : ''}>${ads ? esc(adMsg()) : ''}</textarea><input type="hidden" name="topic" value="${ads ? 'ads' : ''}"></div>
       <div class="hp" aria-hidden="true"><label for="c-web">Website</label><input id="c-web" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <div class="cform-foot"><small><b style="color:var(--wine)">*</b> Thông tin bắt buộc</small><button class="btn primary" type="submit">Gửi</button></div>
     </form>
@@ -1021,7 +1150,7 @@ function render() {
   const h = ROUTE.replace(/^#\/?/, '');
   const [r, a] = h.split('/');
   const routeKey = r + '/' + (a || '');
-  if (routeKey !== lastRoute) { editing = null; confirmDel = null; libPage = 1; contactSent = false; }
+  if (routeKey !== lastRoute) { editing = null; confirmDel = null; libPage = 1; contactSent = false; document.body.classList.remove('pseudo-fs'); }
   const prev = lastRoute; lastRoute = routeKey;
   let html;
   switch (r) {
@@ -1031,14 +1160,21 @@ function render() {
     case 'play': html = viewPlay(decodeURIComponent(a || '')); break;
     case 'about': html = viewAbout(); break;
     case 'ung-ho': html = viewDonate(); break;
-    case 'lien-he': html = viewContact(); break;
+    case 'lien-he': html = viewContact(a); break;
     default: html = notFound();
   }
   if (LOAD_ERROR) html = loadErrorHTML();
+  const g0 = (r === 'game' || r === 'play') && D.games.find(x => x.slug === decodeURIComponent(a || ''));
   $('#main').innerHTML = html;
   chrome();
   startSlides();
   if (r === 'ung-ho') drawQR();
+  if (prev !== routeKey && !LOAD_ERROR) {
+    Track.seen.clear(); Track.push('view');
+    if (g0 && r === 'game') Track.push('game_view', g0.id);
+    if (g0 && r === 'play' && !touchOnly()) Track.push('play', g0.id);
+  }
+  Track.watch(); Track.heroView();
   if (r === 'the-loai' && prev !== routeKey) $('#library')?.scrollIntoView({ block: 'start' });
   else if (prev !== routeKey) window.scrollTo(0, 0);
   document.querySelectorAll('[data-nav]').forEach(el => el.classList.toggle('on', el.dataset.nav === r));
@@ -1080,7 +1216,14 @@ document.addEventListener('click', async e => {
       case 'media': showMedia(Number(t.dataset.i)); break;
       case 'media-step': showMedia(mediaIdx + Number(t.dataset.d)); break;
       case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
-      case 'fs': { const f = $('#frame'); (f.requestFullscreen || f.webkitRequestFullscreen)?.call(f)?.catch?.(() => toast('Trình duyệt không cho phép toàn màn hình ở đây.', true)); break; }
+      case 'fs': {
+        const f = $('#frame'), req = f.requestFullscreen || f.webkitRequestFullscreen;
+        const fake = () => { document.body.classList.add('pseudo-fs'); addEventListener('keydown', function k(e) { if (e.key === 'Escape') { document.body.classList.remove('pseudo-fs'); removeEventListener('keydown', k); } }); };
+        if (!req) { fake(); break; }
+        try { const r = req.call(f); if (r && r.catch) r.catch(fake); } catch (_) { fake(); }
+        break;
+      }
+      case 'fs-close': document.body.classList.remove('pseudo-fs'); break;
       case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
       case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
@@ -1092,6 +1235,14 @@ document.addEventListener('click', async e => {
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
       case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
       case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'stats-days': statsDays = Number(t.dataset.v); STATS = null; statsErr = ''; render(); break;
+      case 'stats-metric': statsMetric = t.dataset.v; render(); break;
+      case 'stats-refresh': STATS = null; ADSTATS = null; statsErr = ''; render(); break;
+      case 'ad-migrate': {
+        const s = D.settings;
+        await Store.save('ads', { id: uid(), advertiser: s.ad_title || 'Khách hàng', title: '', image: s.ad_image, image_mobile: '', link_url: s.ad_link, placement: 'home', game_ids: [], start_at: today(), end_at: '', active: true, weight: 1, note: '' });
+        await Store.saveSettings({ ...s, ad_image: '', ad_link: '' }); render(); toast('Đã chuyển thành chiến dịch, hãy bổ sung tên khách và ngày kết thúc.'); break;
+      }
       case 'ag-open': AF.group = t.dataset.v; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; AF.sel = []; AF.renaming = false; editing = null; confirmDel = null; render(); $('#admin-main, main')?.scrollIntoView?.({ block: 'start' }); break;
       case 'ag-back': AF.group = null; AF.sel = []; AF.renaming = false; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; editing = null; confirmDel = null; LIB_PENDING = []; render(); break;
       case 'ag-rename': AF.renaming = true; render(); $('[data-ag-rename] input')?.select(); break;
@@ -1157,7 +1308,9 @@ document.addEventListener('submit', async e => {
   if (Date.now() - last < 30000) { toast('Bạn vừa gửi lời nhắn, đợi 30 giây rồi gửi tiếp nhé.', true); return; }
   const btn = form.querySelector('[type=submit]'); btn.disabled = true; btn.textContent = 'Đang gửi…';
   try {
-    await Msg.add({ name: v('name'), email: v('email'), phone: v('phone'), message: v('message') });
+    const m = { name: v('name'), email: v('email'), phone: v('phone'), message: v('message') };
+    if (v('topic')) m.topic = v('topic');
+    await Msg.add(m);
     try { localStorage.setItem('vlg_last_msg', String(Date.now())); } catch (_) {}
     contactSent = true; render(); window.scrollTo(0, 0);
   } catch (err) { toast(err.message || 'Gửi không thành công, bạn thử lại sau nhé.', true); btn.disabled = false; btn.textContent = 'Gửi'; }
@@ -1180,7 +1333,7 @@ window.addEventListener('popstate', () => { ROUTE = location.hash || '#/'; close
 (async () => {
   try { await Store.load(); }
   catch (err) {
-    if (MODE === 'cloud') { LOAD_ERROR = true; D = { settings: { ...SEED.settings }, genres: [], games: [], banners: [] }; }   // KHÔNG hiện dữ liệu mẫu cho khách
+    if (MODE === 'cloud') { LOAD_ERROR = true; D = { settings: { ...SEED.settings }, genres: [], games: [], banners: [], ads: [] }; }   // KHÔNG hiện dữ liệu mẫu cho khách
     else D = structuredClone(SEED);
   }
   if (sb) sb.auth.onAuthStateChange((ev, s) => { session = s; if (typeof onAuthEvent === 'function') onAuthEvent(ev, s); });

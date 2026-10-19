@@ -712,7 +712,7 @@ const Store = {
         sb.from('genres').select('*'),
         sb.from('banners').select('*'),
         sb.auth.getSession(),
-        sb.from('ads').select(isAdmin() ? '*' : AD_COLS)
+        sb.from('ads').select(window.__fullCols ? '*' : AD_COLS)
       ]);
       const err = [s, g, ge, b].find(r => r.error);
       if (err) throw err.error;
@@ -886,6 +886,7 @@ function card(g) {
 }
 
 /* ============ ADMIN ============ */
+window.__fullCols = true;   // admin đọc đủ cột (kể cả ghi chú) của bảng ads
 function logoHTML(name) {
   const w = String(name || '').trim().split(/\s+/);
   return w.length > 1 ? `${esc(w[0])} <em>${esc(w.slice(1).join(' '))}</em>` : esc(name);

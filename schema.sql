@@ -123,6 +123,7 @@ alter table games   add column if not exists video_url text default '';
 alter table games   add column if not exists youtube_url text default '';
 alter table games   add column if not exists clip_url text default '';
 alter table games   add column if not exists kv_in_slide boolean default false;
+alter table games   add column if not exists hero boolean default false;   -- KV chính hiện trên banner trang chủ
 alter table games   alter column kv_in_slide set default false;
 alter table games   add column if not exists highlights text default '';
 alter table games   add column if not exists released text default '';
@@ -244,10 +245,17 @@ create table if not exists ads (
   note         text default '',
   created_at   timestamptz default now()
 );
+-- Vị trí banner lớn đầu trang chủ (hero) + gói 'none' (chỉ chạy hero)
+alter table ads add column if not exists hero_on    boolean default false;
+alter table ads add column if not exists hero_image text default '';
+alter table ads add column if not exists hero_video text default '';
+alter table ads add column if not exists hero_sort  int default 99;
+alter table ads drop constraint if exists ads_placement_check;
+alter table ads add constraint ads_placement_check check (placement in ('all','home','games','game','none'));
 alter table ads enable row level security;
 -- Khách chỉ đọc được các cột hiển thị; cột ghi chú (giá, hợp đồng) chỉ quản trị viên thấy
 revoke all on ads from anon;
-grant select (id, advertiser, title, image, image_mobile, link_url, placement, game_ids, start_at, end_at, active, weight) on ads to anon;
+grant select (id, advertiser, title, image, image_mobile, link_url, placement, game_ids, start_at, end_at, active, weight, hero_on, hero_image, hero_video, hero_sort) on ads to anon;
 grant select, insert, update, delete on ads to authenticated;
 drop policy if exists "public read ads" on ads;
 drop policy if exists "admin read ads"  on ads;

@@ -480,24 +480,20 @@ const SEED = {
     { id: 'game-laj', slug: 'hanh-tinh-laj', title: 'Hành Tinh LAJ', tagline: 'Một chuyến platformer tĩnh lặng trên hành tinh lạ.',
       description: 'Hành Tinh LAJ là game platformer thiên về không khí: nhảy qua những vùng đất lạ, lắng nghe âm thanh của một hành tinh chưa ai đặt chân tới.\nGame chạy trực tiếp trên trình duyệt, không cần cài đặt.',
       genre_ids: ['g-platformer', 'g-phieu-luu'], cover: '', screenshots: [], play_url: 'https://hanhtinhlaj.vercel.app',
-      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, sort: 1,
+      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, hero: true, sort: 1,
       kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Chơi ngay trên trình duyệt\nKhông cần cài đặt\nKhông khí tĩnh lặng, nhạc nền dễ chịu', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Mọi lứa tuổi', language: 'Tiếng Việt' },
     { id: 'game-chu', slug: 'chu-va-qua-trung-that-lac', title: 'Chu và Quả Trứng Thất Lạc', tagline: 'Cùng chú khủng long Chu đi tìm quả trứng bị lạc.',
       description: 'Chu và Quả Trứng Thất Lạc là chuyến phiêu lưu dành cho các bạn nhỏ: theo chân khủng long Chu băng qua nhiều vùng đất để tìm lại quả trứng bị thất lạc.\nPhù hợp để bố mẹ chơi cùng con.',
       genre_ids: ['g-phieu-luu', 'g-thieu-nhi'], cover: '', screenshots: [], play_url: 'https://chuvaquatrungkhunglong.vercel.app',
-      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, sort: 2,
+      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, hero: true, sort: 2,
       kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Dành riêng cho các bạn nhỏ\nBố mẹ chơi cùng con\nKhông cần cài đặt', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Thiếu nhi', language: 'Tiếng Việt' },
     { id: 'game-monster', slug: 'monster-breakout', title: 'Monster Breakout', tagline: 'Bắn súng sinh tồn: vượt từng cổng, diệt quái virus.',
       description: 'Monster Breakout là game bắn súng sinh tồn góc nhìn từ trên xuống. Người hùng phải vượt qua từng cổng đầy quái virus.\nVượt thử thách và nhặt trang bị để nâng sức mạnh khẩu súng. Chơi được trên máy tính và điện thoại.',
       genre_ids: ['g-hanh-dong'], cover: '', screenshots: [], play_url: '',
-      released: '2026', platforms: 'Web · Mobile', controls: '', status: 'published', hot: true, sort: 3,
+      released: '2026', platforms: 'Web · Mobile', controls: '', status: 'published', hot: true, hero: true, sort: 3,
       kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Vượt từng cổng, diệt quái virus\nNâng cấp súng qua từng thử thách\nChơi được trên máy tính và điện thoại', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: '', language: 'Tiếng Việt' }
   ],
-  banners: [
-    { id: 'b-1', eyebrow: 'Đang hot', title: 'Hành Tinh LAJ', subtitle: 'Nhảy qua những vùng đất lạ trên một hành tinh chưa ai đặt chân tới.', game_id: 'game-laj', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 1, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 },
-    { id: 'b-2', eyebrow: 'Cho bé', title: 'Chu và Quả Trứng Thất Lạc', subtitle: 'Chuyến phiêu lưu khủng long để bố mẹ chơi cùng con.', game_id: 'game-chu', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 2, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 },
-    { id: 'b-3', eyebrow: 'Sắp ra mắt', title: 'Monster Breakout', subtitle: 'Vượt từng cổng, diệt quái virus, nâng cấp súng.', game_id: 'game-monster', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 3, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 }
-  ]
+  banners: []
 };
 
 /* ============ LỚP DỮ LIỆU (Supabase hoặc localStorage) ============ */
@@ -505,7 +501,7 @@ const LS_KEY = 'vlg_data_v1';
 const TABLES = { games: 'games', banners: 'banners', genres: 'genres', ads: 'ads' };
 let D = { settings: {}, genres: [], games: [], banners: [], ads: [] };
 // Cột quảng cáo khách được đọc (cột ghi chú giá / hợp đồng chỉ quản trị viên thấy)
-const AD_COLS = 'id,advertiser,title,image,image_mobile,link_url,placement,game_ids,start_at,end_at,active,weight';
+const AD_COLS = 'id,advertiser,title,image,image_mobile,link_url,placement,game_ids,start_at,end_at,active,weight,hero_on,hero_image,hero_video,hero_sort';
 let sb = null, session = null;
 const MODE = (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase) ? 'cloud' : 'local';
 
@@ -697,11 +693,15 @@ let slideIdx = 0, slideTimer = null;
 const slideMs = () => Math.max(2, Number(D.settings.banner_speed) || 6) * 1000;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const inWindow = b => (!b.start_at || b.start_at <= today()) && (!b.end_at || b.end_at >= today());
+// Banner trang chủ = KV chính của các game được tick "Banner trang chủ" + quảng cáo có vị trí Hero, xếp chung theo thứ tự
 function bannerSlides() {
-  let bs = D.banners.filter(b => b.active && inWindow(b)).sort(bySort).map(b => ({ ...b, game: b.kind === 'ad' ? null : gameById(b.game_id) }))
-    .filter(b => b.kind === 'ad' || !b.game || b.game.status === 'published');
-  if (!bs.length) bs = pubGames().filter(g => g.hot).map(g => ({ id: 'auto-' + g.id, kind: 'game', title: g.title, game: g }));
-  return bs;
+  const games = pubGames().filter(g => g.hero && g.kv).map(g => ({ id: 'g-' + g.id, kind: 'game', title: g.title, game: g, image: g.kv, sort: Number(g.sort) || 0, o: 0 }));
+  const ads = (D.ads || []).filter(a => a.active && a.hero_on && inWindow(a) && (a.hero_image || a.hero_video) && /^https?:\/\//i.test(a.link_url || '')).map(a => {
+    const yt = ytId(a.hero_video), vid = !yt && /\.(mp4|webm|mov)(\?|$)/i.test(a.hero_video || '');
+    return { id: a.id, kind: 'ad', adref: 'c:' + a.id, title: a.title || a.advertiser, sponsor: a.advertiser, link_url: a.link_url, image: a.hero_image,
+      media_type: yt ? 'youtube' : vid ? 'video' : 'image', video_url: a.hero_video || '', sort: Number(a.hero_sort) || 0, o: 1 };
+  });
+  return [...games, ...ads].sort((a, b) => a.sort - b.sort || a.o - b.o);
 }
 function slideMedia(b, i) {
   const g = b.game, label = esc(b.title || g?.title || 'Banner');
@@ -719,7 +719,7 @@ function bannerHTML() {
     const ext = b.kind === 'ad' || (!b.game && /^https?:/i.test(b.link_url || ''));
     const href = b.kind === 'ad' ? (b.link_url || '#/lien-he') : (b.game ? `#/game/${b.game.slug}` : (b.link_url || '#/'));
     const label = b.title || b.game?.title || 'Banner';
-    return `<div class="slide ${i === slideIdx ? 'on' : ''}" data-slide="${i}" data-ms="${Math.max(0, Number(b.duration) || 0) * 1000}"${b.kind === 'ad' ? ` data-adref="b:${esc(b.id)}"` : ''}>
+    return `<div class="slide ${i === slideIdx ? 'on' : ''}" data-slide="${i}" data-ms="${Math.max(0, Number(b.duration) || 0) * 1000}"${b.adref ? ` data-adref="${esc(b.adref)}"` : ''}>
       <div class="slide-media">${slideMedia(b, i)}</div>
       ${b.kind === 'ad' ? `<span class="sp-tag">Quảng cáo${b.sponsor ? `<b>${esc(b.sponsor)}</b>` : ''}</span>` : ''}
       <a class="slide-link" href="${esc(href)}" aria-label="${esc(label)}${ext ? ' (mở trang ngoài)' : ''}" ${ext ? `target="_blank" rel="noopener${b.kind === 'ad' ? ' sponsored' : ''}"` : ''} ${i === slideIdx ? '' : 'tabindex="-1"'}></a>
@@ -903,10 +903,10 @@ function viewGame(slug) {
   const legacyYt = ytId(g.video_url) ? g.video_url : '';
   const yt = ytId(g.youtube_url || legacyYt);
   const clip = g.clip_url || (!legacyYt ? g.video_url : '');
-  const imgs = [g.kv_in_slide === true ? g.kv : '', ...(g.screenshots || [])].filter(Boolean);
+  const imgs = (g.screenshots || []).filter(Boolean);
   curMedia = imgs.map(src => ({ type: 'img', src }));
   if (clip) curMedia.splice(Math.min(1, curMedia.length), 0, /\.(mp4|webm|ogg)(\?|$)/i.test(clip) ? { type: 'video', src: clip } : { type: 'img', src: clip });
-  if (!curMedia.length) curMedia = [(g.kv || g.cover) ? { type: 'img', src: g.kv || g.cover } : { type: 'gen', game: g }];
+  if (!curMedia.length) curMedia = [g.cover ? { type: 'img', src: g.cover } : { type: 'gen', game: g }];
   mediaIdx = 0;
   const many = curMedia.length > 1;
   const perks = String(g.highlights || '').split('\n').map(x => x.replace(/\s*\|\s*/, ' — ').trim()).filter(Boolean);
@@ -951,7 +951,7 @@ function viewPlay(slug) {
   if (touchOnly()) return `<div class="wrap play">
     <nav class="crumbs" style="padding-top:8px"><a href="#/">Thư viện</a><span>/</span><a href="#/game/${esc(g.slug)}">${esc(g.title)}</a><span>/</span><span>Chơi</span></nav>
     <a class="play-start" href="${esc(g.play_url)}" data-direct data-gid="${esc(g.id)}">
-      ${g.kv || g.cover ? `<img src="${esc(g.kv || g.cover)}" alt="">` : ''}
+      ${g.cover || g.kv ? `<img src="${esc(g.cover || g.kv)}" alt="">` : ''}
       <span class="play-start-in"><span class="play-big"><span class="play-ico"></span></span><b>${esc(g.title)}</b><span>Chạm để chơi toàn màn hình</span></span>
     </a>
     <p class="play-note">Game mở toàn màn hình. Bấm nút Quay lại của trình duyệt để về trang giới thiệu.</p>

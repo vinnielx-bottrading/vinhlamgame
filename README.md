@@ -92,8 +92,9 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 
 | Nhóm | Tab |
 |---|---|
-| Nội dung | Game · Banner · Thể loại |
-| Khách hàng | Liên hệ (có số tin mới) |
+| Nội dung | Game · Quảng cáo · Thể loại |
+| Tư liệu | Kho tư liệu |
+| Khách hàng | Thống kê · Liên hệ (có số tin mới) |
 | Cài đặt | Giao diện · Thông tin trang · Quản trị viên · Sao lưu |
 
 ---
@@ -103,7 +104,7 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 **Trang game:**
 - Bố cục: tiêu đề → 2 cột (slide ảnh/video bên trái; bài viết, cụm marketing có dấu tích và nút **Chơi ngay** bên phải) → video YouTube ở giữa (nếu có) → banner quảng cáo (nếu bật).
 - **Slide** dùng tỉ lệ chuẩn **16:9 (1920 × 1080)**. Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ của chính ảnh đó.
-- **KV chính** chỉ làm ảnh đầu slide khi admin tick ô "Dùng KV chính làm ảnh đầu tiên của slide" (mặc định không tick). Không tick thì slide bắt đầu từ ảnh số 1.
+- Slide chỉ dùng **ảnh slide** của game. Game chưa có ảnh slide thì hiện thumbnail.
 - **Ảnh slide giới thiệu**:
   - Chọn hoặc **kéo thả nhiều ảnh cùng lúc**. Mỗi ảnh xử lý riêng, ảnh lỗi không làm hỏng ảnh khác. Có báo "Đã thêm 7/8 ảnh" kèm tên ảnh lỗi.
   - **Kéo từng ảnh để đổi vị trí**, hoặc dùng nút ‹ › trên điện thoại.
@@ -113,13 +114,12 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
   - Dán từ Word / Google Docs được, định dạng lạ và mã độc tự lọc bỏ.
 - Mọi ô ảnh và video đều nhận **kéo thả file**.
 
-**Banner trang chủ:**
+**Banner trang chủ (hero):**
 - Chỉ hiện hình hoặc video, tự trượt mờ dần, không có chữ.
-- **Loại**:
-  - *Giới thiệu game*: bấm vào mở trang game.
-  - *Quảng cáo của khách hàng*: bấm vào mở website của khách trong tab mới, có nhãn "Quảng cáo" kèm tên nhà tài trợ.
-- **Dạng**: hình ảnh 21:8 (2100 × 800, nhận cả GIF động), video ngắn .mp4/.webm, hoặc YouTube. Video tự chạy, không tiếng, lặp lại.
-- **Thời gian riêng** (giây) cho từng banner, cùng **ngày bắt đầu / kết thúc** theo hợp đồng quảng cáo. Hết hạn thì banner tự ẩn.
+- Gồm **KV chính của các game được bật cột "Banner trang chủ"** trong tab Game, cộng các **quảng cáo có vị trí Banner trang chủ** trong tab Quảng cáo. Số lượng không giới hạn, admin tự quyết. Thứ tự: cột Thứ tự của game và ô "Thứ tự trong banner trang chủ" của quảng cáo, xếp chung.
+- Game bật nhưng chưa có KV chính thì không lên banner (danh sách game báo "Thiếu KV"). Không có slide nào thì ẩn hẳn khu vực banner.
+- Không còn tự lấy game Hot. Nhãn **Hot** chỉ là tag nổi bật trên thẻ game trong thư viện.
+- Slide quảng cáo bấm vào mở website của khách trong tab mới, có nhãn "Quảng cáo" kèm tên khách. Nhận ảnh 21:8 (cả GIF động), video .mp4 hoặc YouTube, chạy theo ngày bắt đầu / kết thúc.
 
 **Ủng hộ:**
 - Khách chọn 20.000 / 50.000 / 100.000 / 200.000 ₫ hoặc tự nhập số tiền. Mã VietQR có kèm số tiền được tạo ngay trên trang (Vietcombank 0111000182684).
@@ -134,19 +134,26 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 - Tốc độ và chế độ tự trượt của banner.
 - Lưới thư viện 2–5 game mỗi hàng, phân trang.
 - Hiện số game cạnh tên thể loại.
-- Banner quảng cáo dưới thư viện.
+- Ô chào bán khi vị trí quảng cáo còn trống, tỉ lệ banner ngang.
 
 ---
+
+## Chuyển từ tab Banner cũ (chạy một lần)
+
+Sau khi chạy lại `schema.sql`, chạy **`migrate-hero.sql`** một lần:
+- Game đang có banner → được bật "Banner trang chủ". Nếu banner có ảnh riêng, ảnh đó thành KV chính; KV cũ được cất vào Kho tư liệu, nhóm "KV cũ trước khi đổi".
+- Banner quảng cáo cũ → thành quảng cáo vị trí Banner trang chủ trong tab Quảng cáo.
+- Bảng `banners` cũ giữ nguyên, không còn dùng.
 
 ## Tiêu chuẩn ảnh
 
 | Dùng cho | Tỉ lệ | Kích thước chuẩn |
 |---|---|---|
-| Thumbnail (ô game ở thư viện) | 4:3 | 1200 × 900 |
-| KV chính (dự phòng cho banner trang chủ) | 16:9 | 1920 × 1080 |
-| Ảnh slide giới thiệu | 16:9 | 1920 × 1080 |
-| Banner trang chủ | 21:8 | 2100 × 800 |
-| Banner quảng cáo dưới thư viện | 6:1 | 1200 × 200 |
+| ① KV chính = banner lớn trang chủ | 21:8 | 2100 × 800 |
+| ② Thumbnail (ô game ở thư viện) | 4:3 | 1200 × 900 |
+| ③ Ảnh slide (trang giới thiệu game) | 16:9 | 1920 × 1080 |
+| Quảng cáo trên banner trang chủ | 21:8 | 2100 × 800 |
+| Quảng cáo banner ngang | 6:1 (điện thoại 3:1) | 1200 × 200 (900 × 300) |
 
 Ảnh tải lên được tự nén WebP theo kích thước trên. Ảnh slide khác tỉ lệ vẫn hiện đủ, không bị cắt.
 
@@ -168,7 +175,10 @@ Tab **Kho tư liệu** trong admin lưu ảnh, video, nội dung/caption và lin
 
 ## Quảng cáo theo chiến dịch
 
-Tab **Quảng cáo** quản lý banner của khách hàng ở hai vị trí: dưới thư viện (trang chủ) và dưới bài giới thiệu (trang game). Banner đầu trang chủ vẫn quản lý ở tab **Banner** (loại Quảng cáo).
+Tab **Quảng cáo** quản lý mọi quảng cáo của khách, mỗi khách một dòng. Hai vị trí, chọn một hoặc cả hai:
+
+1. **Banner trang chủ (hero):** chạy chung với KV các game, ảnh 21:8 hoặc video.
+2. **Banner ngang:** dưới thư viện (trang chủ) và dưới bài giới thiệu (trang game), theo gói bên dưới.
 
 - **Gói vị trí:** Toàn trang (trang chủ + mọi trang game) · Chỉ trang chủ · Mọi trang game · Trang của game chọn riêng. Ở trang của một game, quảng cáo mua riêng cho game đó được ưu tiên hơn quảng cáo toàn trang.
 - **Thời gian:** ngày bắt đầu / kết thúc, hết hạn tự tắt. Nhiều quảng cáo cùng vị trí thì luân phiên theo **mức ưu tiên** (1–10).

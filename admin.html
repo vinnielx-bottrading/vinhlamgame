@@ -673,24 +673,20 @@ const SEED = {
     { id: 'game-laj', slug: 'hanh-tinh-laj', title: 'Hành Tinh LAJ', tagline: 'Một chuyến platformer tĩnh lặng trên hành tinh lạ.',
       description: 'Hành Tinh LAJ là game platformer thiên về không khí: nhảy qua những vùng đất lạ, lắng nghe âm thanh của một hành tinh chưa ai đặt chân tới.\nGame chạy trực tiếp trên trình duyệt, không cần cài đặt.',
       genre_ids: ['g-platformer', 'g-phieu-luu'], cover: '', screenshots: [], play_url: 'https://hanhtinhlaj.vercel.app',
-      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, sort: 1,
+      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, hero: true, sort: 1,
       kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Chơi ngay trên trình duyệt\nKhông cần cài đặt\nKhông khí tĩnh lặng, nhạc nền dễ chịu', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Mọi lứa tuổi', language: 'Tiếng Việt' },
     { id: 'game-chu', slug: 'chu-va-qua-trung-that-lac', title: 'Chu và Quả Trứng Thất Lạc', tagline: 'Cùng chú khủng long Chu đi tìm quả trứng bị lạc.',
       description: 'Chu và Quả Trứng Thất Lạc là chuyến phiêu lưu dành cho các bạn nhỏ: theo chân khủng long Chu băng qua nhiều vùng đất để tìm lại quả trứng bị thất lạc.\nPhù hợp để bố mẹ chơi cùng con.',
       genre_ids: ['g-phieu-luu', 'g-thieu-nhi'], cover: '', screenshots: [], play_url: 'https://chuvaquatrungkhunglong.vercel.app',
-      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, sort: 2,
+      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: true, hero: true, sort: 2,
       kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Dành riêng cho các bạn nhỏ\nBố mẹ chơi cùng con\nKhông cần cài đặt', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Thiếu nhi', language: 'Tiếng Việt' },
     { id: 'game-monster', slug: 'monster-breakout', title: 'Monster Breakout', tagline: 'Bắn súng sinh tồn: vượt từng cổng, diệt quái virus.',
       description: 'Monster Breakout là game bắn súng sinh tồn góc nhìn từ trên xuống. Người hùng phải vượt qua từng cổng đầy quái virus.\nVượt thử thách và nhặt trang bị để nâng sức mạnh khẩu súng. Chơi được trên máy tính và điện thoại.',
       genre_ids: ['g-hanh-dong'], cover: '', screenshots: [], play_url: '',
-      released: '2026', platforms: 'Web · Mobile', controls: '', status: 'published', hot: true, sort: 3,
+      released: '2026', platforms: 'Web · Mobile', controls: '', status: 'published', hot: true, hero: true, sort: 3,
       kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Vượt từng cổng, diệt quái virus\nNâng cấp súng qua từng thử thách\nChơi được trên máy tính và điện thoại', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: '', language: 'Tiếng Việt' }
   ],
-  banners: [
-    { id: 'b-1', eyebrow: 'Đang hot', title: 'Hành Tinh LAJ', subtitle: 'Nhảy qua những vùng đất lạ trên một hành tinh chưa ai đặt chân tới.', game_id: 'game-laj', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 1, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 },
-    { id: 'b-2', eyebrow: 'Cho bé', title: 'Chu và Quả Trứng Thất Lạc', subtitle: 'Chuyến phiêu lưu khủng long để bố mẹ chơi cùng con.', game_id: 'game-chu', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 2, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 },
-    { id: 'b-3', eyebrow: 'Sắp ra mắt', title: 'Monster Breakout', subtitle: 'Vượt từng cổng, diệt quái virus, nâng cấp súng.', game_id: 'game-monster', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 3, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 }
-  ]
+  banners: []
 };
 
 /* ============ LỚP DỮ LIỆU (Supabase hoặc localStorage) ============ */
@@ -698,7 +694,7 @@ const LS_KEY = 'vlg_data_v1';
 const TABLES = { games: 'games', banners: 'banners', genres: 'genres', ads: 'ads' };
 let D = { settings: {}, genres: [], games: [], banners: [], ads: [] };
 // Cột quảng cáo khách được đọc (cột ghi chú giá / hợp đồng chỉ quản trị viên thấy)
-const AD_COLS = 'id,advertiser,title,image,image_mobile,link_url,placement,game_ids,start_at,end_at,active,weight';
+const AD_COLS = 'id,advertiser,title,image,image_mobile,link_url,placement,game_ids,start_at,end_at,active,weight,hero_on,hero_image,hero_video,hero_sort';
 let sb = null, session = null;
 const MODE = (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY && window.supabase) ? 'cloud' : 'local';
 
@@ -899,17 +895,17 @@ const FIELDS = {
     { type: 'heading', label: 'Cơ bản' },
     { k: 'title', label: 'Tên game', type: 'text', req: true },
     { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo từ tên game.' },
-    { k: 'tagline', label: 'Câu giới thiệu ngắn', type: 'text', full: true, hint: 'Dùng cho banner trang chủ.' },
+    { k: 'tagline', label: 'Câu giới thiệu ngắn', type: 'text', full: true, hint: 'Hiện dưới tên game ở trang giới thiệu.' },
     { k: 'genre_ids', label: 'Thể loại', type: 'genres', full: true },
     { k: 'play_url', label: 'Link chơi game', type: 'url', full: true, hint: 'Link bản game đã deploy (Vercel, GitHub Pages…). Để trống = “Sắp ra mắt”.' },
     { k: 'status', label: 'Trạng thái', type: 'select', options: [['published', 'Đã đăng'], ['draft', 'Bản nháp']] },
     { k: 'sort', label: 'Thứ tự', type: 'number' },
-    { k: 'hot', label: 'Gắn nhãn Hot', type: 'checkbox' },
-    { type: 'heading', label: 'Hình ảnh' },
-    { k: 'cover', label: 'Ảnh thumbnail (4:3)', type: 'image', max: 1200, full: true, hint: 'Ảnh trên ô game ở thư viện. Khuyên dùng 1200 × 900.' },
-    { k: 'kv', label: 'Ảnh KV chính (16:9)', type: 'image', max: 1920, full: true, hint: 'Chuẩn 1920 × 1080. Dùng làm ảnh đầu slide trang game (nếu bật bên dưới) và ảnh dự phòng cho banner trang chủ.' },
-    { k: 'kv_in_slide', label: 'Dùng KV chính làm ảnh đầu tiên của slide (không bắt buộc)', type: 'checkbox', default: false, hint: 'Không chọn: slide bắt đầu từ ảnh số 1 trong “Ảnh slide giới thiệu”.' },
-    { k: 'screenshots', label: 'Ảnh slide giới thiệu', type: 'images', max: 1920, full: true, hint: 'Tỉ lệ chuẩn 16:9 (1920 × 1080). Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ. Chọn hoặc kéo thả nhiều ảnh cùng lúc; kéo ảnh để đổi thứ tự.' },
+    { k: 'hot', label: 'Gắn nhãn Hot (tag nổi bật trên thẻ game)', type: 'checkbox' },
+    { k: 'hero', label: 'Hiện KV chính trên banner trang chủ', type: 'checkbox', hint: 'Cần có ảnh KV chính. Thứ tự slide theo ô “Thứ tự”.' },
+    { type: 'heading', label: 'Hình ảnh · 3 loại, mỗi loại một chỗ dùng' },
+    { k: 'kv', label: '① KV chính — banner lớn trang chủ (21:8 · 2100 × 800)', type: 'image', max: 2400, full: true, hint: 'Chỉ dùng cho banner trang chủ, khi tick “Hiện KV chính trên banner trang chủ”. Để chữ và nhân vật chính ở giữa vì điện thoại cắt bớt hai bên.' },
+    { k: 'cover', label: '② Thumbnail — ô game trong thư viện (4:3 · 1200 × 900)', type: 'image', max: 1200, full: true, hint: 'Cũng là ảnh đại diện khi chia sẻ link và khi game chưa có ảnh slide.' },
+    { k: 'screenshots', label: '③ Ảnh slide — trang giới thiệu game (16:9 · 1920 × 1080)', type: 'images', max: 1920, full: true, hint: 'Tỉ lệ chuẩn 16:9 (1920 × 1080). Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ. Chọn hoặc kéo thả nhiều ảnh cùng lúc; kéo ảnh để đổi thứ tự.' },
     { k: 'clip_url', label: 'Video ngắn trong slide', type: 'media-url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
     { type: 'heading', label: 'Bài viết' },
     { k: 'description', label: 'Bài viết giới thiệu game', type: 'richtext', full: true, hint: 'Dán từ Word / Google Docs được, định dạng lạ sẽ tự lọc bỏ.' },
@@ -940,13 +936,17 @@ const FIELDS = {
     { k: 'advertiser', label: 'Tên khách hàng / nhãn hàng', type: 'text', req: true },
     { k: 'title', label: 'Tên chiến dịch', type: 'text', hint: 'Để quản lý và làm mô tả ảnh. VD: Khuyến mãi Tết 2027' },
     { k: 'link_url', label: 'Link trang web của khách', type: 'url', full: true, req: true, hint: 'Bấm vào banner mở trang này trong tab mới. Bắt đầu bằng https://' },
-    { type: 'heading', label: 'Hình ảnh' },
-    { k: 'image', label: 'Ảnh banner (đúng tỉ lệ ở tab Giao diện, mặc định 6:1 · 1200 × 200)', type: 'image', max: 2000, full: true },
-    { k: 'image_mobile', label: 'Ảnh riêng cho điện thoại (3:1 · 900 × 300), không bắt buộc', type: 'image', max: 1200, full: true, hint: 'Banner 6:1 trên điện thoại rất thấp. Có ảnh này thì điện thoại hiện ảnh này.' },
-    { type: 'heading', label: 'Vị trí hiển thị' },
-    { k: 'placement', label: 'Gói vị trí', type: 'select', options: [['all', 'Toàn trang: trang chủ + mọi trang game'], ['home', 'Chỉ trang chủ (dưới thư viện)'], ['games', 'Mọi trang giới thiệu game'], ['game', 'Trang của game chọn riêng']] },
+    { type: 'heading', label: 'Vị trí 1 · Banner lớn đầu trang chủ (Hero)' },
+    { k: 'hero_on', label: 'Hiện trên banner trang chủ, chạy chung với KV các game', type: 'checkbox' },
+    { k: 'hero_image', label: 'Ảnh hero (21:8 · 2100 × 800), JPG / PNG / WebP / GIF', type: 'image', max: 2400, full: true },
+    { k: 'hero_video', label: 'Video hero (không bắt buộc): link .mp4 hoặc YouTube', type: 'media-url', full: true, hint: 'Có video thì chạy video, ảnh hero làm ảnh chờ.' },
+    { k: 'hero_sort', label: 'Thứ tự trong banner trang chủ', type: 'number', hint: 'Xếp chung với cột Thứ tự của game. VD game có thứ tự 1, 2, 3; đặt 2 thì quảng cáo hiện sau game thứ 2.' },
+    { type: 'heading', label: 'Vị trí 2 · Banner ngang (dưới thư viện / trang game)' },
+    { k: 'placement', label: 'Gói vị trí', type: 'select', options: [['all', 'Toàn trang: trang chủ + mọi trang game'], ['home', 'Chỉ trang chủ (dưới thư viện)'], ['games', 'Mọi trang giới thiệu game'], ['game', 'Trang của game chọn riêng'], ['none', 'Không dùng banner ngang']] },
     { k: 'game_ids', label: 'Chọn game hiển thị quảng cáo', type: 'gamepick', when: 'placement=game', hint: 'Quảng cáo theo game được ưu tiên hơn quảng cáo toàn trang ở trang game đó.' },
-    { k: 'weight', label: 'Mức ưu tiên (1–10)', type: 'number', hint: 'Nhiều quảng cáo cùng vị trí thì luân phiên; số lớn hiện nhiều hơn.' },
+    { k: 'image', label: 'Ảnh banner ngang (đúng tỉ lệ ở tab Giao diện, mặc định 6:1 · 1200 × 200)', type: 'image', max: 2000, full: true, when: 'placement=all|home|games|game' },
+    { k: 'image_mobile', label: 'Ảnh banner ngang cho điện thoại (3:1 · 900 × 300), không bắt buộc', type: 'image', max: 1200, full: true, when: 'placement=all|home|games|game', hint: 'Banner 6:1 trên điện thoại rất thấp. Có ảnh này thì điện thoại hiện ảnh này.' },
+    { k: 'weight', label: 'Mức ưu tiên (1–10)', type: 'number', when: 'placement=all|home|games|game', hint: 'Nhiều quảng cáo cùng vị trí thì luân phiên; số lớn hiện nhiều hơn.' },
     { type: 'heading', label: 'Thời gian chạy' },
     { k: 'start_at', label: 'Ngày bắt đầu', type: 'date', hint: 'Để trống = chạy ngay.' },
     { k: 'end_at', label: 'Ngày kết thúc', type: 'date', hint: 'Hết ngày này quảng cáo tự tắt.' },
@@ -1010,10 +1010,10 @@ const FIELDS = {
   ]
 };
 const BLANK = {
-  games: () => ({ kv_in_slide: false, status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
+  games: () => ({ hero: false, status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
   banners: () => ({ active: true, kind: 'game', media_type: 'image', duration: 0, sort: D.banners.length + 1 }),
   genres: () => ({ sort: D.genres.length + 1, show: true, description: '' }),
-  ads: () => ({ active: true, placement: 'all', game_ids: [], weight: 1, start_at: today() }),
+  ads: () => ({ active: true, placement: 'all', game_ids: [], weight: 1, start_at: today(), hero_on: false, hero_sort: 99 }),
   assets: () => ({ kind: 'text', group_name: realGroup() || '', category: AF.cat !== 'all' ? AF.cat : (AF.upCat || 'Chưa phân loại'), game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : '' })
 };
 
@@ -1138,9 +1138,16 @@ function adminGames() {
     <td>${esc(genreNames(g).join(', '))}</td>
     <td><span class="pill ${g.status === 'published' ? 'pub' : 'draft'}">${g.status === 'published' ? 'Đã đăng' : 'Nháp'}</span>${g.play_url ? '' : ' <span class="pill draft">Chưa có link</span>'}</td>
     <td><button class="toggle ${g.hot ? 'on' : ''}" data-act="flip" data-kind="games" data-k="hot" data-id="${esc(g.id)}" aria-label="Hot"></button></td>
+    <td><button class="toggle ${g.hero ? 'on' : ''}" data-act="flip" data-kind="games" data-k="hero" data-id="${esc(g.id)}" aria-label="Banner trang chủ" ${!g.kv && !g.hero ? 'title="Chưa có ảnh KV chính"' : ''}></button>${g.hero && !g.kv ? '<div class="hint" style="color:var(--wine);font-size:11px">Thiếu KV</div>' : ''}</td>
     <td class="num">${g.sort ?? 0}</td>
     <td><div class="row-act">${delCell(g.id)}</div></td></tr>`).join('');
-  return tableWrap(['', 'Game', 'Thể loại', 'Trạng thái', 'Hot', 'Thứ tự', ''], rows, 'Chưa có game nào.');
+  const nHero = bannerSlidesAdmin();
+  return `<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Banner trang chủ đang có <b>${nHero.games}</b> game${nHero.ads ? ` và <b>${nHero.ads}</b> quảng cáo` : ''}. Bật cột “Banner trang chủ” để đưa KV chính của game lên banner; thứ tự slide theo cột Thứ tự.</p>
+  ${tableWrap(['', 'Game', 'Thể loại', 'Trạng thái', 'Hot', 'Banner trang chủ', 'Thứ tự', ''], rows, 'Chưa có game nào.')}`;
+}
+function bannerSlidesAdmin() {
+  return { games: D.games.filter(g => g.hero && g.kv && g.status === 'published').length,
+    ads: (D.ads || []).filter(a => a.active && a.hero_on && (!a.start_at || a.start_at <= today()) && (!a.end_at || a.end_at >= today())).length };
 }
 function adminBanners() {
   const td = today();
@@ -1158,14 +1165,15 @@ function adminBanners() {
   return tableWrap(['', 'Banner', 'Loại', 'Bấm vào mở', 'Thời gian chạy', 'Hiện', 'Thứ tự', ''], rows, 'Chưa có banner. Trang chủ sẽ tự lấy các game gắn nhãn Hot.');
 }
 /* ---------- Quảng cáo theo chiến dịch ---------- */
-const PLACE_LABEL = { all: 'Toàn trang', home: 'Trang chủ', games: 'Mọi trang game', game: 'Game chọn riêng' };
+const PLACE_LABEL = { all: 'Toàn trang', home: 'Trang chủ', games: 'Mọi trang game', game: 'Game chọn riêng', none: '' };
+const placeText = a => [a.hero_on ? 'Banner trang chủ' : '', a.placement !== 'none' ? 'Banner ngang: ' + PLACE_LABEL[a.placement] : ''].filter(Boolean).join(' + ');
 const adState = a => { const td = today(); return !a.active ? ['Đã tắt', 'draft'] : a.end_at && a.end_at < td ? ['Hết hạn', 'draft'] : a.start_at && a.start_at > td ? ['Chờ chạy', 'draft'] : ['Đang chạy', 'pub']; };
 const pct = (a, b) => !b ? '—' : !a ? '0%' : (a / b * 100).toFixed(a / b < 0.1 ? 2 : 1).replace('.', ',') + '%';
 const nfmt = n => Number(n || 0).toLocaleString('vi-VN');
 function adStatsOf(ref) { return (ADSTATS?.ads || []).find(x => x.ref === ref) || { views: 0, clicks: 0, reach: 0 }; }
 function adReport(a) {
   const st = adStatsOf('c:' + a.id);
-  return `Báo cáo quảng cáo · Vinh Làm Game\nKhách hàng: ${a.advertiser}${a.title ? '\nChiến dịch: ' + a.title : ''}\nVị trí: ${PLACE_LABEL[a.placement] || ''}${a.placement === 'game' ? ' (' + (a.game_ids || []).map(id => gameById(id)?.title).filter(Boolean).join(', ') + ')' : ''}\nThời gian: ${a.start_at || '…'} → ${a.end_at || '…'}\nLượt hiển thị: ${nfmt(st.views)}\nSố người xem: ${nfmt(st.reach)}\nLượt bấm: ${nfmt(st.clicks)}\nTỉ lệ bấm (CTR): ${pct(st.clicks, st.views)}\nSố liệu tính đến ${new Date().toLocaleString('vi-VN')}`;
+  return `Báo cáo quảng cáo · Vinh Làm Game\nKhách hàng: ${a.advertiser}${a.title ? '\nChiến dịch: ' + a.title : ''}\nVị trí: ${placeText(a)}${a.placement === 'game' ? ' (' + (a.game_ids || []).map(id => gameById(id)?.title).filter(Boolean).join(', ') + ')' : ''}\nThời gian: ${a.start_at || '…'} → ${a.end_at || '…'}\nLượt hiển thị: ${nfmt(st.views)}\nSố người xem: ${nfmt(st.reach)}\nLượt bấm: ${nfmt(st.clicks)}\nTỉ lệ bấm (CTR): ${pct(st.clicks, st.views)}\nSố liệu tính đến ${new Date().toLocaleString('vi-VN')}`;
 }
 function adminAds() {
   if ((!ADSTATS || Date.now() - ADSTATS.at > 60000) && !statsBusy.ads) loadStats(400, 'ads');
@@ -1175,14 +1183,14 @@ function adminAds() {
     const [st, cls] = adState(a), m = adStatsOf('c:' + a.id);
     const games = a.placement === 'game' ? (a.game_ids || []).map(id => gameById(id)?.title).filter(Boolean).join(', ') : '';
     return `<tr>
-      <td><div class="thumb" style="aspect-ratio:3/1;width:120px">${a.image ? `<img src="${esc(a.image)}" alt="">` : ''}</div></td>
+      <td><div class="thumb" style="aspect-ratio:3/1;width:120px">${a.image || a.hero_image ? `<img src="${esc(a.image || a.hero_image)}" alt="">` : ''}</div></td>
       <td><span style="font-weight:500">${esc(a.advertiser)}</span>${a.title ? `<div class="hint" style="color:var(--muted)">${esc(a.title)}</div>` : ''}${a.note ? `<div class="hint" style="color:var(--muted)" title="${esc(a.note)}">📝 ${esc(a.note.slice(0, 40))}${a.note.length > 40 ? '…' : ''}</div>` : ''}</td>
-      <td>${PLACE_LABEL[a.placement] || '—'}${games ? `<div class="hint" style="color:var(--muted)">${esc(games)}</div>` : ''}</td>
+ <td>${placeText(a) || '—'}${games ? `<div class="hint" style="color:var(--muted)">${esc(games)}</div>` : ''}</td>
       <td class="num" style="white-space:nowrap">${esc(a.start_at || '…')} → ${esc(a.end_at || '…')}<br><span class="pill ${cls}">${st}</span></td>
       <td class="num" style="white-space:nowrap">${ADSTATS ? `${nfmt(m.views)} xem<br>${nfmt(m.clicks)} bấm · ${pct(m.clicks, m.views)}` : '…'}</td>
       <td><button class="toggle ${a.active ? 'on' : ''}" data-act="flip" data-kind="ads" data-k="active" data-id="${esc(a.id)}" aria-label="Bật quảng cáo"></button></td>
       <td><div class="row-act"><button class="btn small line" data-act="copy" data-v="${esc(adReport(a))}" title="Chép báo cáo gửi khách">Báo cáo</button>${delCell(a.id)}</div></td></tr>`; }).join('');
-  return `${legacy}<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Banner quảng cáo hiện dưới thư viện (trang chủ) và dưới bài giới thiệu ở trang game. Banner đầu trang chủ quản lý ở tab Banner (loại Quảng cáo). Nút <b>Báo cáo</b> chép số liệu để gửi khách.</p>
+  return `${legacy}<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Mọi quảng cáo của khách quản lý ở đây. Hai vị trí: <b>banner lớn đầu trang chủ</b> (chạy chung với KV các game) và <b>banner ngang</b> dưới thư viện / trang game. Nút <b>Báo cáo</b> chép số liệu để gửi khách.</p>
     ${tableWrap(['', 'Khách hàng', 'Vị trí', 'Thời gian', 'Hiệu quả', 'Bật', ''], rows, 'Chưa có quảng cáo nào. Bấm “+ Thêm quảng cáo” khi có khách đặt.')}`;
 }
 
@@ -1220,7 +1228,7 @@ async function loadStats(days, which = 'main') {
 }
 const refName = ref => { const [k, id] = [ref.slice(0, 2), ref.slice(2)];
   if (ref === 'legacy') return ['Banner cũ (tab Giao diện)', 'Dưới thư viện'];
-  if (k === 'c:') { const a = (D.ads || []).find(x => x.id === id); return [a ? a.advertiser + (a.title ? ' · ' + a.title : '') : '(quảng cáo đã xoá)', a ? PLACE_LABEL[a.placement] : '']; }
+  if (k === 'c:') { const a = (D.ads || []).find(x => x.id === id); return [a ? a.advertiser + (a.title ? ' · ' + a.title : '') : '(quảng cáo đã xoá)', a ? placeText(a) : '']; }
   if (k === 'b:') { const b = D.banners.find(x => x.id === id); return [b ? (b.sponsor ? b.sponsor + ' · ' : '') + b.title : '(banner đã xoá)', 'Banner đầu trang']; }
   return [ref, ''];
 };
@@ -1354,7 +1362,7 @@ function adminBackup() {
 }
 
 const TAB_GROUPS = () => [
-  ['Nội dung', [['games', 'Game', D.games.length], ['banners', 'Banner', D.banners.length], ['ads', 'Quảng cáo', (D.ads || []).length], ['genres', 'Thể loại', D.genres.length]]],
+  ['Nội dung', [['games', 'Game', D.games.length], ['ads', 'Quảng cáo', (D.ads || []).length], ['genres', 'Thể loại', D.genres.length]]],
   ['Tư liệu', [['assets', 'Kho tư liệu', ASSETS ? ASSETS.length : null]]],
   ['Khách hàng', [['stats', 'Thống kê'], ['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0]]],
   ['Cài đặt', [['display', 'Giao diện'], ['settings', 'Thông tin trang'], ['admins', 'Quản trị viên'], ['backup', 'Sao lưu']]]
@@ -1395,7 +1403,7 @@ function viewAdmin(tab = 'games') {
   }
   const groups = TAB_GROUPS();
   const flat = groups.flatMap(g => g[1]);
-  const canAdd = ['games', 'banners', 'genres', 'ads'].includes(tab);
+  const canAdd = ['games', 'genres', 'ads'].includes(tab);
   const body = { games: adminGames, banners: adminBanners, ads: adminAds, stats: adminStats, genres: adminGenres, messages: adminMessages, assets: adminAssets, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup }[tab] || adminGames;
   const side = `<aside class="admin-side" aria-label="Mục quản trị">
       <div class="side-groups">${groups.map(([name, tabs]) => `<div class="side-group"><span>${name}</span>${tabs.map(t => `<button class="side-tab ${t[0] === tab ? 'on' : ''}" data-act="tab" data-tab="${t[0]}" ${t[0] === tab ? 'aria-current="page"' : ''}><span>${t[1]}</span>${t[3] ? `<span class="tab-badge num">${t[3]}</span>` : t[2] != null ? `<span class="cnt num">${t[2]}</span>` : ''}</button>`).join('')}</div>`).join('')}</div>
@@ -1800,7 +1808,7 @@ async function uploadWithButton(btn, file, folder) {
 }
 
 let TAB = location.hash.replace(/^#\/?/, '') || 'games';
-if (!['games', 'banners', 'ads', 'stats', 'genres', 'assets', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
+if (!['games', 'ads', 'stats', 'genres', 'assets', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
 function render() {
   if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
   if (ASSETS === null && TAB !== 'assets' && (MODE === 'local' || (session && IS_ADMIN))) loadAssets();
@@ -2312,10 +2320,13 @@ document.addEventListener('submit', async e => {
     if ((kind === 'banners' || kind === 'ads') && v.start_at && v.end_at && v.end_at < v.start_at) { toast('Ngày kết thúc phải sau ngày bắt đầu.', true); return; }
     if (kind === 'ads') {
       if (!/^https?:\/\//i.test(v.link_url)) { toast('Link trang web của khách phải bắt đầu bằng https://', true); form.elements.link_url?.focus(); return; }
-      if (!v.image) { toast('Hãy thêm ảnh banner quảng cáo.', true); return; }
+      if (v.placement === 'none' && !v.hero_on) { toast('Hãy chọn ít nhất một vị trí: banner trang chủ hoặc banner ngang.', true); return; }
+      if (v.hero_on && !v.hero_image && !v.hero_video) { toast('Hãy thêm ảnh hero (21:8) cho vị trí banner trang chủ.', true); return; }
+      if (v.placement !== 'none' && !v.image) { toast('Hãy thêm ảnh banner ngang (6:1).', true); return; }
       if (v.placement === 'game' && !v.game_ids.length) { toast('Hãy chọn ít nhất một game.', true); return; }
       if (v.placement !== 'game') v.game_ids = [];
       v.weight = Math.min(10, Math.max(1, Number(v.weight) || 1));
+      v.hero_sort = Number(v.hero_sort) || 0;
     }
     if (missing) { toast(`Hãy điền “${missing.label}”.`, true); form.elements[missing.k]?.focus(); return; }
     if (kind === 'display') v.banner_speed = Math.max(2, Number(v.banner_speed) || 6), v.grid_rows = Math.max(1, Number(v.grid_rows) || 3);

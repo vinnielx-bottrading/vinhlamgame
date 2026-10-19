@@ -586,6 +586,7 @@ function cleanRich(html) {
   out.querySelectorAll('p').forEach(p => { if (!p.textContent.trim() && !p.querySelector('img')) p.remove(); });
   return out.innerHTML.replace(/(<br>\s*){3,}/g, '<br><br>').trim();
 }
+const ytId = u => (String(u || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/) || [])[1] || '';
 const isRich = t => /<(p|h2|h3|ul|ol|strong|em|blockquote|br|a|img|u)\b/i.test(String(t || ''));
 const richHTML = t => isRich(t) ? cleanRich(t) : paras(t);
 /* ============ LIÊN HỆ ============ */
@@ -757,7 +758,6 @@ function videoHTML(url) {
   if (/\.(mp4|webm|ogg)(\?|$)/i.test(u)) return `<video src="${esc(u)}" controls muted playsinline preload="metadata"></video>`;
   return `<img src="${esc(u)}" alt="Video gameplay">`;
 }
-const ytId = u => (String(u || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/) || [])[1] || '';
 const CHECK = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>';
 let curMedia = [], mediaIdx = 0;
 function mediaHTML(m, inThumb) {
@@ -781,10 +781,10 @@ function viewGame(slug) {
   const legacyYt = ytId(g.video_url) ? g.video_url : '';
   const yt = ytId(g.youtube_url || legacyYt);
   const clip = g.clip_url || (!legacyYt ? g.video_url : '');
-  const imgs = [g.kv_in_slide === false ? '' : g.kv, ...(g.screenshots || [])].filter(Boolean);
+  const imgs = [g.kv_in_slide === true ? g.kv : '', ...(g.screenshots || [])].filter(Boolean);
   curMedia = imgs.map(src => ({ type: 'img', src }));
   if (clip) curMedia.splice(Math.min(1, curMedia.length), 0, /\.(mp4|webm|ogg)(\?|$)/i.test(clip) ? { type: 'video', src: clip } : { type: 'img', src: clip });
-  if (!curMedia.length) curMedia = [g.cover ? { type: 'img', src: g.cover } : { type: 'gen', game: g }];
+  if (!curMedia.length) curMedia = [(g.kv || g.cover) ? { type: 'img', src: g.kv || g.cover } : { type: 'gen', game: g }];
   mediaIdx = 0;
   const many = curMedia.length > 1;
   const perks = String(g.highlights || '').split('\n').map(x => x.replace(/\s*\|\s*/, ' — ').trim()).filter(Boolean);
@@ -978,6 +978,37 @@ function logoHTML(name) {
 
 const isAdmin = () => false;
 
+/* ============ CẬP NHẬT TRỰC TIẾP ============
+   Admin lưu → trang khách đang mở tự cập nhật (Supabase Realtime), không cần tải lại.
+   Đang ở trang chơi game thì chờ khách rời trang mới cập nhật để không làm gián đoạn game. */
+let liveTimer = null, livePending = false, lastLive = 0;
+async function liveRefresh() {
+  if (location.hash.startsWith('#/play/')) { livePending = true; return; }
+  livePending = false; lastLive = Date.now();
+  try {
+    const keep = { y: window.scrollY, slide: slideIdx, media: typeof mediaIdx !== 'undefined' ? mediaIdx : 0 };
+    await Store.load();
+    render();
+    slideIdx = keep.slide; window.scrollTo(0, keep.y);
+  } catch (_) {}
+}
+const queueLive = () => { clearTimeout(liveTimer); liveTimer = setTimeout(liveRefresh, 800); };
+function startLive() {
+  if (MODE === 'cloud' && sb?.channel) {
+    try {
+      const ch = sb.channel('vlg-public');
+      ['settings', 'genres', 'games', 'banners'].forEach(t => ch.on('postgres_changes', { event: '*', schema: 'public', table: t }, queueLive));
+      ch.subscribe();
+    } catch (_) {}
+  }
+  // Dự phòng: quay lại tab sau hơn 1 phút thì tải lại dữ liệu
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && (livePending || Date.now() - lastLive > 60000)) queueLive(); });
+  // Chế độ demo: admin lưu ở tab khác cùng trình duyệt
+  window.addEventListener('storage', e => { if (e.key === 'vlg_data_v1') queueLive(); });
+  window.addEventListener('hashchange', () => { if (livePending && !location.hash.startsWith('#/play/')) queueLive(); });
+  lastLive = Date.now();
+}
+
 /* ============ ROUTER ============ */
 let ROUTE = location.hash || '#/';
 let lastRoute = null;
@@ -1018,6 +1049,72 @@ function chrome() {
     <span class="foot-links"><a href="#/">Thư viện</a><a href="#/about">About</a><a href="#/ung-ho">Ủng hộ</a><a href="#/lien-he">Liên hệ</a></span>`;
 }
 function closeDD() { $('#ddMenu').hidden = true; $('#ddBtn').setAttribute('aria-expanded', 'false'); }
+
+/* ============ SỰ KIỆN ============ */
+document.addEventListener('click', async e => {
+  const link = e.target.closest('a[href^="#/"]');
+  if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); go(link.getAttribute('href')); return; }
+  const t = e.target.closest('[data-act]');
+  if (!t) { if (!e.target.closest('.dd')) closeDD(); return; }
+  const act = t.dataset.act, id = t.dataset.id;
+  const tab = typeof TAB !== 'undefined' ? TAB : 'games';
+  try {
+    switch (act) {
+      case 'tab': e.preventDefault(); TAB = t.dataset.tab; editing = null; confirmDel = null; try { history.replaceState(null, '', '#' + TAB); } catch (_) {} render(); window.scrollTo(0, 0); break;
+      case 'dd': { const m = $('#ddMenu'); m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); break; }
+      case 'slide': e.preventDefault(); goSlide(Number(t.dataset.d)); break;
+      case 'slide-to': e.preventDefault(); goSlide(Number(t.dataset.i), true); break;
+      case 'msg-filter': msgFilter = t.dataset.f; render(); break;
+      case 'msg-refresh': MSGS = null; render(); break;
+      case 'msg-toggle': { const m = MSGS.find(x => x.id === id); await Msg.update(id, { handled: !m.handled }); m.handled = !m.handled; render(); toast(m.handled ? 'Đã đánh dấu đã liên hệ' : 'Đã đánh dấu chưa liên hệ'); break; }
+      case 'msg-del': confirmDel = 'msg:' + id; render(); break;
+      case 'msg-del-yes': await Msg.remove(id); MSGS = MSGS.filter(x => x.id !== id); confirmDel = null; render(); toast('Đã xoá tin nhắn'); break;
+      case 'amt': { donateAmt = Number(t.dataset.v); const o = $('#amtOther'); if (o) o.value = ''; document.querySelectorAll('.amt').forEach(b => { const on = b === t; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); }); drawQR(); break; }
+      case 'contact-again': contactSent = false; render(); break;
+      case 'page': libPage = Number(t.dataset.p) || 1; render(); $('#library')?.scrollIntoView({ block: 'start' }); break;
+      case 'media': showMedia(Number(t.dataset.i)); break;
+      case 'media-step': showMedia(mediaIdx + Number(t.dataset.d)); break;
+      case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
+      case 'fs': { const f = $('#frame'); (f.requestFullscreen || f.webkitRequestFullscreen)?.call(f)?.catch?.(() => toast('Trình duyệt không cho phép toàn màn hình ở đây.', true)); break; }
+      case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
+      case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'cancel': editing = null; render(); break;
+      case 'del': confirmDel = id; render(); break;
+      case 'del-no': confirmDel = null; render(); break;
+      case 'del-yes': await Store.remove(tab, id); confirmDel = null; if (editing?.item.id === id) editing = null; render(); toast('Đã xoá'); break;
+      case 'flip': { const it = { ...D[t.dataset.kind].find(x => x.id === id) }; const k = t.dataset.k; it[k] = k === 'show' ? it[k] === false : !it[k]; await Store.save(t.dataset.kind, it); render(); break; }
+      case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
+      case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
+      case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'asset-new': editing = { kind: 'assets', item: { ...BLANK.assets(), kind: t.dataset.kind, category: AF.cat !== 'all' ? AF.cat : ({ text: 'Bài viết & Caption', link: 'Link tham khảo', video: 'Video' }[t.dataset.kind] || 'Chưa phân loại') } }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'asset-edit': editing = { kind: 'assets', item: structuredClone(ASSETS.find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'asset-del': confirmDel = 'as:' + id; render(); break;
+      case 'asset-del-yes': { const a = ASSETS.find(x => x.id === id); await Assets.remove(id); if (a?.url) deleteB2(a.url); ASSETS = ASSETS.filter(x => x.id !== id); confirmDel = null; render(); toast('Đã xoá tư liệu'); break; }
+      case 'pick': {
+        const field = t.closest('.field');
+        if (t.dataset.target === 'img') openPicker({ kind: 'image', onPick: ([u]) => { const w = field.querySelector('[data-img]'); setImg(w, u); w.querySelector('[data-img-url]').value = u; toast('Đã chọn ảnh từ kho'); } });
+        else if (t.dataset.target === 'shots') openPicker({ kind: 'image', multi: true, onPick: urls => { const w = field.querySelector('[data-imgs]'); setShots(w, [...getShots(w), ...urls]); toast(`Đã thêm ${urls.length} ảnh từ kho`); } });
+        else openPicker({ kind: 'video', onPick: ([u]) => { t.closest('form').elements[t.dataset.field].value = u; toast('Đã chọn video từ kho'); } });
+        break;
+      }
+      case 'pk-close': PICK = null; drawPicker(); break;
+      case 'pk-toggle': if (!PICK.multi) { finishPick([id]); break; } { const i = PICK.sel.indexOf(id); i >= 0 ? PICK.sel.splice(i, 1) : PICK.sel.push(id); drawPicker(); } break;
+      case 'pk-done': finishPick(PICK.sel); break;
+      case 'shot-move': { const w = t.closest('[data-imgs]'); const arr = getShots(w); const i = Number(t.dataset.i), j = i + Number(t.dataset.d); if (j < 0 || j >= arr.length) break; [arr[i], arr[j]] = [arr[j], arr[i]]; setShots(w, arr); break; }
+      case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
+      case 'copy-backup': { const b = $('#backupBox'); try { await navigator.clipboard.writeText(b.value); toast('Đã sao chép JSON'); } catch { b.select(); toast('Đã bôi đen — nhấn Ctrl/Cmd + C.'); } break; }
+      case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
+      case 'reset': confirmDel = '__reset'; render(); break;
+      case 'reset-yes': D = structuredClone(SEED); Store.persist(); confirmDel = null; render(); toast('Đã nạp lại dữ liệu mẫu'); break;
+      case 'logout': await sb.auth.signOut(); session = null; IS_ADMIN = null; ME = ''; MY_ROLE = ''; MSGS = null; ADMINS = null; ASSETS = null; AUTH_VIEW = ''; render(); break;
+      case 'auth-view': AUTH_VIEW = t.dataset.v || ''; render(); break;
+      case 'admin-del': confirmDel = 'adm:' + id; render(); break;
+      case 'admin-del-yes': { const { error } = await sb.from('admins').delete().eq('email', id); if (error) throw new Error('Không xoá được: ' + error.message); confirmDel = null; ADMINS = null; render(); toast('Đã xoá quyền của ' + id); break; }
+      case 'admin-invite': await inviteAdmin(id); toast('Đã gửi lại email mời tới ' + id); break;
+    }
+  } catch (err) { toast(err.message || 'Có lỗi xảy ra', true); }
+});
 
 function fieldErr(el, msg) {
   el.setAttribute('aria-invalid', msg ? 'true' : 'false');
@@ -1066,6 +1163,7 @@ window.addEventListener('popstate', () => { ROUTE = location.hash || '#/'; close
   if (sb) sb.auth.onAuthStateChange((ev, s) => { session = s; if (typeof onAuthEvent === 'function') onAuthEvent(ev, s); });
   if (typeof afterBoot === 'function') await afterBoot();
   render();
+  if (typeof startLive === 'function') startLive();
 })();
 </script>
 

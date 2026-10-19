@@ -27,7 +27,7 @@ const EXT = {
   'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/avif': 'avif', 'image/svg+xml': 'svg',
   'video/mp4': 'mp4', 'video/webm': 'webm', 'video/ogg': 'ogv', 'video/quicktime': 'mov'
 };
-const FOLDERS = ['banner', 'games', 'ads', 'misc', 'donate'];
+const FOLDERS = ['banner', 'games', 'ads', 'misc', 'donate', 'library'];
 
 export default {
   async fetch(req, env, ctx) {
@@ -145,7 +145,7 @@ function mediaBase(env, url) {
 function publicUrl(env, url, key) {
   return `${mediaBase(env, url)}/${key.split('/').map(encodeURIComponent).join('/')}`;
 }
-const validKey = k => /^(banner|games|ads|misc|donate)\/(images|videos)\/\d{4}\/\d{2}\/[a-z0-9-]{1,80}\.[a-z0-9]{2,4}$/.test(k);
+const validKey = k => /^(banner|games|ads|misc|donate|library)\/(images|videos)\/\d{4}\/\d{2}\/[a-z0-9-]{1,80}\.[a-z0-9]{2,4}$/.test(k);
 
 /* ---------------- Phát file từ bucket private ---------------- */
 const MEDIA_CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS', 'Access-Control-Allow-Headers': 'Range', 'Access-Control-Max-Age': '86400' };

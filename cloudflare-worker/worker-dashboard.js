@@ -330,7 +330,7 @@ var EXT = {
   "video/ogg": "ogv",
   "video/quicktime": "mov"
 };
-var FOLDERS = ["banner", "games", "ads", "misc", "donate"];
+var FOLDERS = ["banner", "games", "ads", "misc", "donate", "library"];
 var src_default = {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
@@ -441,7 +441,7 @@ function mediaBase(env, url) {
 function publicUrl(env, url, key) {
   return `${mediaBase(env, url)}/${key.split("/").map(encodeURIComponent).join("/")}`;
 }
-var validKey = (k) => /^(banner|games|ads|misc|donate)\/(images|videos)\/\d{4}\/\d{2}\/[a-z0-9-]{1,80}\.[a-z0-9]{2,4}$/.test(k);
+var validKey = (k) => /^(banner|games|ads|misc|donate|library)\/(images|videos)\/\d{4}\/\d{2}\/[a-z0-9-]{1,80}\.[a-z0-9]{2,4}$/.test(k);
 var MEDIA_CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS", "Access-Control-Allow-Headers": "Range", "Access-Control-Max-Age": "86400" };
 async function serveMedia(req, env, ctx, url) {
   let key;

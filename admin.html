@@ -442,6 +442,51 @@ textarea{min-height:120px;resize:vertical}
 .login{max-width:380px;margin:40px auto;display:grid;gap:16px}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;font-size:14px;border-radius:var(--r);z-index:50;box-shadow:0 12px 30px -10px rgba(0,0,0,.4)}
 .toast.err{background:var(--wine)}
+.lib-drop{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:stretch}
+.lib-drop-in{border:1.5px dashed var(--line);border-radius:var(--r);padding:22px;display:grid;gap:10px;justify-items:start;background:var(--paper-2);transition:background .15s,border-color .15s}
+.lib-drop.dropping .lib-drop-in{border-color:var(--wine);background:var(--wine-tint)}
+.lib-drop-in > b{font:500 1.35rem/1.2 var(--display)}
+.lib-opts{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+.lib-opts .check{font-size:13px;gap:8px;text-transform:none;letter-spacing:0;color:var(--ink)}
+.lib-opts select{width:auto;padding:6px 10px}
+.lib-add{display:grid;gap:8px;align-content:start}
+.lib-filters{display:grid;gap:12px}
+.seg{display:flex;flex-wrap:wrap;gap:4px;border:1px solid var(--line);border-radius:var(--r);padding:4px;width:fit-content;max-width:100%}
+.seg button{padding:7px 12px;border-radius:var(--r);font-size:13px;color:var(--muted)}
+.seg button.on{background:var(--ink);color:#fff}
+.seg button .num{opacity:.6;margin-left:2px}
+.lib-filter-row{display:flex;gap:10px;flex-wrap:wrap}
+.lib-filter-row input{flex:1;min-width:200px}
+.lib-filter-row select{width:auto;min-width:160px}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.as-card{border:1px solid var(--line);display:grid;grid-template-rows:auto 1fr auto;background:var(--paper);min-width:0}
+.as-prev{position:relative;aspect-ratio:16/10;background:var(--paper-2);overflow:hidden;display:block}
+.as-prev img,.as-prev video{width:100%;height:100%;object-fit:cover;display:block}
+.as-badge{position:absolute;left:6px;bottom:6px;background:rgba(20,10,14,.8);color:#fff;font-size:10px;letter-spacing:.06em;padding:2px 6px;border-radius:2px}
+.as-text{padding:12px;font-size:12.5px;line-height:1.5;color:var(--ink);white-space:pre-line;overflow:hidden;height:100%;background:linear-gradient(var(--paper-2),var(--paper-2)) padding-box;mask-image:linear-gradient(#000 70%,transparent)}
+.as-link{padding:14px;display:grid;gap:4px;align-content:center;height:100%;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.as-link b{font:500 1.15rem/1.2 var(--display);color:var(--wine)}
+.as-body{padding:10px 12px;display:grid;gap:5px;align-content:start;min-width:0}
+.as-meta{display:flex;gap:8px;align-items:center;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.as-title{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.as-sub{font-size:11.5px;color:var(--muted)}
+.as-tags{display:flex;flex-wrap:wrap;gap:4px}
+.as-tags span{font-size:11px;color:var(--wine);background:var(--wine-tint);padding:1px 6px;border-radius:2px}
+.as-note{font-size:12px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.as-act{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-top:1px solid var(--line)}
+.pk-wrap{position:fixed;inset:0;z-index:60;background:rgba(20,10,14,.55);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.pk{background:var(--paper);width:min(1000px,100%);max-height:100%;display:grid;grid-template-rows:auto auto 1fr auto;gap:12px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+.pk-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px 0}
+.pk-head h2{font-size:1.6rem}
+.pk-body{overflow:auto;padding:0 18px;min-height:200px}
+.pk-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.pk-item{position:relative;display:grid;gap:6px;padding:6px;border:2px solid transparent;text-align:left;border-radius:var(--r)}
+.pk-item:hover{background:var(--paper-2)}
+.pk-item.on{border-color:var(--wine);background:var(--wine-tint)}
+.pk-title{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-no{position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--wine);color:#fff;font-size:12px;font-weight:600;display:grid;place-items:center}
+.pk-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+@media (max-width:700px){ .lib-drop{grid-template-columns:minmax(0,1fr)} .lib-add{grid-auto-flow:row} }
 .msg-list{display:grid;gap:12px}
 .msg{border:1px solid var(--line);padding:18px 20px;display:grid;gap:12px;background:var(--paper)}
 .msg.new{border-left:3px solid var(--wine)}
@@ -698,6 +743,7 @@ function cleanRich(html) {
   out.querySelectorAll('p').forEach(p => { if (!p.textContent.trim() && !p.querySelector('img')) p.remove(); });
   return out.innerHTML.replace(/(<br>\s*){3,}/g, '<br><br>').trim();
 }
+const ytId = u => (String(u || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/) || [])[1] || '';
 const isRich = t => /<(p|h2|h3|ul|ol|strong|em|blockquote|br|a|img|u)\b/i.test(String(t || ''));
 const richHTML = t => isRich(t) ? cleanRich(t) : paras(t);
 /* ============ LIÊN HỆ ============ */
@@ -776,7 +822,7 @@ const FIELDS = {
     { type: 'heading', label: 'Hình ảnh' },
     { k: 'cover', label: 'Ảnh thumbnail (4:3)', type: 'image', max: 1200, full: true, hint: 'Ảnh trên ô game ở thư viện. Khuyên dùng 1200 × 900.' },
     { k: 'kv', label: 'Ảnh KV chính (16:9)', type: 'image', max: 1920, full: true, hint: 'Chuẩn 1920 × 1080. Dùng làm ảnh đầu slide trang game (nếu bật bên dưới) và ảnh dự phòng cho banner trang chủ.' },
-    { k: 'kv_in_slide', label: 'Hiện KV chính làm ảnh đầu tiên của slide', type: 'checkbox', default: true },
+    { k: 'kv_in_slide', label: 'Dùng KV chính làm ảnh đầu tiên của slide (không bắt buộc)', type: 'checkbox', default: false, hint: 'Không chọn: slide bắt đầu từ ảnh số 1 trong “Ảnh slide giới thiệu”.' },
     { k: 'screenshots', label: 'Ảnh slide giới thiệu', type: 'images', max: 1920, full: true, hint: 'Tỉ lệ chuẩn 16:9 (1920 × 1080). Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ. Chọn hoặc kéo thả nhiều ảnh cùng lúc; kéo ảnh để đổi thứ tự.' },
     { k: 'clip_url', label: 'Video ngắn trong slide', type: 'media-url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
     { type: 'heading', label: 'Bài viết' },
@@ -802,6 +848,16 @@ const FIELDS = {
     { k: 'start_at', label: 'Ngày bắt đầu', type: 'date', hint: 'Để trống = hiện ngay.' },
     { k: 'end_at', label: 'Ngày kết thúc', type: 'date', hint: 'Để trống = không hết hạn. Hợp cho hợp đồng quảng cáo.' },
     { k: 'active', label: 'Đang hiển thị', type: 'checkbox' }
+  ],
+  assets: [
+    { k: 'kind', label: 'Loại tư liệu', type: 'select', options: [['image', 'Ảnh'], ['video', 'Video (file hoặc YouTube)'], ['text', 'Nội dung / caption'], ['link', 'Link để dành']] },
+    { k: 'title', label: 'Tên tư liệu', type: 'text', req: true },
+    { k: 'category', label: 'Danh mục', type: 'category', hint: 'Chọn có sẵn hoặc gõ danh mục mới.' },
+    { k: 'game_id', label: 'Thuộc game', type: 'game' },
+    { k: 'tags', label: 'Tag', type: 'text', full: true, hint: 'Cách nhau dấu phẩy. VD: trailer, mùa mưa, tết' },
+    { k: 'url', label: 'Link / file', type: 'media-url', full: true, when: 'kind=image|video|link', hint: 'Dán link, hoặc tải file lên B2.' },
+    { k: 'content', label: 'Nội dung', type: 'textarea', full: true, when: 'kind=text', hint: 'Caption, bài đăng, đoạn giới thiệu… để dành dùng sau.' },
+    { k: 'note', label: 'Ghi chú', type: 'textarea', full: true, hint: 'Dự định dùng ở đâu, khi nào đăng…' }
   ],
   genres: [
     { k: 'name', label: 'Tên thể loại', type: 'text', req: true },
@@ -851,9 +907,10 @@ const FIELDS = {
   ]
 };
 const BLANK = {
-  games: () => ({ status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
+  games: () => ({ kv_in_slide: false, status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
   banners: () => ({ active: true, kind: 'game', media_type: 'image', duration: 0, sort: D.banners.length + 1 }),
-  genres: () => ({ sort: D.genres.length + 1, show: true, description: '' })
+  genres: () => ({ sort: D.genres.length + 1, show: true, description: '' }),
+  assets: () => ({ kind: 'text', category: AF.cat !== 'all' ? AF.cat : (AF.upCat || 'Chưa phân loại'), game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : '' })
 };
 
 function fieldHTML(f, v) {
@@ -865,7 +922,7 @@ function fieldHTML(f, v) {
     case 'heading': return `<div class="field full form-sec">${f.label}</div>`;
     case 'textarea': return `<div class="${cls}">${lab}<textarea id="${id}" name="${f.k}">${esc(v)}</textarea>${hint}</div>`;
     case 'number': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="number" value="${esc(v ?? 0)}">${hint}</div>`;
-    case 'checkbox': return `<div class="${cls}" style="align-self:end"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input id="${id}" name="${f.k}" type="checkbox" ${(v ?? f.default) ? 'checked' : ''}> ${f.label}</label></div>`;
+    case 'checkbox': return `<div class="${cls}" style="align-self:end"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input id="${id}" name="${f.k}" type="checkbox" ${(v ?? f.default) ? 'checked' : ''}> ${f.label}</label>${hint}</div>`;
     case 'select': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}">${f.options.map(o => `<option value="${o[0]}" ${String(v) === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select>${hint}</div>`;
     case 'game': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}"><option value="">— Không —</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${v === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>${hint}</div>`;
     case 'genres': return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="checks">${genresSorted().map(g => `<label class="check"><input type="checkbox" name="genre_ids" value="${esc(g.id)}" ${(v || []).includes(g.id) ? 'checked' : ''}> ${esc(g.name)}</label>`).join('') || '<span class="hint">Chưa có thể loại — thêm ở tab Thể loại.</span>'}</div></div>`;
@@ -876,7 +933,7 @@ function fieldHTML(f, v) {
         <div class="img-ctl">
           <input type="hidden" name="${f.k}" value="${esc(v)}">
           <input id="${id}" type="text" data-img-url placeholder="${isData ? 'Đang dùng ảnh tải lên' : 'Dán link ảnh https://…'}" value="${isData ? '' : esc(v)}">
-          <div class="img-btns"><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" data-img-file data-max="${f.max || 1920}"${f.keepPng ? ' data-png' : ''}></span><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
+          <div class="img-btns"><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" data-img-file data-max="${f.max || 1920}"${f.keepPng ? ' data-png' : ''}></span><button type="button" class="btn small line" data-act="pick" data-kind="image" data-target="img">Từ tư liệu</button><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
           ${hint}
           <span class="drop-hint">Kéo thả ảnh vào đây · tự nén WebP, cạnh dài tối đa ${f.max || 1920}px</span>
         </div></div></div>`;
@@ -886,7 +943,7 @@ function fieldHTML(f, v) {
       return `<div class="${cls}"><span class="lbl">${f.label}</span><div data-imgs="${f.k}" data-drop style="display:grid;gap:10px;padding:8px;margin:-8px">
         <input type="hidden" name="${f.k}" value="${esc(JSON.stringify(arr))}">
         <div class="shot-list">${shotItemsHTML(arr)}</div>
-        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải nhiều ảnh lên B2' : 'Chọn nhiều ảnh'}<input type="file" accept="image/*" multiple data-shots-file data-max="${f.max || 1920}"></span></div>
+        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải nhiều ảnh lên B2' : 'Chọn nhiều ảnh'}<input type="file" accept="image/*" multiple data-shots-file data-max="${f.max || 1920}"></span><button type="button" class="btn small line" data-act="pick" data-kind="image" data-target="shots" data-multi="1">Chọn từ tư liệu</button></div>
         ${hint}
         <span class="drop-hint">Kéo thả nhiều ảnh vào khung này · tự nén WebP ${f.max || 1920}px</span>
       </div></div>`;
@@ -922,8 +979,9 @@ function fieldHTML(f, v) {
         <div class="rte-foot"><span>${f.hint || ''}</span><span class="rte-count num">0 từ</span></div>
       </div></div>`;
     }
+    case 'category': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="text" list="${id}-list" value="${esc(v || AF.upCat || 'Chưa phân loại')}"><datalist id="${id}-list">${assetCats().map(c => `<option value="${esc(c)}">`).join('')}</datalist>${hint}</div>`;
     case 'date': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="date" value="${esc(v)}">${hint}</div>`;
-    case 'media-url': return `<div class="${cls}" data-drop>${lab}<div class="img-btns"><input id="${id}" name="${f.k}" type="url" value="${esc(v)}" style="flex:1;min-width:200px">${uploadOn() ? `<span class="btn small line file-btn">Tải video lên B2<input type="file" accept="video/mp4,video/webm,video/quicktime,image/gif" data-url-file="${f.k}"></span>` : ''}</div>${hint}${uploadOn() ? '<span class="drop-hint">Kéo thả file video vào đây</span>' : ''}</div>`;
+    case 'media-url': return `<div class="${cls}" data-drop>${lab}<div class="img-btns"><input id="${id}" name="${f.k}" type="url" value="${esc(v)}" style="flex:1;min-width:200px">${uploadOn() ? `<span class="btn small line file-btn">Tải video lên B2<input type="file" accept="video/mp4,video/webm,video/quicktime,image/gif" data-url-file="${f.k}"></span>` : ''}<button type="button" class="btn small line" data-act="pick" data-kind="video" data-target="url" data-field="${f.k}">Từ tư liệu</button></div>${hint}${uploadOn() ? '<span class="drop-hint">Kéo thả file video vào đây</span>' : ''}</div>`;
     default: return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="${f.type === 'url' ? 'url' : 'text'}" value="${esc(v)}" ${f.req ? 'required' : ''}>${hint}</div>`;
   }
 }
@@ -943,7 +1001,7 @@ function readForm(form, fields) {
   return o;
 }
 
-const LABELS = { games: 'game', banners: 'banner', genres: 'thể loại' };
+const LABELS = { games: 'game', banners: 'banner', genres: 'thể loại', assets: 'tư liệu' };
 function formPanel(kind) {
   const it = editing.item;
   return `<form class="panel" data-form="${kind}" novalidate>
@@ -1063,6 +1121,7 @@ function adminBackup() {
 
 const TAB_GROUPS = () => [
   ['Nội dung', [['games', 'Game', D.games.length], ['banners', 'Banner', D.banners.length], ['genres', 'Thể loại', D.genres.length]]],
+  ['Tư liệu', [['assets', 'Kho tư liệu', ASSETS ? ASSETS.length : null]]],
   ['Khách hàng', [['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0]]],
   ['Cài đặt', [['display', 'Giao diện'], ['settings', 'Thông tin trang'], ['admins', 'Quản trị viên'], ['backup', 'Sao lưu']]]
 ];
@@ -1103,7 +1162,7 @@ function viewAdmin(tab = 'games') {
   const groups = TAB_GROUPS();
   const flat = groups.flatMap(g => g[1]);
   const canAdd = ['games', 'banners', 'genres'].includes(tab);
-  const body = { games: adminGames, banners: adminBanners, genres: adminGenres, messages: adminMessages, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup }[tab] || adminGames;
+  const body = { games: adminGames, banners: adminBanners, genres: adminGenres, messages: adminMessages, assets: adminAssets, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup }[tab] || adminGames;
   const side = `<aside class="admin-side" aria-label="Mục quản trị">
       <div class="side-groups">${groups.map(([name, tabs]) => `<div class="side-group"><span>${name}</span>${tabs.map(t => `<button class="side-tab ${t[0] === tab ? 'on' : ''}" data-act="tab" data-tab="${t[0]}" ${t[0] === tab ? 'aria-current="page"' : ''}><span>${t[1]}</span>${t[3] ? `<span class="tab-badge num">${t[3]}</span>` : t[2] != null ? `<span class="cnt num">${t[2]}</span>` : ''}</button>`).join('')}</div>`).join('')}</div>
       <div class="side-me">
@@ -1123,6 +1182,171 @@ function viewAdmin(tab = 'games') {
     </section>
     ${side}
   </div></div>`;
+}
+
+/* ---------- Kho tư liệu ---------- */
+const ASSET_KINDS = [['image', 'Ảnh'], ['video', 'Video'], ['text', 'Nội dung'], ['link', 'Link']];
+const ASSET_CATS = ['KV & Banner', 'Ảnh game', 'Video', 'Bài viết & Caption', 'Logo & Thương hiệu', 'Link tham khảo', 'Chưa phân loại'];
+const ASSET_KEY = 'vlg_assets_v1';
+const Assets = {
+  local() { try { return JSON.parse(localStorage.getItem(ASSET_KEY)) || []; } catch (_) { return []; } },
+  saveLocal(a) { try { localStorage.setItem(ASSET_KEY, JSON.stringify(a)); } catch (_) { throw new Error('Bộ nhớ trình duyệt đầy. Kết nối Supabase + Worker để lưu tư liệu lên B2.'); } },
+  async list() {
+    if (MODE === 'cloud') { const { data, error } = await sb.from('assets').select('*').order('created_at', { ascending: false }); if (error) throw error; return data || []; }
+    return this.local();
+  },
+  async save(it) {
+    it.tags = String(it.tags || '').split(',').map(t => t.trim()).filter(Boolean).join(', ');
+    if (MODE === 'cloud') { const { data, error } = await sb.from('assets').upsert(it).select().single(); if (error) throw error; return data; }
+    const a = this.local(), i = a.findIndex(x => x.id === it.id);
+    if (i >= 0) a[i] = it; else a.unshift(it);
+    this.saveLocal(a); return it;
+  },
+  async remove(id) {
+    if (MODE === 'cloud') { const { error } = await sb.from('assets').delete().eq('id', id); if (error) throw error; return; }
+    this.saveLocal(this.local().filter(x => x.id !== id));
+  }
+};
+let ASSETS = null, assetsLoading = false;
+const AF = { kind: 'all', cat: 'all', game: 'all', q: '', upCat: '', compress: true };
+function loadAssets() {
+  if (assetsLoading) return; assetsLoading = true;
+  Assets.list().then(r => { ASSETS = r; }).catch(e => { ASSETS = []; toast('Không tải được kho tư liệu: ' + (e.message || ''), true); })
+    .finally(() => { assetsLoading = false; render(); });
+}
+const assetCats = () => [...new Set([...ASSET_CATS, ...(ASSETS || []).map(a => a.category).filter(Boolean)])];
+const kindLabel = k => (ASSET_KINDS.find(x => x[0] === k) || [k, k])[1];
+function filterAssets(list, f = AF) {
+  const q = f.q.trim().toLowerCase();
+  return list.filter(a => (f.kind === 'all' || a.kind === f.kind) && (f.cat === 'all' || (a.category || 'Chưa phân loại') === f.cat)
+    && (f.game === 'all' || (f.game === 'none' ? !a.game_id : a.game_id === f.game))
+    && (!q || [a.title, a.tags, a.note, a.content, a.url, a.category].join(' ').toLowerCase().includes(q)));
+}
+function assetPreview(a, small) {
+  if (a.kind === 'image' && a.url) return `<img src="${esc(a.url)}" alt="" loading="lazy">`;
+  if (a.kind === 'video' && a.url) return ytId(a.url) ? `<img src="https://i.ytimg.com/vi/${ytId(a.url)}/hqdefault.jpg" alt="" loading="lazy"><span class="as-badge">YouTube</span>` : `<video src="${esc(a.url)}#t=0.5" muted preload="metadata" playsinline></video><span class="as-badge">▶&#xFE0E; Video</span>`;
+  if (a.kind === 'text') return `<div class="as-text">${esc(String(a.content || '').slice(0, small ? 120 : 260))}</div>`;
+  if (a.kind === 'link') { let h = ''; try { h = new URL(a.url).hostname.replace(/^www\./, ''); } catch (_) { h = a.url || ''; } return `<div class="as-link"><b>${esc(h)}</b><span>${esc(a.url || '')}</span></div>`; }
+  return '<div class="as-text">—</div>';
+}
+function adminAssets() {
+  if (!ASSETS) { loadAssets(); return `<div class="empty">Đang tải kho tư liệu…</div>`; }
+  const list = filterAssets(ASSETS);
+  const counts = Object.fromEntries(ASSET_KINDS.map(([k]) => [k, ASSETS.filter(a => a.kind === k).length]));
+  const cats = assetCats();
+  const catCount = c => ASSETS.filter(a => (a.category || 'Chưa phân loại') === c).length;
+  return `
+  <div class="lib-drop" data-lib-drop>
+    <div class="lib-drop-in">
+      <b>Kéo thả ảnh, video vào đây</b>
+      <span>hoặc <span class="btn small primary file-btn">Chọn file<input type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime" data-lib-file></span></span>
+      <div class="lib-opts">
+        <label class="check"><span>Lưu vào danh mục</span>
+          <select data-af="upCat">${cats.map(c => `<option ${AF.upCat === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
+        <label class="check"><input type="checkbox" data-af="compress" ${AF.compress ? 'checked' : ''}> Nén ảnh WebP (2560px, chất lượng cao)</label>
+      </div>
+      <span class="hint">${uploadOn() ? 'File lưu trên Backblaze B2 · tối đa 95 MB/file' : 'Chế độ demo: tư liệu lưu trên trình duyệt này, chỉ hợp với ảnh nhỏ. Kết nối Supabase + Worker để lưu lên B2.'}</span>
+    </div>
+    <div class="lib-add">
+      <button class="btn line" data-act="asset-new" data-kind="text">+ Nội dung / caption</button>
+      <button class="btn line" data-act="asset-new" data-kind="link">+ Link để dành</button>
+      <button class="btn line" data-act="asset-new" data-kind="video">+ Link video / YouTube</button>
+    </div>
+  </div>
+  ${editing && editing.kind === 'assets' ? formPanel('assets') : ''}
+  <div class="lib-filters">
+    <div class="seg">${[['all', 'Tất cả', ASSETS.length], ...ASSET_KINDS.map(([k, l]) => [k, l, counts[k]])].map(([k, l, n]) => `<button class="${AF.kind === k ? 'on' : ''}" data-act="af" data-k="kind" data-v="${k}">${l} <span class="num">${n}</span></button>`).join('')}</div>
+    <div class="lib-filter-row">
+      <input type="search" placeholder="Tìm theo tên, tag, nội dung…" value="${esc(AF.q)}" data-af="q" aria-label="Tìm tư liệu">
+      <select data-af="game" aria-label="Lọc theo game"><option value="all">Mọi game</option><option value="none" ${AF.game === 'none' ? 'selected' : ''}>Không gắn game</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${AF.game === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>
+    </div>
+    <div class="chips" style="margin:0;padding:0;border:0">
+      <button class="chip ${AF.cat === 'all' ? 'on' : ''}" data-act="af" data-k="cat" data-v="all">Mọi danh mục</button>
+      ${cats.filter(c => catCount(c)).map(c => `<button class="chip ${AF.cat === c ? 'on' : ''}" data-act="af" data-k="cat" data-v="${esc(c)}">${esc(c)} <span class="num" style="opacity:.6">${catCount(c)}</span></button>`).join('')}
+    </div>
+  </div>
+  ${list.length ? `<div class="lib-grid">${list.map(a => {
+    const g = a.game_id ? gameById(a.game_id) : null;
+    return `<article class="as-card" data-asset="${esc(a.id)}">
+      <div class="as-prev as-${a.kind}">${assetPreview(a)}</div>
+      <div class="as-body">
+        <div class="as-meta"><span class="pill draft">${kindLabel(a.kind)}</span><span>${esc(a.category || 'Chưa phân loại')}</span></div>
+        <b class="as-title" title="${esc(a.title)}">${esc(a.title || '(chưa đặt tên)')}</b>
+        ${g ? `<span class="as-sub">Game: ${esc(g.title)}</span>` : ''}
+        ${a.tags ? `<div class="as-tags">${a.tags.split(',').map(t => `<span>#${esc(t.trim())}</span>`).join('')}</div>` : ''}
+        ${a.note ? `<p class="as-note">${esc(a.note)}</p>` : ''}
+        <span class="as-sub num">${fmtTime(a.created_at)}${a.size ? ' · ' + fmtBytes(a.size) : ''}${a.dims ? ' · ' + esc(a.dims) : ''}</span>
+      </div>
+      <div class="as-act">
+        ${a.kind === 'text' ? `<button class="btn small primary" data-act="copy" data-v="${esc(a.content || '')}">Chép nội dung</button>` : `<button class="btn small primary" data-act="copy" data-v="${esc(a.url || '')}">Chép link</button>`}
+        ${a.url ? `<a class="btn small line" href="${esc(a.url)}" target="_blank" rel="noopener">Mở</a>` : ''}
+        <button class="btn small line" data-act="asset-edit" data-id="${esc(a.id)}">Sửa</button>
+        ${confirmDel === 'as:' + a.id ? `<span class="confirm">Xoá? <button class="btn small danger" data-act="asset-del-yes" data-id="${esc(a.id)}">Xoá</button><button class="btn small line" data-act="del-no">Không</button></span>` : `<button class="btn small danger" data-act="asset-del" data-id="${esc(a.id)}">Xoá</button>`}
+      </div>
+    </article>`; }).join('')}</div>` : `<div class="empty">${ASSETS.length ? 'Không có tư liệu khớp bộ lọc.' : 'Kho tư liệu đang trống. Kéo thả ảnh, video vào khung phía trên, hoặc thêm nội dung / link để dành.'}</div>`}`;
+}
+async function libUpload(files, btn) {
+  const ok = [], fail = [];
+  const cat = AF.upCat || 'Chưa phân loại';
+  const media = files.filter(f => /^(image|video)\//.test(f.type));
+  if (!media.length) { toast('Chỉ nhận file ảnh hoặc video.', true); return; }
+  for (let i = 0; i < media.length; i++) {
+    const f0 = media[i], tag = media.length > 1 ? `${i + 1}/${media.length}` : '';
+    try {
+      const isImg = /^image\//.test(f0.type);
+      btnText(btn, `Đang xử lý ${tag}`);
+      const fakeInput = { dataset: { max: '2560' }, hasAttribute: () => false };
+      let f = f0, dims = '';
+      if (isImg && AF.compress) { f = await compressImage(f0, 2560); dims = f.dims || ''; }
+      if (isImg && !dims) { try { const bm = await createImageBitmap(f0); dims = `${bm.width}×${bm.height}`; bm.close?.(); } catch (_) {} }
+      let url;
+      if (uploadOn()) url = await uploadToB2(f, 'library', p => btnText(btn, `Đang tải ${tag} · ${p}%`));
+      else { if (!isImg) throw new Error('video cần Worker'); if (f.size > 1.5 * 1024 * 1024) throw new Error('ảnh quá lớn cho chế độ demo'); url = await readData(f); }
+      const it = { id: uid(), kind: isImg ? 'image' : 'video', title: f0.name.replace(/\.[^.]+$/, ''), category: cat, url, size: f.size, dims, mime: f.type, tags: '', note: '', content: '', game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : null, created_at: new Date().toISOString(), created_by: String(ME || '') };
+      const saved = await Assets.save(it); ASSETS.unshift(saved); ok.push(f);
+    } catch (e) { fail.push(`${f0.name} (${reasonOf(e)})`); }
+  }
+  btnText(btn); render();
+  if (ok.length) toast(`Đã lưu ${ok.length}/${media.length} tư liệu vào “${cat}”${fail.length ? ' · lỗi: ' + fail.slice(0, 2).join(', ') : ''}`, !!fail.length, fail.length ? 6000 : 3000);
+  else toast('Không lưu được: ' + fail.slice(0, 2).join(', '), true, 6000);
+}
+const mediaKey = url => { const m = String(url || '').match(/\/media\/((?:banner|games|ads|misc|donate|library)\/[^?#]+)$/); return m ? decodeURIComponent(m[1]) : ''; };
+async function deleteB2(url) {
+  const key = mediaKey(url); if (!key || !uploadOn()) return;
+  try { const { data } = await sb.auth.getSession(); await fetch(CONFIG.UPLOAD_WORKER_URL.replace(/\/+$/, '') + '/file?key=' + encodeURIComponent(key), { method: 'DELETE', headers: { Authorization: 'Bearer ' + data.session?.access_token } }); } catch (_) {}
+}
+
+/* ---------- Hộp chọn từ kho tư liệu ---------- */
+let PICK = null;
+function openPicker(opts) {
+  PICK = { ...opts, sel: [], f: { kind: opts.kind, cat: 'all', game: 'all', q: '' } };
+  if (!ASSETS) { Assets.list().then(r => { ASSETS = r; drawPicker(); }).catch(() => { ASSETS = []; drawPicker(); }); }
+  drawPicker();
+}
+function drawPicker() {
+  let m = $('#picker');
+  if (!PICK) { m?.remove(); document.body.style.overflow = ''; return; }
+  if (!m) { m = document.createElement('div'); m.id = 'picker'; m.className = 'pk-wrap'; document.body.appendChild(m); document.body.style.overflow = 'hidden'; }
+  const list = ASSETS ? filterAssets(ASSETS, PICK.f) : null;
+  const cats = assetCats().filter(c => (ASSETS || []).some(a => a.kind === PICK.kind && (a.category || 'Chưa phân loại') === c));
+  m.innerHTML = `<div class="pk" role="dialog" aria-modal="true" aria-label="Chọn từ kho tư liệu">
+    <div class="pk-head"><h2>Chọn ${PICK.kind === 'video' ? 'video' : 'ảnh'} từ kho tư liệu</h2><button class="btn small line" data-act="pk-close">Đóng</button></div>
+    <div class="lib-filter-row" style="padding:0 18px">
+      <input type="search" placeholder="Tìm…" value="${esc(PICK.f.q)}" data-pk="q" aria-label="Tìm">
+      <select data-pk="cat" aria-label="Danh mục"><option value="all">Mọi danh mục</option>${cats.map(c => `<option ${PICK.f.cat === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>
+      <select data-pk="game" aria-label="Game"><option value="all">Mọi game</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${PICK.f.game === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>
+    </div>
+    <div class="pk-body">${!list ? '<div class="empty">Đang tải…</div>' : list.length ? `<div class="lib-grid pk-grid">${list.map(a => `<button type="button" class="pk-item ${PICK.sel.includes(a.id) ? 'on' : ''}" data-act="pk-toggle" data-id="${esc(a.id)}">
+        <span class="as-prev as-${a.kind}">${assetPreview(a, true)}</span><span class="pk-title">${esc(a.title || '')}</span>${PICK.sel.includes(a.id) ? `<span class="pk-no num">${PICK.sel.indexOf(a.id) + 1}</span>` : ''}</button>`).join('')}</div>`
+      : `<div class="empty">Chưa có ${PICK.kind === 'video' ? 'video' : 'ảnh'} nào trong kho. Vào tab Kho tư liệu để tải lên.</div>`}</div>
+    <div class="pk-foot"><span class="hint">${PICK.multi ? 'Bấm để chọn nhiều, thứ tự chọn là thứ tự thêm vào slide.' : 'Bấm một mục để chọn.'}</span>
+      ${PICK.multi ? `<button class="btn primary" data-act="pk-done" ${PICK.sel.length ? '' : 'disabled'}>Thêm ${PICK.sel.length || ''} mục</button>` : ''}</div>
+  </div>`;
+}
+function finishPick(ids) {
+  const urls = ids.map(id => (ASSETS || []).find(a => a.id === id)?.url).filter(Boolean);
+  if (urls.length) PICK.onPick(urls);
+  PICK = null; drawPicker();
 }
 
 /* ---------- Quản trị viên ---------- */
@@ -1192,7 +1416,7 @@ function onAuthEvent(ev) {
 
 /* ---------- Tải file lên Backblaze B2 qua Cloudflare Worker ---------- */
 const uploadOn = () => workerOn() && !!session;
-const FOLDER_OF = { banners: 'banner', games: 'games', display: 'ads', settings: 'donate' };
+const FOLDER_OF = { banners: 'banner', games: 'games', display: 'ads', settings: 'donate', assets: 'library', lib: 'library' };
 async function uploadToB2(file, folder, onProgress) {
   const { data } = await sb.auth.getSession();
   const tok = data.session?.access_token;
@@ -1245,9 +1469,10 @@ async function uploadWithButton(btn, file, folder) {
 }
 
 let TAB = location.hash.replace(/^#\/?/, '') || 'games';
-if (!['games', 'banners', 'genres', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
+if (!['games', 'banners', 'genres', 'assets', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
 function render() {
   if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
+  if (ASSETS === null && TAB !== 'assets' && (MODE === 'local' || (session && IS_ADMIN))) loadAssets();
   $('#main').innerHTML = viewAdmin(TAB);
   applyWhen();
   document.querySelectorAll('.rte-area').forEach(rteSync);
@@ -1415,13 +1640,32 @@ async function processFiles(input, files) {
   } finally { btnText(btn); }
 }
 
+/* ---------- Kho tư liệu: bộ lọc, chọn file, kéo thả ---------- */
+document.addEventListener('input', e => {
+  const k = e.target.dataset?.af;
+  if (k === 'q') { AF.q = e.target.value; const pos = e.target.selectionStart; render(); const s2 = document.querySelector('[data-af="q"]'); if (s2) { s2.focus(); s2.setSelectionRange(pos, pos); } }
+  const pk = e.target.dataset?.pk;
+  if (pk === 'q' && PICK) { PICK.f.q = e.target.value; const pos = e.target.selectionStart; drawPicker(); const s2 = document.querySelector('[data-pk="q"]'); if (s2) { s2.focus(); s2.setSelectionRange(pos, pos); } }
+});
+document.addEventListener('change', async e => {
+  const k = e.target.dataset?.af;
+  if (k === 'game') { AF.game = e.target.value; render(); }
+  if (k === 'upCat') AF.upCat = e.target.value;
+  if (k === 'compress') AF.compress = e.target.checked;
+  const pk = e.target.dataset?.pk;
+  if (PICK && (pk === 'cat' || pk === 'game')) { PICK.f[pk] = e.target.value; drawPicker(); }
+  if (e.target.matches('[data-lib-file]') && e.target.files.length) { const files = [...e.target.files]; e.target.value = ''; await libUpload(files, e.target.closest('.file-btn')); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && PICK) { PICK = null; drawPicker(); } });
+document.addEventListener('click', e => { if (PICK && e.target.id === 'picker') { PICK = null; drawPicker(); } });
+
 /* ---------- Kéo thả file vào ô ảnh / video ---------- */
 const hasFiles = e => [...(e.dataTransfer?.types || [])].includes('Files');
 let dragDepth = new WeakMap();
 document.addEventListener('dragover', e => {
   if (!hasFiles(e)) return;
   e.preventDefault();                                     // không để trình duyệt mở file
-  const z = e.target.closest('[data-drop],.rte');
+  const z = e.target.closest('[data-drop],.rte,[data-lib-drop]');
   e.dataTransfer.dropEffect = z ? 'copy' : 'none';
   document.querySelectorAll('.dropping').forEach(x => { if (x !== z) x.classList.remove('dropping'); });
   z?.classList.add('dropping');
@@ -1434,6 +1678,8 @@ document.addEventListener('drop', async e => {
   const files = [...e.dataTransfer.files];
   const rte = e.target.closest('.rte');
   if (rte) { const inp = rte.querySelector('[data-rte-img]'); const img = files.find(f => /^image\//.test(f.type)); if (img) { placeCaretAt(rte.querySelector('.rte-area'), e.clientX, e.clientY); await rteInsertImage(inp, img); } return; }
+  const lib = e.target.closest('[data-lib-drop]');
+  if (lib) { await libUpload(files, lib.querySelector('.file-btn')); return; }
   const z = e.target.closest('[data-drop]');
   if (!z) return;
   let input = z.querySelector('[data-img-file],[data-shots-file]');
@@ -1557,6 +1803,7 @@ document.addEventListener('paste', e => {
   rteSync(area);
 });
 
+/* ============ SỰ KIỆN ============ */
 document.addEventListener('click', async e => {
   const link = e.target.closest('a[href^="#/"]');
   if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); go(link.getAttribute('href')); return; }
@@ -1592,13 +1839,28 @@ document.addEventListener('click', async e => {
       case 'flip': { const it = { ...D[t.dataset.kind].find(x => x.id === id) }; const k = t.dataset.k; it[k] = k === 'show' ? it[k] === false : !it[k]; await Store.save(t.dataset.kind, it); render(); break; }
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
       case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
+      case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'asset-new': editing = { kind: 'assets', item: { ...BLANK.assets(), kind: t.dataset.kind, category: AF.cat !== 'all' ? AF.cat : ({ text: 'Bài viết & Caption', link: 'Link tham khảo', video: 'Video' }[t.dataset.kind] || 'Chưa phân loại') } }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'asset-edit': editing = { kind: 'assets', item: structuredClone(ASSETS.find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
+      case 'asset-del': confirmDel = 'as:' + id; render(); break;
+      case 'asset-del-yes': { const a = ASSETS.find(x => x.id === id); await Assets.remove(id); if (a?.url) deleteB2(a.url); ASSETS = ASSETS.filter(x => x.id !== id); confirmDel = null; render(); toast('Đã xoá tư liệu'); break; }
+      case 'pick': {
+        const field = t.closest('.field');
+        if (t.dataset.target === 'img') openPicker({ kind: 'image', onPick: ([u]) => { const w = field.querySelector('[data-img]'); setImg(w, u); w.querySelector('[data-img-url]').value = u; toast('Đã chọn ảnh từ kho'); } });
+        else if (t.dataset.target === 'shots') openPicker({ kind: 'image', multi: true, onPick: urls => { const w = field.querySelector('[data-imgs]'); setShots(w, [...getShots(w), ...urls]); toast(`Đã thêm ${urls.length} ảnh từ kho`); } });
+        else openPicker({ kind: 'video', onPick: ([u]) => { t.closest('form').elements[t.dataset.field].value = u; toast('Đã chọn video từ kho'); } });
+        break;
+      }
+      case 'pk-close': PICK = null; drawPicker(); break;
+      case 'pk-toggle': if (!PICK.multi) { finishPick([id]); break; } { const i = PICK.sel.indexOf(id); i >= 0 ? PICK.sel.splice(i, 1) : PICK.sel.push(id); drawPicker(); } break;
+      case 'pk-done': finishPick(PICK.sel); break;
       case 'shot-move': { const w = t.closest('[data-imgs]'); const arr = getShots(w); const i = Number(t.dataset.i), j = i + Number(t.dataset.d); if (j < 0 || j >= arr.length) break; [arr[i], arr[j]] = [arr[j], arr[i]]; setShots(w, arr); break; }
       case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
       case 'copy-backup': { const b = $('#backupBox'); try { await navigator.clipboard.writeText(b.value); toast('Đã sao chép JSON'); } catch { b.select(); toast('Đã bôi đen — nhấn Ctrl/Cmd + C.'); } break; }
       case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
       case 'reset': confirmDel = '__reset'; render(); break;
       case 'reset-yes': D = structuredClone(SEED); Store.persist(); confirmDel = null; render(); toast('Đã nạp lại dữ liệu mẫu'); break;
-      case 'logout': await sb.auth.signOut(); session = null; IS_ADMIN = null; ME = ''; MY_ROLE = ''; MSGS = null; ADMINS = null; AUTH_VIEW = ''; render(); break;
+      case 'logout': await sb.auth.signOut(); session = null; IS_ADMIN = null; ME = ''; MY_ROLE = ''; MSGS = null; ADMINS = null; ASSETS = null; AUTH_VIEW = ''; render(); break;
       case 'auth-view': AUTH_VIEW = t.dataset.v || ''; render(); break;
       case 'admin-del': confirmDel = 'adm:' + id; render(); break;
       case 'admin-del-yes': { const { error } = await sb.from('admins').delete().eq('email', id); if (error) throw new Error('Không xoá được: ' + error.message); confirmDel = null; ADMINS = null; render(); toast('Đã xoá quyền của ' + id); break; }
@@ -1667,6 +1929,16 @@ document.addEventListener('submit', async e => {
     if (missing) { toast(`Hãy điền “${missing.label}”.`, true); form.elements[missing.k]?.focus(); return; }
     if (kind === 'display') v.banner_speed = Math.max(2, Number(v.banner_speed) || 6), v.grid_rows = Math.max(1, Number(v.grid_rows) || 3);
     if (kind === 'settings' || kind === 'display') { await Store.saveSettings({ ...D.settings, ...v }); render(); toast(kind === 'display' ? 'Đã lưu giao diện' : 'Đã lưu thông tin trang'); return; }
+    if (kind === 'assets') {
+      const it = { ...editing.item, ...v, id: editing.item.id || uid() };
+      if (!it.created_at) { it.created_at = new Date().toISOString(); it.created_by = String(ME || ''); }
+      if (!it.game_id) it.game_id = null;
+      if (it.kind !== 'text') it.content = it.content || '';
+      if (it.kind !== 'text' && !it.url) { toast('Hãy dán link hoặc tải file lên.', true); return; }
+      const saved = await Assets.save(it);
+      const i = ASSETS.findIndex(x => x.id === saved.id); i >= 0 ? (ASSETS[i] = saved) : ASSETS.unshift(saved);
+      editing = null; render(); toast('Đã lưu tư liệu'); return;
+    }
     const item = { ...editing.item, ...v };
     if (!item.id) item.id = uid();
     if ('slug' in v) {
@@ -1688,6 +1960,7 @@ document.addEventListener('submit', async e => {
   if (sb) sb.auth.onAuthStateChange((ev, s) => { session = s; if (typeof onAuthEvent === 'function') onAuthEvent(ev, s); });
   if (typeof afterBoot === 'function') await afterBoot();
   render();
+  if (typeof startLive === 'function') startLive();
 })();
 </script>
 

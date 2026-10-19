@@ -120,7 +120,8 @@ alter table games   add column if not exists kv text default '';
 alter table games   add column if not exists video_url text default '';
 alter table games   add column if not exists youtube_url text default '';
 alter table games   add column if not exists clip_url text default '';
-alter table games   add column if not exists kv_in_slide boolean default true;
+alter table games   add column if not exists kv_in_slide boolean default false;
+alter table games   alter column kv_in_slide set default false;
 alter table games   add column if not exists highlights text default '';
 alter table games   add column if not exists released text default '';
 alter table games   add column if not exists platforms text default '';
@@ -217,3 +218,39 @@ insert into games (id, slug, title, tagline, genre_ids, play_url, hot, sort) val
   ('game-monster', 'monster-breakout',          'Monster Breakout',          'Bắn súng sinh tồn: vượt từng cổng, diệt quái virus.', '["g-hanh-dong"]',                '',                                          true,  3),
   ('game-mua',     'qua-mua-mua',               'Qua Mùa Mưa',               'Chạy xe máy về nhà qua bốn cửa của mùa mưa.',         '["g-casual"]',                   '',                                          false, 4)
 on conflict (id) do nothing;
+
+-- ---------- Kho tư liệu (chỉ quản trị viên xem / sửa) ----------
+create table if not exists assets (
+  id         text primary key default gen_random_uuid()::text,
+  kind       text not null default 'image' check (kind in ('image','video','text','link')),
+  title      text not null default '',
+  category   text default 'Chưa phân loại',
+  game_id    text references games(id) on delete set null,
+  tags       text default '',
+  url        text default '',
+  content    text default '',
+  note       text default '',
+  size       bigint,
+  dims       text default '',
+  mime       text default '',
+  created_by text default '',
+  created_at timestamptz default now()
+);
+create index if not exists assets_created_idx on assets (created_at desc);
+create index if not exists assets_category_idx on assets (category);
+alter table assets enable row level security;
+drop policy if exists "admin manage assets" on assets;
+create policy "admin manage assets" on assets for all using (public.is_admin()) with check (public.is_admin());
+
+-- ---------- Cập nhật trực tiếp: bật Realtime cho các bảng trang khách đọc ----------
+do $$
+declare t text;
+begin
+  foreach t in array array['settings','genres','games','banners'] loop
+    if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = t) then
+      execute format('alter publication supabase_realtime add table public.%I', t);
+    end if;
+  end loop;
+exception when undefined_object then
+  raise notice 'Chưa có publication supabase_realtime (chỉ có trên Supabase) — bỏ qua.';
+end $$;

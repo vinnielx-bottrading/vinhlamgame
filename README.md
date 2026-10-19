@@ -100,7 +100,7 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 **Trang game:**
 - Bố cục: tiêu đề → 2 cột (slide ảnh/video bên trái; bài viết, cụm marketing có dấu tích và nút **Chơi ngay** bên phải) → video YouTube ở giữa (nếu có) → banner quảng cáo (nếu bật).
 - **Slide** dùng tỉ lệ chuẩn **16:9 (1920 × 1080)**. Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ của chính ảnh đó.
-- **KV chính** là ảnh đầu tiên của slide, có thể tắt bằng ô "Hiện KV chính làm ảnh đầu tiên của slide".
+- **KV chính** chỉ làm ảnh đầu slide khi admin tick ô "Dùng KV chính làm ảnh đầu tiên của slide" (mặc định không tick). Không tick thì slide bắt đầu từ ảnh số 1.
 - **Ảnh slide giới thiệu**:
   - Chọn hoặc **kéo thả nhiều ảnh cùng lúc**. Mỗi ảnh xử lý riêng, ảnh lỗi không làm hỏng ảnh khác. Có báo "Đã thêm 7/8 ảnh" kèm tên ảnh lỗi.
   - **Kéo từng ảnh để đổi vị trí**, hoặc dùng nút ‹ › trên điện thoại.
@@ -134,6 +134,34 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 - Banner quảng cáo dưới thư viện.
 
 ---
+
+## Tiêu chuẩn ảnh
+
+| Dùng cho | Tỉ lệ | Kích thước chuẩn |
+|---|---|---|
+| Thumbnail (ô game ở thư viện) | 4:3 | 1200 × 900 |
+| KV chính (dự phòng cho banner trang chủ) | 16:9 | 1920 × 1080 |
+| Ảnh slide giới thiệu | 16:9 | 1920 × 1080 |
+| Banner trang chủ | 21:8 | 2100 × 800 |
+| Banner quảng cáo dưới thư viện | 6:1 | 1200 × 200 |
+
+Ảnh tải lên được tự nén WebP theo kích thước trên. Ảnh slide khác tỉ lệ vẫn hiện đủ, không bị cắt.
+
+## Kho tư liệu
+
+Tab **Kho tư liệu** trong admin lưu ảnh, video, nội dung/caption và link để dành dùng sau.
+
+- **Lưu:**
+  - Kéo thả nhiều ảnh, video vào khung, chọn danh mục trước khi thả. Ảnh nén WebP 2560px; bỏ tick nếu muốn giữ ảnh gốc.
+  - Nút **+ Nội dung / caption**, **+ Link để dành**, **+ Link video / YouTube**.
+- **Phân loại:** danh mục (có sẵn: KV & Banner, Ảnh game, Video, Bài viết & Caption, Logo & Thương hiệu, Link tham khảo; gõ thêm danh mục mới tuỳ ý), gắn với game, tag, ghi chú.
+- **Tìm:** lọc theo loại, danh mục, game; ô tìm kiếm tìm trong tên, tag, nội dung, ghi chú.
+- **Dùng:** nút **Chép link** / **Chép nội dung**. Mọi ô ảnh, ô slide và ô video trong form đều có nút **Từ tư liệu** để chọn thẳng từ kho; ô slide chọn được nhiều ảnh, theo thứ tự bấm.
+- Tư liệu chỉ quản trị viên xem được (bảng `assets` trong Supabase). File nằm trong thư mục `library/` trên B2. Xoá tư liệu thì xoá luôn file trên B2.
+
+## Cập nhật trực tiếp
+
+Admin bấm **Lưu** thì trang khách đang mở tự cập nhật sau khoảng 1 giây, không cần tải lại (Supabase Realtime, đã bật trong `schema.sql`). Khách đang chơi game thì trang chờ đến khi họ rời trang chơi mới cập nhật, để không làm gián đoạn game. Nếu Realtime chưa bật, trang vẫn tự tải lại dữ liệu khi khách quay lại tab sau hơn 1 phút.
 
 ## Lưu ý
 

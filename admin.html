@@ -216,6 +216,16 @@ p{margin:0}
 .shots button.on,.shots button:hover{opacity:1;border-color:var(--wine)}
 .shots img{width:100%;height:100%;object-fit:cover}
 .prose{max-width:65ch;display:grid;gap:14px;font-size:16px;font-weight:300}
+.rich > *{margin:0}
+.rich h2{font:500 1.7rem/1.2 var(--display);margin-top:10px}
+.rich h3{font:600 1.05rem/1.35 var(--body);margin-top:6px}
+.rich strong{font-weight:600}
+.rich ul,.rich ol{padding-left:1.3em;display:grid;gap:6px}
+.rich li::marker{color:var(--wine)}
+.rich blockquote{font:italic 500 1.35rem/1.4 var(--display);color:var(--ink);padding:4px 0 4px 18px;border-left:1px solid var(--wine)}
+.rich a{color:var(--wine);text-decoration:underline;text-underline-offset:3px}
+.rich img{display:block;max-width:100%;height:auto;margin:6px 0}
+.rich hr{border:0;border-top:1px solid var(--line);margin:8px 0}
 .hl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;padding-top:28px;border-top:1px solid var(--line)}
 .hl div{display:grid;gap:6px;align-content:start}
 .hl b{font:500 1.45rem/1.15 var(--display)}
@@ -243,16 +253,18 @@ p{margin:0}
 .gd-head{padding-block:16px clamp(24px,3vw,36px);display:grid;gap:10px}
 .gd-head h1{font-size:clamp(2.4rem,5vw,4.2rem)}
 .gd{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,56px);align-items:start;padding-bottom:clamp(48px,6vw,80px)}
-.stage{position:relative;aspect-ratio:16/10;background:#140A0E;overflow:hidden;max-width:100%}
-.stage > img,.stage > video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.stage > .cover{position:absolute;inset:0;aspect-ratio:auto}
+.stage{position:relative;aspect-ratio:16/9;background:#140A0E;overflow:hidden;max-width:100%}
+.stage-media{position:absolute;inset:0;overflow:hidden}
+.stage-bg{position:absolute;inset:-24px;background-size:cover;background-position:center;filter:blur(22px) brightness(.55) saturate(1.1);transform:scale(1.08)}
+.stage-media .fit,.stage-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.stage-media .cover{position:absolute;inset:0;aspect-ratio:auto}
 .stage-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--ink);display:grid;place-items:center;box-shadow:0 6px 18px -8px rgba(0,0,0,.5);transition:background .2s}
 .stage-nav:hover{background:#fff}
 .stage-nav.prev{left:12px}.stage-nav.next{right:12px}
 .stage-nav.prev svg{transform:rotate(180deg)}
 .stage-count{position:absolute;right:12px;bottom:12px;background:rgba(20,10,14,.72);color:#fff;font-size:12px;padding:4px 10px;border-radius:999px;letter-spacing:.06em}
 .thumbs{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
-.thumbs button{position:relative;flex:none;width:96px;aspect-ratio:16/10;padding:0;overflow:hidden;border:2px solid transparent;opacity:.6;background:#2A0F18;color:#fff;font-size:11px;transition:opacity .2s,border-color .2s}
+.thumbs button{position:relative;flex:none;width:104px;aspect-ratio:16/9;padding:0;overflow:hidden;border:2px solid transparent;opacity:.6;background:#2A0F18;color:#fff;font-size:11px;transition:opacity .2s,border-color .2s}
 .thumbs button.on,.thumbs button:hover{opacity:1;border-color:var(--wine)}
 .thumbs img,.thumbs video{width:100%;height:100%;object-fit:cover;display:block}
 .thumbs .vbadge{position:absolute;inset:auto auto 4px 4px;background:rgba(20,10,14,.8);padding:2px 6px;border-radius:2px;font-size:10px;letter-spacing:.08em}
@@ -397,10 +409,34 @@ textarea{min-height:120px;resize:vertical}
 .img-btns{display:flex;gap:8px;flex-wrap:wrap}
 .file-btn{position:relative;overflow:hidden}
 .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.shot-list{display:flex;flex-wrap:wrap;gap:8px}
-.shot-item{position:relative;width:96px;aspect-ratio:16/10;border:1px solid var(--line);overflow:hidden}
-.shot-item img{width:100%;height:100%;object-fit:cover}
-.shot-item button{position:absolute;top:3px;right:3px;width:20px;height:20px;background:rgba(34,21,27,.75);color:#fff;font-size:12px;line-height:20px;border-radius:50%}
+.shot-list{display:flex;flex-wrap:wrap;gap:10px}
+.shot-item{position:relative;width:132px;aspect-ratio:16/9;border:1px solid var(--line);overflow:hidden;background:var(--paper-2);cursor:grab;transition:transform .15s,opacity .15s,box-shadow .15s;user-select:none}
+.shot-item:active{cursor:grabbing}
+.shot-item img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.shot-item .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(34,21,27,.8);color:#fff;font-size:13px;line-height:22px;border-radius:50%}
+.shot-item .no{position:absolute;left:4px;top:4px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:rgba(255,255,255,.92);color:var(--ink);font-size:11px;font-weight:600;line-height:22px;text-align:center}
+.shot-item .mv{position:absolute;bottom:4px;width:24px;height:22px;background:rgba(255,255,255,.92);color:var(--ink);border-radius:var(--r);font-size:12px;line-height:22px}
+.shot-item .mv.l{left:4px}.shot-item .mv.r{left:32px}
+.shot-item.dragging{opacity:.35}
+.shot-item.drop-before{box-shadow:-4px 0 0 var(--wine)}
+.shot-item.drop-after{box-shadow:4px 0 0 var(--wine)}
+[data-drop]{position:relative;transition:background .15s,outline-color .15s;outline:2px dashed transparent;outline-offset:4px;border-radius:var(--r)}
+[data-drop].dropping{outline-color:var(--wine);background:var(--wine-tint)}
+.drop-hint{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.drop-hint::before{content:"";width:14px;height:14px;border:1.5px dashed currentColor;border-radius:3px}
+.rte{border:1px solid var(--line);border-radius:var(--r);background:var(--paper)}
+.rte:focus-within{border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.rte-bar{display:flex;flex-wrap:wrap;gap:2px;padding:6px;border-bottom:1px solid var(--line);background:var(--paper-2);position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);z-index:2}
+.rte-bar button,.rte-bar .file-btn{min-width:32px;height:32px;padding:0 8px;border-radius:var(--r);font-size:13px;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:4px;border:0;background:none}
+.rte-bar button:hover,.rte-bar .file-btn:hover{background:var(--paper)}
+.rte-bar button.on{background:var(--ink);color:#fff}
+.rte-bar .sep{width:1px;background:var(--line);margin:4px 4px}
+.rte-area{min-height:260px;max-height:640px;overflow:auto;padding:16px 18px;outline:none;max-width:none;font-size:15.5px}
+.rte-area:empty::before{content:attr(data-ph);color:var(--muted)}
+.rte-link{display:flex;gap:6px;padding:6px;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.rte-link input{flex:1;min-width:0}
+.rte-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px 10px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.rte.dropping{outline:2px dashed var(--wine);outline-offset:2px}
 .form-act{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;border-top:1px solid var(--line);padding-top:18px}
 .confirm{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--wine)}
 .login{max-width:380px;margin:40px auto;display:grid;gap:16px}
@@ -485,9 +521,9 @@ const paras = t => String(t || '').split(/\n+/).filter(x => x.trim()).map(p => `
 const bySort = (a, b) => (a.sort ?? 0) - (b.sort ?? 0) || String(a.title || a.name).localeCompare(String(b.title || b.name), 'vi');
 const hash = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.codePointAt(0)) >>> 0; return h; };
 let toastT;
-function toast(msg, err) {
+function toast(msg, err, ms = 2600) {
   const t = $('#toast'); t.textContent = msg; t.className = 'toast' + (err ? ' err' : ''); t.hidden = false;
-  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600);
+  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, ms);
 }
 
 /* ============ DỮ LIỆU MẪU ============ */
@@ -599,6 +635,71 @@ const Store = {
   }
 };
 
+/* ---------- Bài viết dạng rich text: lọc HTML an toàn ---------- */
+const RICH_TAGS = { P: 'p', BR: 'br', STRONG: 'strong', B: 'strong', EM: 'em', I: 'em', U: 'u', S: 's', H1: 'h2', H2: 'h2', H3: 'h3', H4: 'h3', H5: 'h3', H6: 'h3', UL: 'ul', OL: 'ol', LI: 'li', BLOCKQUOTE: 'blockquote', A: 'a', IMG: 'img', HR: 'hr' };
+const RICH_BLOCK = new Set(['p', 'h2', 'h3', 'ul', 'ol', 'blockquote', 'hr', 'img']);
+const RICH_DROP = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'FORM', 'INPUT', 'BUTTON', 'TEXTAREA', 'SELECT', 'META', 'LINK', 'SVG', 'MATH', 'NOSCRIPT', 'TEMPLATE', 'HEAD', 'TITLE']);
+const CONTAINER = new Set(['DIV', 'SECTION', 'ARTICLE', 'MAIN', 'HEADER', 'FOOTER', 'ASIDE', 'FIGURE', 'TABLE', 'TBODY', 'THEAD', 'TR', 'TD', 'TH', 'BODY', 'HTML', 'CENTER']);
+function cleanRich(html) {
+  const tpl = document.createElement('template'); tpl.innerHTML = String(html || '');
+  const out = document.createElement('div');
+  // Gom các đoạn chữ rời ở cấp ngoài cùng vào <p>
+  let loose = null;
+  const put = (dst, node) => {
+    if (dst !== out) { dst.appendChild(node); return; }
+    const block = node.nodeType === 1 && RICH_BLOCK.has(node.nodeName.toLowerCase());
+    if (block) { loose = null; out.appendChild(node); return; }
+    if (node.nodeType === 1 && node.nodeName === 'BR' && loose) { loose.appendChild(node); return; }
+    if (!loose) { if (node.nodeType === 3 && !node.nodeValue.trim()) return; loose = document.createElement('p'); out.appendChild(loose); }
+    loose.appendChild(node);
+  };
+  const walk = (src, dst) => {
+    for (const n of [...src.childNodes]) {
+      if (n.nodeType === 3) { put(dst, document.createTextNode(n.nodeValue.replace(/\s+/g, ' '))); continue; }
+      if (n.nodeType !== 1 || RICH_DROP.has(n.nodeName)) continue;
+      if (CONTAINER.has(n.nodeName)) { if (dst === out) loose = null; walk(n, dst); if (dst === out) loose = null; continue; }
+      const tag = RICH_TAGS[n.nodeName];
+      if (!tag && n.nodeName === 'SPAN') {                          // Google Docs: <span style="font-weight:700"> = in đậm
+        const st = n.getAttribute('style') || '';
+        let wrap = dst;
+        if (/font-weight:\s*(700|bold)/i.test(st)) { const x = document.createElement('strong'); put(dst, x); wrap = x; }
+        if (/font-style:\s*italic/i.test(st)) { const x = document.createElement('em'); wrap === dst ? put(dst, x) : wrap.appendChild(x); wrap = x; }
+        walk(n, wrap); continue;
+      }
+      if (!tag) { walk(n, dst); continue; }                       // thẻ lạ (span, font…): bỏ thẻ, giữ chữ
+      // Thẻ in đậm/nghiêng bọc cả khối (Google Docs bọc toàn bài trong <b style="font-weight:normal">): bỏ thẻ
+      if (['strong', 'em', 'u', 's'].includes(tag) && (n.querySelector('p,h1,h2,h3,h4,h5,h6,ul,ol,blockquote,div,table,li') || /font-weight:\s*(normal|400)/i.test(n.getAttribute('style') || ''))) {
+        if (dst === out) loose = null; walk(n, dst); if (dst === out) loose = null; continue;
+      }
+      if (n.nodeName === 'SPAN' || n.nodeName === 'FONT') { walk(n, dst); continue; }
+      if (tag === 'p' && dst !== out) { walk(n, dst); continue; }  // <p> lồng trong khối khác: bỏ thẻ
+      if (tag === 'a') {
+        const href = (n.getAttribute('href') || '').trim();
+        if (!/^(https?:|mailto:|#)/i.test(href)) { walk(n, dst); continue; }
+        const a = document.createElement('a'); a.setAttribute('href', href);
+        if (/^https?:/i.test(href)) { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener'); }
+        walk(n, a); if (a.textContent.trim()) put(dst, a); continue;
+      }
+      if (tag === 'img') {
+        const src = (n.getAttribute('src') || '').trim();
+        if (!/^(https:|data:image\/(png|jpe?g|webp|gif);)/i.test(src)) continue;
+        const im = document.createElement('img'); im.setAttribute('src', src); im.setAttribute('alt', (n.getAttribute('alt') || '').slice(0, 200)); im.setAttribute('loading', 'lazy');
+        put(dst, im); continue;
+      }
+      const el = document.createElement(tag);
+      if (tag === 'br' || tag === 'hr') { put(dst, el); continue; }
+      if (dst === out && RICH_BLOCK.has(tag)) loose = null;
+      walk(n, el);
+      if (!el.textContent.trim() && !el.querySelector('img') && tag !== 'li') continue;   // bỏ khối rỗng
+      put(dst, el);
+    }
+  };
+  walk(tpl.content, out);
+  out.querySelectorAll('p').forEach(p => { if (!p.textContent.trim() && !p.querySelector('img')) p.remove(); });
+  return out.innerHTML.replace(/(<br>\s*){3,}/g, '<br><br>').trim();
+}
+const isRich = t => /<(p|h2|h3|ul|ol|strong|em|blockquote|br|a|img|u)\b/i.test(String(t || ''));
+const richHTML = t => isRich(t) ? cleanRich(t) : paras(t);
 /* ============ LIÊN HỆ ============ */
 const MSG_KEY = 'vlg_messages_v1';
 const Msg = {
@@ -674,11 +775,12 @@ const FIELDS = {
     { k: 'hot', label: 'Gắn nhãn Hot', type: 'checkbox' },
     { type: 'heading', label: 'Hình ảnh' },
     { k: 'cover', label: 'Ảnh thumbnail (4:3)', type: 'image', max: 1200, full: true, hint: 'Ảnh trên ô game ở thư viện. Khuyên dùng 1200 × 900.' },
-    { k: 'kv', label: 'Ảnh KV chính (16:10)', type: 'image', max: 1920, full: true, hint: 'Ảnh đầu tiên trong slide trang game. Khuyên dùng 1600 × 1000.' },
-    { k: 'screenshots', label: 'Ảnh slide thêm', type: 'images', max: 1920, full: true, hint: 'Các ảnh tiếp theo trong slide, tỉ lệ 16:10.' },
+    { k: 'kv', label: 'Ảnh KV chính (16:9)', type: 'image', max: 1920, full: true, hint: 'Chuẩn 1920 × 1080. Dùng làm ảnh đầu slide trang game (nếu bật bên dưới) và ảnh dự phòng cho banner trang chủ.' },
+    { k: 'kv_in_slide', label: 'Hiện KV chính làm ảnh đầu tiên của slide', type: 'checkbox', default: true },
+    { k: 'screenshots', label: 'Ảnh slide giới thiệu', type: 'images', max: 1920, full: true, hint: 'Tỉ lệ chuẩn 16:9 (1920 × 1080). Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ. Chọn hoặc kéo thả nhiều ảnh cùng lúc; kéo ảnh để đổi thứ tự.' },
     { k: 'clip_url', label: 'Video ngắn trong slide', type: 'media-url', full: true, hint: 'Link file .mp4 / .webm hoặc ảnh .gif, tự chạy không tiếng. Không bắt buộc.' },
     { type: 'heading', label: 'Bài viết' },
-    { k: 'description', label: 'Bài viết giới thiệu game', type: 'textarea', full: true, hint: 'Mỗi dòng là một đoạn.' },
+    { k: 'description', label: 'Bài viết giới thiệu game', type: 'richtext', full: true, hint: 'Dán từ Word / Google Docs được, định dạng lạ sẽ tự lọc bỏ.' },
     { k: 'highlights', label: 'Cụm từ marketing (có dấu tích)', type: 'textarea', full: true, hint: 'Mỗi dòng một cụm ngắn gọn. VD: Không cần cài đặt' },
     { type: 'heading', label: 'Video giới thiệu' },
     { k: 'youtube_url', label: 'Link YouTube', type: 'url', full: true, hint: 'Hiện ở giữa, dưới phần bài viết. Để trống thì ẩn.' }
@@ -763,32 +865,65 @@ function fieldHTML(f, v) {
     case 'heading': return `<div class="field full form-sec">${f.label}</div>`;
     case 'textarea': return `<div class="${cls}">${lab}<textarea id="${id}" name="${f.k}">${esc(v)}</textarea>${hint}</div>`;
     case 'number': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="number" value="${esc(v ?? 0)}">${hint}</div>`;
-    case 'checkbox': return `<div class="${cls}" style="align-self:end"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input id="${id}" name="${f.k}" type="checkbox" ${v ? 'checked' : ''}> ${f.label}</label></div>`;
+    case 'checkbox': return `<div class="${cls}" style="align-self:end"><label class="check" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)"><input id="${id}" name="${f.k}" type="checkbox" ${(v ?? f.default) ? 'checked' : ''}> ${f.label}</label></div>`;
     case 'select': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}">${f.options.map(o => `<option value="${o[0]}" ${String(v) === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select>${hint}</div>`;
     case 'game': return `<div class="${cls}">${lab}<select id="${id}" name="${f.k}"><option value="">— Không —</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${v === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>${hint}</div>`;
     case 'genres': return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="checks">${genresSorted().map(g => `<label class="check"><input type="checkbox" name="genre_ids" value="${esc(g.id)}" ${(v || []).includes(g.id) ? 'checked' : ''}> ${esc(g.name)}</label>`).join('') || '<span class="hint">Chưa có thể loại — thêm ở tab Thể loại.</span>'}</div></div>`;
     case 'image': {
       const isData = String(v || '').startsWith('data:');
-      return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="img-field" data-img="${f.k}">
+      return `<div class="${cls}"><span class="lbl">${f.label}</span><div class="img-field" data-img="${f.k}" data-drop>
         <div class="img-prev">${v ? `<img src="${esc(v)}" alt="">` : 'Chưa có ảnh'}</div>
         <div class="img-ctl">
           <input type="hidden" name="${f.k}" value="${esc(v)}">
           <input id="${id}" type="text" data-img-url placeholder="${isData ? 'Đang dùng ảnh tải lên' : 'Dán link ảnh https://…'}" value="${isData ? '' : esc(v)}">
           <div class="img-btns"><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" data-img-file data-max="${f.max || 1920}"${f.keepPng ? ' data-png' : ''}></span><button type="button" class="btn small line" data-act="img-clear">Xoá ảnh</button></div>
           ${hint}
-          <span class="hint">Ảnh tự nén WebP, cạnh dài tối đa ${f.max || 1920}px.</span>
+          <span class="drop-hint">Kéo thả ảnh vào đây · tự nén WebP, cạnh dài tối đa ${f.max || 1920}px</span>
         </div></div></div>`;
     }
     case 'images': {
       const arr = v || [];
-      return `<div class="${cls}"><span class="lbl">${f.label}</span><div data-imgs="${f.k}" style="display:grid;gap:10px">
+      return `<div class="${cls}"><span class="lbl">${f.label}</span><div data-imgs="${f.k}" data-drop style="display:grid;gap:10px;padding:8px;margin:-8px">
         <input type="hidden" name="${f.k}" value="${esc(JSON.stringify(arr))}">
-        <div class="shot-list">${arr.map((s, i) => `<div class="shot-item"><img src="${esc(s)}" alt=""><button type="button" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh">×</button></div>`).join('') || '<span class="hint">Chưa có ảnh.</span>'}</div>
-        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải lên B2' : 'Tải ảnh lên'}<input type="file" accept="image/*" multiple data-shots-file data-max="${f.max || 1920}"></span></div>
+        <div class="shot-list">${shotItemsHTML(arr)}</div>
+        <div class="img-btns"><input type="text" data-shot-url placeholder="Dán link ảnh rồi bấm Thêm" style="flex:1;min-width:180px"><button type="button" class="btn small line" data-act="shot-add">Thêm</button><span class="btn small line file-btn">${uploadOn() ? 'Tải nhiều ảnh lên B2' : 'Chọn nhiều ảnh'}<input type="file" accept="image/*" multiple data-shots-file data-max="${f.max || 1920}"></span></div>
+        ${hint}
+        <span class="drop-hint">Kéo thả nhiều ảnh vào khung này · tự nén WebP ${f.max || 1920}px</span>
+      </div></div>`;
+    }
+    case 'richtext': {
+      const html = richHTML(v);
+      return `<div class="${cls}">${lab}<div class="rte" data-rte="${f.k}">
+        <div class="rte-bar" role="toolbar" aria-label="Định dạng văn bản">
+          <button type="button" data-rte-cmd="formatBlock" data-v="h2" title="Tiêu đề lớn">H2</button>
+          <button type="button" data-rte-cmd="formatBlock" data-v="h3" title="Tiêu đề nhỏ">H3</button>
+          <button type="button" data-rte-cmd="formatBlock" data-v="p" title="Đoạn văn thường">¶</button>
+          <span class="sep"></span>
+          <button type="button" data-rte-cmd="bold" title="In đậm (Ctrl+B)"><b>B</b></button>
+          <button type="button" data-rte-cmd="italic" title="In nghiêng (Ctrl+I)"><i>I</i></button>
+          <button type="button" data-rte-cmd="underline" title="Gạch chân (Ctrl+U)"><u>U</u></button>
+          <span class="sep"></span>
+          <button type="button" data-rte-cmd="insertUnorderedList" title="Danh sách chấm">• List</button>
+          <button type="button" data-rte-cmd="insertOrderedList" title="Danh sách số">1. List</button>
+          <button type="button" data-rte-cmd="formatBlock" data-v="blockquote" title="Trích dẫn">“ ”</button>
+          <button type="button" data-rte-cmd="insertHorizontalRule" title="Đường kẻ ngang">―</button>
+          <span class="sep"></span>
+          <button type="button" data-rte-cmd="link" title="Gắn link">Link</button>
+          <button type="button" data-rte-cmd="unlink" title="Bỏ link">Bỏ link</button>
+          <span class="file-btn" title="Chèn ảnh">Ảnh<input type="file" accept="image/*" data-rte-img="${f.k}" data-max="1600"></span>
+          <span class="sep"></span>
+          <button type="button" data-rte-cmd="removeFormat" title="Xoá định dạng">Tx</button>
+          <button type="button" data-rte-cmd="undo" title="Hoàn tác (Ctrl+Z)">↶</button>
+          <button type="button" data-rte-cmd="redo" title="Làm lại (Ctrl+Y)">↷</button>
+        </div>
+        <div class="rte-link" hidden><input type="url" placeholder="https://…" data-rte-url aria-label="Địa chỉ link"><button type="button" class="btn small primary" data-rte-cmd="link-apply">Gắn</button><button type="button" class="btn small line" data-rte-cmd="link-cancel">Huỷ</button></div>
+        <div class="rte-area prose rich" id="${id}" contenteditable="true" role="textbox" aria-multiline="true" data-ph="Viết bài giới thiệu game…">${html}</div>
+        <input type="hidden" name="${f.k}" value="${esc(html)}">
+        <div class="rte-foot"><span>${f.hint || ''}</span><span class="rte-count num">0 từ</span></div>
       </div></div>`;
     }
     case 'date': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="date" value="${esc(v)}">${hint}</div>`;
-    case 'media-url': return `<div class="${cls}">${lab}<div class="img-btns"><input id="${id}" name="${f.k}" type="url" value="${esc(v)}" style="flex:1;min-width:200px">${uploadOn() ? `<span class="btn small line file-btn">Tải video lên B2<input type="file" accept="video/mp4,video/webm,video/quicktime,image/gif" data-url-file="${f.k}"></span>` : ''}</div>${hint}</div>`;
+    case 'media-url': return `<div class="${cls}" data-drop>${lab}<div class="img-btns"><input id="${id}" name="${f.k}" type="url" value="${esc(v)}" style="flex:1;min-width:200px">${uploadOn() ? `<span class="btn small line file-btn">Tải video lên B2<input type="file" accept="video/mp4,video/webm,video/quicktime,image/gif" data-url-file="${f.k}"></span>` : ''}</div>${hint}${uploadOn() ? '<span class="drop-hint">Kéo thả file video vào đây</span>' : ''}</div>`;
     default: return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="${f.type === 'url' ? 'url' : 'text'}" value="${esc(v)}" ${f.req ? 'required' : ''}>${hint}</div>`;
   }
 }
@@ -802,6 +937,7 @@ function readForm(form, fields) {
     if (f.type === 'checkbox') o[f.k] = el.checked;
     else if (f.type === 'number') o[f.k] = Number(el.value) || 0;
     else if (f.type === 'images') o[f.k] = JSON.parse(el.value || '[]');
+    else if (f.type === 'richtext') { const a = form.querySelector(`[data-rte="${f.k}"] .rte-area`); o[f.k] = a ? cleanRich(a.innerHTML) : String(el.value); }
     else o[f.k] = String(el.value).trim();
   }
   return o;
@@ -1064,7 +1200,16 @@ async function uploadToB2(file, folder, onProgress) {
   if (file.size > 95 * 1024 * 1024) throw new Error('File lớn hơn 95 MB. Hãy nén nhỏ lại hoặc đưa video lên YouTube.');
   const url = CONFIG.UPLOAD_WORKER_URL.replace(/\/+$/, '') + '/upload?' + new URLSearchParams({ filename: file.name, folder });
   // Gửi file lên Worker, Worker đẩy tiếp lên B2 → bucket không cần CORS
-  return await new Promise((res, rej) => {
+  // B2 bận (503) → tự gửi lại tối đa 2 lần (file vẫn nằm trong trình duyệt nên gửi lại an toàn)
+  for (let attempt = 0; ; attempt++) {
+    try { return await sendOnce(); }
+    catch (e) {
+      if (!e.retry || attempt >= 2) throw e;
+      onProgress?.(0);
+      await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+    }
+  }
+  function sendOnce() { return new Promise((res, rej) => {
     const x = new XMLHttpRequest();
     x.open('PUT', url);
     x.setRequestHeader('Authorization', 'Bearer ' + tok);
@@ -1072,12 +1217,14 @@ async function uploadToB2(file, folder, onProgress) {
     x.upload.onprogress = e => { if (e.lengthComputable) onProgress?.(Math.min(99, Math.round(e.loaded / e.total * 100))); };
     x.onload = () => {
       let j = {}; try { j = JSON.parse(x.responseText); } catch (_) {}
-      if (x.status < 300 && j.publicUrl) { onProgress?.(100); res(j.publicUrl); }
-      else rej(new Error(j.error || `Tải lên không thành công (mã ${x.status}).`));
+      if (x.status < 300 && j.publicUrl) { onProgress?.(100); res(j.publicUrl); return; }
+      const e = new Error(j.error || `Tải lên không thành công (mã ${x.status}).`);
+      e.retry = x.status === 503 || x.status === 429 || x.status === 0;
+      rej(e);
     };
-    x.onerror = () => rej(new Error('Không kết nối được Worker. Kiểm tra ALLOWED_ORIGINS có đúng tên miền admin không.'));
+    x.onerror = () => { const e = new Error('Không kết nối được Worker. Kiểm tra mạng và biến ALLOWED_ORIGINS có đúng tên miền admin không.'); e.retry = true; rej(e); };
     x.send(file);
-  });
+  }); }
 }
 async function inviteAdmin(email) {
   const { data } = await sb.auth.getSession();
@@ -1103,6 +1250,7 @@ function render() {
   if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
   $('#main').innerHTML = viewAdmin(TAB);
   applyWhen();
+  document.querySelectorAll('.rte-area').forEach(rteSync);
   $('#logoText').innerHTML = logoHTML(D.settings.studio_name);
   document.title = 'Quản trị · ' + D.settings.studio_name;
 }
@@ -1188,12 +1336,227 @@ function setImg(wrap, v) {
   wrap.querySelector('input[type=hidden]').value = v;
   wrap.querySelector('.img-prev').innerHTML = v ? `<img src="${esc(v)}" alt="">` : 'Chưa có ảnh';
 }
+function shotItemsHTML(arr) {
+  if (!arr.length) return '<span class="hint">Chưa có ảnh. Kéo thả ảnh vào đây hoặc bấm “Chọn nhiều ảnh”.</span>';
+  return arr.map((s, i) => `<div class="shot-item" draggable="true" data-i="${i}" title="Kéo để đổi vị trí">
+      <img src="${esc(s)}" alt="Ảnh ${i + 1}">
+      <span class="no num">${i + 1}</span>
+      <button type="button" class="rm" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh ${i + 1}">×</button>
+      ${i > 0 ? `<button type="button" class="mv l" data-act="shot-move" data-i="${i}" data-d="-1" aria-label="Đưa ảnh ${i + 1} lên trước">‹</button>` : ''}
+      ${i < arr.length - 1 ? `<button type="button" class="mv r" data-act="shot-move" data-i="${i}" data-d="1" aria-label="Đưa ảnh ${i + 1} ra sau">›</button>` : ''}
+    </div>`).join('');
+}
+function getShots(wrap) { try { return JSON.parse(wrap.querySelector('input[type=hidden]').value || '[]'); } catch (_) { return []; } }
 function setShots(wrap, arr) {
   wrap.querySelector('input[type=hidden]').value = JSON.stringify(arr);
-  wrap.querySelector('.shot-list').innerHTML = arr.map((s, i) => `<div class="shot-item"><img src="${esc(s)}" alt=""><button type="button" data-act="shot-rm" data-i="${i}" aria-label="Xoá ảnh">×</button></div>`).join('') || '<span class="hint">Chưa có ảnh.</span>';
+  wrap.querySelector('.shot-list').innerHTML = shotItemsHTML(arr);
 }
 
-/* ============ SỰ KIỆN ============ */
+/* ---------- Xử lý file: chọn file hoặc kéo thả ---------- */
+function btnText(btn, t) {
+  if (!btn) return;
+  if (btn.dataset.label === undefined) btn.dataset.label = btn.firstChild?.nodeType === 3 ? btn.firstChild.textContent : '';
+  if (btn.firstChild?.nodeType === 3) btn.firstChild.textContent = t ?? btn.dataset.label;
+}
+const reasonOf = e => e?.message === 'big-gif' ? 'GIF lớn hơn 4 MB' : (e?.message || 'không đọc được ảnh');
+async function processFiles(input, files) {
+  const form = input.closest('form');
+  const folder = FOLDER_OF[form?.dataset.form] || 'misc';
+  const btn = input.closest('.file-btn');
+  try {
+    if (input.matches('[data-url-file]')) {
+      const f = files.find(x => /^video\/|^image\/gif$/.test(x.type));
+      if (!f) throw new Error('Chỉ nhận video .mp4, .webm, .mov hoặc ảnh GIF.');
+      if (!uploadOn()) throw new Error('Cần đăng nhập và cấu hình Worker để tải video lên.');
+      const url = await uploadWithButton(btn, f, folder);
+      form.elements[input.dataset.urlFile].value = url; toast('Đã tải video lên'); return;
+    }
+    const imgs = files.filter(x => /^image\//.test(x.type));
+    if (!imgs.length) throw new Error('Chỉ nhận file ảnh (JPG, PNG, WebP, GIF).');
+
+    if (input.matches('[data-img-file]')) {
+      const w = input.closest('[data-img]'), f = imgs[0];
+      if (uploadOn()) {
+        btnText(btn, 'Đang nén…');
+        const c = await compressFrom(input, f);
+        const url = await uploadToB2(c, folder, p => btnText(btn, `Đang tải ${p}%`));
+        setImg(w, url); w.querySelector('[data-img-url]').value = url; reportCompress([c]);
+      } else {
+        btnText(btn, 'Đang nén…');
+        const r = await fileToData(f, input);
+        setImg(w, r.data); const u = w.querySelector('[data-img-url]'); u.value = ''; u.placeholder = 'Đang dùng ảnh tải lên';
+        reportCompress([r.file]);
+      }
+      return;
+    }
+
+    // Nhiều ảnh: xử lý từng ảnh, ảnh lỗi không làm hỏng các ảnh khác
+    const w = input.closest('[data-imgs]');
+    const done = [], failed = [];
+    for (let i = 0; i < imgs.length; i++) {
+      const tag = imgs.length > 1 ? `Ảnh ${i + 1}/${imgs.length}` : 'Ảnh';
+      try {
+        btnText(btn, `${tag} · đang nén`);
+        let url, file;
+        if (uploadOn()) {
+          file = await compressFrom(input, imgs[i]);
+          url = await uploadToB2(file, folder, p => btnText(btn, `${tag} · ${p}%`));
+        } else {
+          const r = await fileToData(imgs[i], input); url = r.data; file = r.file;
+        }
+        const arr = getShots(w); arr.push(url); setShots(w, arr);   // hiện ngay từng ảnh
+        done.push(file);
+      } catch (e) { failed.push(`${imgs[i].name || 'ảnh'} (${reasonOf(e)})`); }
+    }
+    if (done.length) {
+      const before = done.reduce((a, f) => a + (f.originalSize || f.size), 0), after = done.reduce((a, f) => a + f.size, 0);
+      toast(`Đã thêm ${done.length}/${imgs.length} ảnh · ${fmtBytes(before)} → ${fmtBytes(after)}${failed.length ? ` · lỗi: ${failed.slice(0, 2).join(', ')}${failed.length > 2 ? '…' : ''}` : ''}`, failed.length > 0, failed.length ? 6000 : 3200);
+    } else if (failed.length) toast('Không thêm được ảnh nào: ' + failed.slice(0, 2).join(', '), true, 6000);
+  } finally { btnText(btn); }
+}
+
+/* ---------- Kéo thả file vào ô ảnh / video ---------- */
+const hasFiles = e => [...(e.dataTransfer?.types || [])].includes('Files');
+let dragDepth = new WeakMap();
+document.addEventListener('dragover', e => {
+  if (!hasFiles(e)) return;
+  e.preventDefault();                                     // không để trình duyệt mở file
+  const z = e.target.closest('[data-drop],.rte');
+  e.dataTransfer.dropEffect = z ? 'copy' : 'none';
+  document.querySelectorAll('.dropping').forEach(x => { if (x !== z) x.classList.remove('dropping'); });
+  z?.classList.add('dropping');
+});
+document.addEventListener('dragleave', e => { if (hasFiles(e) && !e.relatedTarget) document.querySelectorAll('.dropping').forEach(x => x.classList.remove('dropping')); });
+document.addEventListener('drop', async e => {
+  if (!hasFiles(e)) return;
+  e.preventDefault();
+  document.querySelectorAll('.dropping').forEach(x => x.classList.remove('dropping'));
+  const files = [...e.dataTransfer.files];
+  const rte = e.target.closest('.rte');
+  if (rte) { const inp = rte.querySelector('[data-rte-img]'); const img = files.find(f => /^image\//.test(f.type)); if (img) { placeCaretAt(rte.querySelector('.rte-area'), e.clientX, e.clientY); await rteInsertImage(inp, img); } return; }
+  const z = e.target.closest('[data-drop]');
+  if (!z) return;
+  let input = z.querySelector('[data-img-file],[data-shots-file]');
+  if (!input) input = z.querySelector('[data-url-file]');
+  if (!input) { toast('Ô này chưa bật tải video lên (cần đăng nhập và cấu hình Worker).', true); return; }
+  try { await processFiles(input, files); } catch (err) { toast(err.message || 'Không xử lý được file', true); }
+});
+
+/* ---------- Kéo để sắp xếp ảnh slide ---------- */
+let dragShot = null;
+document.addEventListener('dragstart', e => {
+  const it = e.target.closest?.('.shot-item'); if (!it) return;
+  dragShot = { wrap: it.closest('[data-imgs]'), from: Number(it.dataset.i) };
+  it.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  try { e.dataTransfer.setData('text/plain', 'shot-' + dragShot.from); } catch (_) {}
+});
+document.addEventListener('dragover', e => {
+  if (!dragShot) return;
+  const it = e.target.closest('.shot-item');
+  if (!it || it.closest('[data-imgs]') !== dragShot.wrap) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  const r = it.getBoundingClientRect(), after = e.clientX > r.left + r.width / 2;
+  dragShot.wrap.querySelectorAll('.drop-before,.drop-after').forEach(x => x.classList.remove('drop-before', 'drop-after'));
+  it.classList.add(after ? 'drop-after' : 'drop-before');
+  dragShot.to = Number(it.dataset.i) + (after ? 1 : 0);
+});
+document.addEventListener('drop', e => {
+  if (!dragShot || hasFiles(e)) return;
+  e.preventDefault();
+  const { wrap, from, to } = dragShot;
+  if (to !== undefined) {
+    const arr = getShots(wrap); const [m] = arr.splice(from, 1); arr.splice(to > from ? to - 1 : to, 0, m); setShots(wrap, arr);
+  }
+});
+document.addEventListener('dragend', () => {
+  if (!dragShot) return;
+  dragShot.wrap?.querySelectorAll('.dragging,.drop-before,.drop-after').forEach(x => x.classList.remove('dragging', 'drop-before', 'drop-after'));
+  dragShot = null;
+});
+
+/* ---------- Trình soạn thảo bài viết ---------- */
+let rteRange = null;
+function rteArea(el) { return el.closest('.rte')?.querySelector('.rte-area'); }
+function rteSync(area) {
+  const box = area.closest('.rte');
+  box.querySelector('input[type=hidden]').value = area.innerHTML;
+  const words = (area.innerText || '').trim().split(/\s+/).filter(Boolean).length;
+  box.querySelector('.rte-count').textContent = `${words.toLocaleString('vi-VN')} từ`;
+  box.querySelectorAll('[data-rte-cmd]').forEach(b => {
+    const c = b.dataset.rteCmd;
+    let on = false;
+    try {
+      if (['bold', 'italic', 'underline', 'insertUnorderedList', 'insertOrderedList'].includes(c)) on = document.queryCommandState(c);
+      else if (c === 'formatBlock') on = String(document.queryCommandValue('formatBlock')).toLowerCase() === b.dataset.v;
+    } catch (_) {}
+    b.classList.toggle('on', on && document.activeElement === area);
+  });
+}
+function saveRange(area) { const s = getSelection(); if (s.rangeCount && area.contains(s.anchorNode)) rteRange = s.getRangeAt(0).cloneRange(); }
+function restoreRange(area) {
+  area.focus();
+  if (rteRange && area.contains(rteRange.startContainer)) { const s = getSelection(); s.removeAllRanges(); s.addRange(rteRange); }
+  else { const r = document.createRange(); r.selectNodeContents(area); r.collapse(false); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+}
+function placeCaretAt(area, x, y) {
+  let r = null;
+  if (document.caretRangeFromPoint) r = document.caretRangeFromPoint(x, y);
+  else if (document.caretPositionFromPoint) { const p = document.caretPositionFromPoint(x, y); if (p) { r = document.createRange(); r.setStart(p.offsetNode, p.offset); } }
+  if (r && area.contains(r.startContainer)) rteRange = r;
+}
+async function rteInsertImage(input, file) {
+  const area = rteArea(input), box = area.closest('.rte'), btn = input.closest('.file-btn');
+  try {
+    btnText(btn, 'Đang nén…');
+    let url, f;
+    if (uploadOn()) { f = await compressFrom(input, file); url = await uploadToB2(f, 'games', p => btnText(btn, p + '%')); }
+    else { const r = await fileToData(file, input); url = r.data; f = r.file; }
+    restoreRange(area);
+    document.execCommand('insertHTML', false, `<img src="${esc(url)}" alt=""><p><br></p>`);
+    rteSync(area); reportCompress([f]);
+  } catch (e) { toast('Không chèn được ảnh: ' + reasonOf(e), true); }
+  finally { btnText(btn); box.querySelector('[data-rte-img]').value = ''; }
+}
+document.addEventListener('mousedown', e => { if (e.target.closest('.rte-bar button')) e.preventDefault(); });   // giữ vùng chọn khi bấm nút
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-rte-cmd]'); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const area = rteArea(b), box = area.closest('.rte'), c = b.dataset.rteCmd, linkRow = box.querySelector('.rte-link');
+  if (c === 'link') { saveRange(area); linkRow.hidden = false; const u = linkRow.querySelector('input'); u.value = 'https://'; u.focus(); u.select(); return; }
+  if (c === 'link-cancel') { linkRow.hidden = true; restoreRange(area); return; }
+  if (c === 'link-apply') {
+    const url = linkRow.querySelector('input').value.trim();
+    linkRow.hidden = true; restoreRange(area);
+    if (!/^(https?:\/\/|mailto:)\S+/i.test(url)) { toast('Link cần bắt đầu bằng https://', true); return; }
+    if (getSelection().isCollapsed) document.execCommand('insertHTML', false, `<a href="${esc(url)}">${esc(url)}</a>`);
+    else document.execCommand('createLink', false, url);
+    rteSync(area); return;
+  }
+  area.focus();
+  if (c === 'formatBlock') document.execCommand('formatBlock', false, b.dataset.v === 'p' ? 'p' : b.dataset.v);
+  else document.execCommand(c, false, null);
+  rteSync(area);
+}, true);
+document.addEventListener('keydown', e => {
+  if (e.target.matches?.('[data-rte-url]') && e.key === 'Enter') { e.preventDefault(); e.target.closest('.rte').querySelector('[data-rte-cmd="link-apply"]').click(); }
+  if (e.target.matches?.('[data-rte-url]') && e.key === 'Escape') { e.target.closest('.rte').querySelector('[data-rte-cmd="link-cancel"]').click(); }
+});
+document.addEventListener('focusin', e => { if (e.target.classList?.contains('rte-area')) { try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (_) {} if (!e.target.innerHTML.trim()) e.target.innerHTML = ''; } });
+document.addEventListener('input', e => { if (e.target.classList?.contains('rte-area')) rteSync(e.target); });
+document.addEventListener('selectionchange', () => { const a = document.activeElement; if (a?.classList?.contains('rte-area')) { saveRange(a); rteSync(a); } });
+document.addEventListener('paste', e => {
+  const area = e.target.closest?.('.rte-area'); if (!area) return;
+  const dt = e.clipboardData; if (!dt) return;
+  const img = [...dt.files].find(f => /^image\//.test(f.type));
+  if (img) { e.preventDefault(); saveRange(area); rteInsertImage(area.closest('.rte').querySelector('[data-rte-img]'), img); return; }
+  e.preventDefault();
+  const html = dt.getData('text/html');
+  const clean = html ? cleanRich(html) : paras(dt.getData('text/plain'));
+  document.execCommand('insertHTML', false, clean || esc(dt.getData('text/plain')));
+  rteSync(area);
+});
+
 document.addEventListener('click', async e => {
   const link = e.target.closest('a[href^="#/"]');
   if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); go(link.getAttribute('href')); return; }
@@ -1229,6 +1592,7 @@ document.addEventListener('click', async e => {
       case 'flip': { const it = { ...D[t.dataset.kind].find(x => x.id === id) }; const k = t.dataset.k; it[k] = k === 'show' ? it[k] === false : !it[k]; await Store.save(t.dataset.kind, it); render(); break; }
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
       case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
+      case 'shot-move': { const w = t.closest('[data-imgs]'); const arr = getShots(w); const i = Number(t.dataset.i), j = i + Number(t.dataset.d); if (j < 0 || j >= arr.length) break; [arr[i], arr[j]] = [arr[j], arr[i]]; setShots(w, arr); break; }
       case 'shot-rm': { const w = t.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.splice(Number(t.dataset.i), 1); setShots(w, arr); break; }
       case 'copy-backup': { const b = $('#backupBox'); try { await navigator.clipboard.writeText(b.value); toast('Đã sao chép JSON'); } catch { b.select(); toast('Đã bôi đen — nhấn Ctrl/Cmd + C.'); } break; }
       case 'import': { const v = JSON.parse($('#backupBox').value); if (!v.games || !v.genres) throw new Error('JSON không đúng định dạng (thiếu games/genres).'); D = { settings: { ...SEED.settings, ...v.settings }, genres: v.genres, games: v.games, banners: v.banners || [] }; Store.persist(); render(); toast('Đã nhập dữ liệu'); break; }
@@ -1249,30 +1613,12 @@ document.addEventListener('input', e => {
 document.addEventListener('change', async e => {
   if (e.target.matches('select')) applyWhen(e.target.closest('form') || document);
   try {
-    const folder = FOLDER_OF[e.target.closest('form')?.dataset.form] || 'misc';
-    if (uploadOn() && e.target.matches('[data-img-file],[data-shots-file],[data-url-file]') && e.target.files.length) {
-      const input = e.target, btn = input.closest('.file-btn'); const files = [...input.files]; input.value = '';
-      if (input.matches('[data-url-file]')) { const url = await uploadWithButton(btn, files[0], folder); const inp = input.closest('form').elements[input.dataset.urlFile]; inp.value = url; return; }
-      const label = btn.firstChild?.textContent; if (btn.firstChild?.nodeType === 3) btn.firstChild.textContent = 'Đang nén…';
-      let ready;
-      try { ready = []; for (const f of files) ready.push(await compressFrom(input, f)); }
-      finally { if (btn.firstChild?.nodeType === 3) btn.firstChild.textContent = label; }
-      if (input.matches('[data-img-file]')) { const w = input.closest('[data-img]'); const url = await uploadWithButton(btn, ready[0], folder); setImg(w, url); w.querySelector('[data-img-url]').value = url; reportCompress(ready); return; }
-      const w = input.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value);
-      for (const f of ready) arr.push(await uploadWithButton(btn, f, folder));
-      setShots(w, arr); reportCompress(ready); return;
+    if (e.target.matches('[data-rte-img]') && e.target.files[0]) { await rteInsertImage(e.target, e.target.files[0]); return; }
+    if (e.target.matches('[data-img-file],[data-shots-file],[data-url-file]') && e.target.files.length) {
+      const files = [...e.target.files]; e.target.value = '';
+      await processFiles(e.target, files); return;
     }
-    if (e.target.matches('[data-img-file]') && e.target.files[0]) {
-      const w = e.target.closest('[data-img]'); const r = await fileToData(e.target.files[0], e.target); e.target.value = '';
-      setImg(w, r.data); const u = w.querySelector('[data-img-url]'); u.value = ''; u.placeholder = 'Đang dùng ảnh tải lên';
-      reportCompress([r.file]);
-    }
-    if (e.target.matches('[data-shots-file]') && e.target.files.length) {
-      const w = e.target.closest('[data-imgs]'); const arr = JSON.parse(w.querySelector('input[type=hidden]').value);
-      const got = []; for (const f of e.target.files) { const r = await fileToData(f, e.target); arr.push(r.data); got.push(r.file); }
-      e.target.value = ''; setShots(w, arr); reportCompress(got);
-    }
-  } catch (err) { if (err?.message && err.message !== 'big-gif' && uploadOn()) { toast(err.message, true); return; } toast(err?.message === 'big-gif' ? 'File GIF lớn hơn 4 MB. Hãy dùng video .mp4 hoặc dán link GIF thay vì tải lên.' : 'Không đọc được ảnh này.', true); }
+  } catch (err) { toast(err?.message === 'big-gif' ? 'File GIF lớn hơn 4 MB. Hãy dùng video .mp4 hoặc dán link GIF thay vì tải lên.' : (err?.message || 'Không đọc được ảnh này.'), true, 5000); }
 });
 
 document.addEventListener('submit', async e => {

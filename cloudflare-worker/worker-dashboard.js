@@ -381,20 +381,21 @@ var src_default = {
         } else {
           body = await req.arrayBuffer();
         }
-        const res = await b2(env).fetch(objectUrl(env, key).toString(), {
+        const signed = await b2(env).sign(objectUrl(env, key).toString(), {
           method: "PUT",
           body,
           headers: { "Content-Type": contentType, "Content-Length": String(size), "X-Amz-Content-Sha256": "UNSIGNED-PAYLOAD" }
         });
+        const res = await fetch(signed);
         if (!res.ok)
-          throw httpError(502, "B2 t\u1EEB ch\u1ED1i file: " + (await res.text()).slice(0, 300));
+          throw await b2Error(res);
         return json({ key, publicUrl: publicUrl(env, url, key) }, 200, cors);
       }
       if (path === "/file" && req.method === "DELETE") {
         const key = url.searchParams.get("key") || "";
         if (!validKey(key))
           throw httpError(400, "Key kh\xF4ng h\u1EE3p l\u1EC7");
-        const res = await b2(env).fetch(objectUrl(env, key), { method: "DELETE" });
+        const res = await fetch(await b2(env).sign(objectUrl(env, key).toString(), { method: "DELETE" }));
         if (!res.ok && res.status !== 404)
           throw httpError(502, "Kh\xF4ng xo\xE1 \u0111\u01B0\u1EE3c file: " + res.status);
         return json({ deleted: key }, 200, cors);
@@ -561,6 +562,25 @@ function json(data, status, headers) {
 function httpError(status, message) {
   const e = new Error(message);
   e.status = status;
+  return e;
+}
+async function b2Error(res) {
+  const t = await res.text().catch(() => "");
+  const code = (t.match(/<Code>([^<]+)<\/Code>/) || [])[1] || "";
+  const msg = (t.match(/<Message>([^<]+)<\/Message>/) || [])[1] || t.slice(0, 160);
+  const hint = {
+    InvalidAccessKeyId: "B2_KEY_ID sai ho\u1EB7c key \u0111\xE3 b\u1ECB xo\xE1.",
+    SignatureDoesNotMatch: "B2_APP_KEY sai, ho\u1EB7c B2_REGION kh\xF4ng kh\u1EDBp v\u1EDBi B2_ENDPOINT.",
+    AccessDenied: /cap|exceeded/i.test(msg) ? "\u0110\xE3 h\u1EBFt h\u1EA1n m\u1EE9c mi\u1EC5n ph\xED trong ng\xE0y c\u1EE7a B2." : "Application Key kh\xF4ng c\xF3 quy\u1EC1n ghi v\xE0o bucket n\xE0y (c\u1EA7n Read and Write, \u0111\xFAng bucket).",
+    NoSuchBucket: "B2_BUCKET sai t\xEAn bucket.",
+    InvalidRequest: "Endpoint ho\u1EB7c region kh\xF4ng \u0111\xFAng v\u1EDBi bucket.",
+    ServiceUnavailable: "B2 \u0111ang b\u1EADn, h\xE3y th\u1EED l\u1EA1i sau \xEDt ph\xFAt.",
+    SlowDown: "B2 \u0111ang b\u1EADn, h\xE3y th\u1EED l\u1EA1i sau \xEDt ph\xFAt.",
+    InternalError: "B2 g\u1EB7p l\u1ED7i t\u1EA1m th\u1EDDi, h\xE3y th\u1EED l\u1EA1i."
+  }[code] || "";
+  const retry = res.status >= 500 || res.status === 429 || code === "SlowDown" || code === "ServiceUnavailable";
+  const e = httpError(retry ? 503 : 502, `B2 b\xE1o l\u1ED7i ${res.status}${code ? " " + code : ""}: ${hint || msg}`);
+  e.retry = retry;
   return e;
 }
 export {

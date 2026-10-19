@@ -82,19 +82,22 @@ export default {
         } else {
           body = await req.arrayBuffer();
         }
-        const res = await b2(env).fetch(objectUrl(env, key).toString(), {
+        // Ký 1 lần rồi gửi thẳng (KHÔNG dùng aws.fetch: nó tự gửi lại khi B2 báo 5xx,
+        // nhưng luồng file đã đọc hết nên sẽ lỗi "ReadableStream is disturbed")
+        const signed = await b2(env).sign(objectUrl(env, key).toString(), {
           method: 'PUT',
           body,
           headers: { 'Content-Type': contentType, 'Content-Length': String(size), 'X-Amz-Content-Sha256': 'UNSIGNED-PAYLOAD' }
         });
-        if (!res.ok) throw httpError(502, 'B2 từ chối file: ' + (await res.text()).slice(0, 300));
+        const res = await fetch(signed);
+        if (!res.ok) throw await b2Error(res);
         return json({ key, publicUrl: publicUrl(env, url, key) }, 200, cors);
       }
 
       if (path === '/file' && req.method === 'DELETE') {
         const key = url.searchParams.get('key') || '';
         if (!validKey(key)) throw httpError(400, 'Key không hợp lệ');
-        const res = await b2(env).fetch(objectUrl(env, key), { method: 'DELETE' });
+        const res = await fetch(await b2(env).sign(objectUrl(env, key).toString(), { method: 'DELETE' }));
         if (!res.ok && res.status !== 404) throw httpError(502, 'Không xoá được file: ' + res.status);
         return json({ deleted: key }, 200, cors);
       }
@@ -250,3 +253,24 @@ function json(data, status, headers) {
   return new Response(JSON.stringify(data), { status, headers: { ...headers, 'Content-Type': 'application/json; charset=utf-8' } });
 }
 function httpError(status, message) { const e = new Error(message); e.status = status; return e; }
+
+// Đọc lỗi XML của B2 và đổi thành thông báo dễ hiểu
+async function b2Error(res) {
+  const t = await res.text().catch(() => '');
+  const code = (t.match(/<Code>([^<]+)<\/Code>/) || [])[1] || '';
+  const msg = (t.match(/<Message>([^<]+)<\/Message>/) || [])[1] || t.slice(0, 160);
+  const hint = {
+    InvalidAccessKeyId: 'B2_KEY_ID sai hoặc key đã bị xoá.',
+    SignatureDoesNotMatch: 'B2_APP_KEY sai, hoặc B2_REGION không khớp với B2_ENDPOINT.',
+    AccessDenied: /cap|exceeded/i.test(msg) ? 'Đã hết hạn mức miễn phí trong ngày của B2.' : 'Application Key không có quyền ghi vào bucket này (cần Read and Write, đúng bucket).',
+    NoSuchBucket: 'B2_BUCKET sai tên bucket.',
+    InvalidRequest: 'Endpoint hoặc region không đúng với bucket.',
+    ServiceUnavailable: 'B2 đang bận, hãy thử lại sau ít phút.',
+    SlowDown: 'B2 đang bận, hãy thử lại sau ít phút.',
+    InternalError: 'B2 gặp lỗi tạm thời, hãy thử lại.'
+  }[code] || '';
+  const retry = res.status >= 500 || res.status === 429 || code === 'SlowDown' || code === 'ServiceUnavailable';
+  const e = httpError(retry ? 503 : 502, `B2 báo lỗi ${res.status}${code ? ' ' + code : ''}: ${hint || msg}`);
+  e.retry = retry;
+  return e;
+}

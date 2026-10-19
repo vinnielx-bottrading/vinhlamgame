@@ -99,7 +99,16 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 
 **Trang game:**
 - Bố cục: tiêu đề → 2 cột (slide ảnh/video bên trái; bài viết, cụm marketing có dấu tích và nút **Chơi ngay** bên phải) → video YouTube ở giữa (nếu có) → banner quảng cáo (nếu bật).
-- Mỗi game có các nhóm: **Cơ bản** (tên, câu ngắn cho banner, thể loại, link chơi, trạng thái, nhãn Hot) · **Hình ảnh** (thumbnail 4:3, KV 16:10, ảnh slide, video ngắn) · **Bài viết** (giới thiệu, cụm marketing mỗi dòng một cụm) · **Video giới thiệu** (YouTube).
+- **Slide** dùng tỉ lệ chuẩn **16:9 (1920 × 1080)**. Ảnh khác tỉ lệ vẫn hiện đủ, không bị cắt, phần trống có nền mờ của chính ảnh đó.
+- **KV chính** là ảnh đầu tiên của slide, có thể tắt bằng ô "Hiện KV chính làm ảnh đầu tiên của slide".
+- **Ảnh slide giới thiệu**:
+  - Chọn hoặc **kéo thả nhiều ảnh cùng lúc**. Mỗi ảnh xử lý riêng, ảnh lỗi không làm hỏng ảnh khác. Có báo "Đã thêm 7/8 ảnh" kèm tên ảnh lỗi.
+  - **Kéo từng ảnh để đổi vị trí**, hoặc dùng nút ‹ › trên điện thoại.
+- **Bài viết giới thiệu**: trình soạn thảo có:
+  - Tiêu đề H2/H3, đậm, nghiêng, gạch chân, danh sách, trích dẫn, đường kẻ, link.
+  - Chèn ảnh: chọn file, kéo thả hoặc dán. Ảnh tự nén WebP.
+  - Dán từ Word / Google Docs được, định dạng lạ và mã độc tự lọc bỏ.
+- Mọi ô ảnh và video đều nhận **kéo thả file**.
 
 **Banner trang chủ:**
 - Chỉ hiện hình hoặc video, tự trượt mờ dần, không có chữ.

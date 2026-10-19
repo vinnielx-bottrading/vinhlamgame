@@ -120,6 +120,7 @@ alter table games   add column if not exists kv text default '';
 alter table games   add column if not exists video_url text default '';
 alter table games   add column if not exists youtube_url text default '';
 alter table games   add column if not exists clip_url text default '';
+alter table games   add column if not exists kv_in_slide boolean default true;
 alter table games   add column if not exists highlights text default '';
 alter table games   add column if not exists released text default '';
 alter table games   add column if not exists platforms text default '';

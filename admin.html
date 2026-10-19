@@ -474,6 +474,42 @@ textarea{min-height:120px;resize:vertical}
 .as-tags span{font-size:11px;color:var(--wine);background:var(--wine-tint);padding:1px 6px;border-radius:2px}
 .as-note{font-size:12px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .as-act{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-top:1px solid var(--line)}
+.lib-gname{display:grid;gap:6px;width:min(520px,100%)}
+.lib-gname span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lib-gname input{font-size:15px;padding:10px 12px}
+.lib-gname input.need{border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.lib-pend{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;font-size:13.5px;padding:10px 12px;background:var(--paper);border:1px solid var(--line);width:100%}
+.lib-pend > span{flex:1;min-width:200px;color:var(--muted);overflow-wrap:anywhere}
+.lib-pend b{color:var(--wine)}
+.ag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.ag-card{position:relative;display:grid;grid-template-rows:auto 1fr;text-align:left;border:1px solid var(--line);background:var(--paper);min-width:0;transition:border-color .15s,box-shadow .15s,transform .15s}
+.ag-card:hover{border-color:var(--wine);box-shadow:0 14px 30px -18px rgba(90,20,40,.45);transform:translateY(-2px)}
+.ag-card:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+.ag-cover{display:grid;aspect-ratio:16/10;gap:2px;background:var(--line);overflow:hidden}
+.ag-cover .as-prev{aspect-ratio:auto;height:100%;min-height:0}
+.ag-cover.n2{grid-template-columns:1fr 1fr}
+.ag-cover.n3{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr}
+.ag-cover.n3 > :first-child{grid-row:span 2}
+.ag-cover.n4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.ag-cover .as-badge{display:none}
+.ag-body{display:grid;gap:4px;padding:12px 40px 14px 14px;align-content:start;min-width:0}
+.ag-name{font:500 1.3rem/1.2 var(--display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-meta{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-go{position:absolute;right:14px;bottom:14px;color:var(--wine);font-size:18px;transition:transform .15s}
+.ag-card:hover .ag-go{transform:translateX(3px)}
+.ag-none{background:var(--paper-2)}
+.ag-none .ag-name{font-style:italic;color:var(--muted)}
+.ag-head{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.ag-title{flex:1;min-width:220px;display:grid;gap:2px}
+.ag-title h3{font:500 1.7rem/1.15 var(--display);overflow-wrap:anywhere}
+.ag-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ag-rename,.ag-move{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ag-rename input{min-width:240px;flex:1;font-size:15px}
+.ag-move input{min-width:220px}
+.ag-bulk{position:sticky;top:8px;z-index:5;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 12px;background:var(--wine-tint);border:1px solid var(--wine)}
+.as-check{position:absolute;top:6px;left:6px;width:28px;height:28px;display:grid;place-items:center;background:rgba(255,255,255,.9);border-radius:3px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.as-check input{width:16px;height:16px;margin:0;accent-color:var(--wine)}
+.as-card.sel{border-color:var(--wine);box-shadow:0 0 0 2px var(--wine-tint)}
 .pk-wrap{position:fixed;inset:0;z-index:60;background:rgba(20,10,14,.55);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .pk{background:var(--paper);width:min(1000px,100%);max-height:100%;display:grid;grid-template-rows:auto auto 1fr auto;gap:12px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
 .pk-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px 0}
@@ -855,6 +891,7 @@ const FIELDS = {
   assets: [
     { k: 'kind', label: 'Loại tư liệu', type: 'select', options: [['image', 'Ảnh'], ['video', 'Video (file hoặc YouTube)'], ['text', 'Nội dung / caption'], ['link', 'Link để dành']] },
     { k: 'title', label: 'Tên tư liệu', type: 'text', req: true },
+    { k: 'group_name', label: 'Nhóm', type: 'group', hint: 'Chọn nhóm có sẵn hoặc gõ tên nhóm mới. Để trống = Chưa đặt nhóm.' },
     { k: 'category', label: 'Danh mục', type: 'category', hint: 'Chọn có sẵn hoặc gõ danh mục mới.' },
     { k: 'game_id', label: 'Thuộc game', type: 'game' },
     { k: 'tags', label: 'Tag', type: 'text', full: true, hint: 'Cách nhau dấu phẩy. VD: trailer, mùa mưa, tết' },
@@ -913,7 +950,7 @@ const BLANK = {
   games: () => ({ kv_in_slide: false, status: 'published', hot: false, genre_ids: [], screenshots: [], sort: D.games.length + 1, released: String(new Date().getFullYear()), platforms: 'Web' }),
   banners: () => ({ active: true, kind: 'game', media_type: 'image', duration: 0, sort: D.banners.length + 1 }),
   genres: () => ({ sort: D.genres.length + 1, show: true, description: '' }),
-  assets: () => ({ kind: 'text', category: AF.cat !== 'all' ? AF.cat : (AF.upCat || 'Chưa phân loại'), game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : '' })
+  assets: () => ({ kind: 'text', group_name: realGroup() || '', category: AF.cat !== 'all' ? AF.cat : (AF.upCat || 'Chưa phân loại'), game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : '' })
 };
 
 function fieldHTML(f, v) {
@@ -982,6 +1019,7 @@ function fieldHTML(f, v) {
         <div class="rte-foot"><span>${f.hint || ''}</span><span class="rte-count num">0 từ</span></div>
       </div></div>`;
     }
+    case 'group': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="text" list="${id}-list" value="${esc(v || '')}" placeholder="VD: Bộ KV Tết 2027"><datalist id="${id}-list">${assetGroupNames().map(c => `<option value="${esc(c)}">`).join('')}</datalist>${hint}</div>`;
     case 'category': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="text" list="${id}-list" value="${esc(v || AF.upCat || 'Chưa phân loại')}"><datalist id="${id}-list">${assetCats().map(c => `<option value="${esc(c)}">`).join('')}</datalist>${hint}</div>`;
     case 'date': return `<div class="${cls}">${lab}<input id="${id}" name="${f.k}" type="date" value="${esc(v)}">${hint}</div>`;
     case 'media-url': return `<div class="${cls}" data-drop>${lab}<div class="img-btns"><input id="${id}" name="${f.k}" type="url" value="${esc(v)}" style="flex:1;min-width:200px">${uploadOn() ? `<span class="btn small line file-btn">Tải video lên B2<input type="file" accept="video/mp4,video/webm,video/quicktime,image/gif" data-url-file="${f.k}"></span>` : ''}<button type="button" class="btn small line" data-act="pick" data-kind="video" data-target="url" data-field="${f.k}">Từ tư liệu</button></div>${hint}${uploadOn() ? '<span class="drop-hint">Kéo thả file video vào đây</span>' : ''}</div>`;
@@ -1208,10 +1246,32 @@ const Assets = {
   async remove(id) {
     if (MODE === 'cloud') { const { error } = await sb.from('assets').delete().eq('id', id); if (error) throw error; return; }
     this.saveLocal(this.local().filter(x => x.id !== id));
+  },
+  async removeMany(ids) {
+    if (MODE === 'cloud') { const { error } = await sb.from('assets').delete().in('id', ids); if (error) throw error; return; }
+    this.saveLocal(this.local().filter(x => !ids.includes(x.id)));
+  },
+  async setGroup(ids, name) {
+    if (MODE === 'cloud') { const { error } = await sb.from('assets').update({ group_name: name }).in('id', ids); if (error) throw error; return; }
+    this.saveLocal(this.local().map(x => ids.includes(x.id) ? { ...x, group_name: name } : x));
   }
 };
 let ASSETS = null, assetsLoading = false;
-const AF = { kind: 'all', cat: 'all', game: 'all', q: '', upCat: '', compress: true };
+const AF = { kind: 'all', cat: 'all', game: 'all', q: '', upCat: ASSET_CATS[0], compress: true, group: null, upGroup: '', sel: [], renaming: false };
+const NOGROUP = '__none';
+let LIB_PENDING = [];                                     // file đã chọn / thả nhưng chưa đặt tên nhóm
+const grpOf = a => String(a.group_name || '').trim();
+const realGroup = () => AF.group && AF.group !== NOGROUP ? AF.group : '';
+const assetGroupNames = () => [...new Set((ASSETS || []).map(grpOf).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'vi'));
+function groupList(items) {
+  const m = new Map();
+  for (const a of items) { const k = grpOf(a) || NOGROUP; if (!m.has(k)) m.set(k, []); m.get(k).push(a); }
+  const latest = arr => arr.reduce((t, a) => (a.created_at || '') > t ? a.created_at : t, '');
+  return [...m.entries()].map(([name, items]) => ({ name, items, at: latest(items) }))
+    .sort((a, b) => (a.name === NOGROUP) - (b.name === NOGROUP) || (b.at > a.at ? 1 : b.at < a.at ? -1 : 0));
+}
+const groupLabel = n => n === NOGROUP ? 'Chưa đặt nhóm' : n;
+function inGroup(a, g) { return g === NOGROUP ? !grpOf(a) : grpOf(a) === g; }
 function loadAssets() {
   if (assetsLoading) return; assetsLoading = true;
   Assets.list().then(r => { ASSETS = r; }).catch(e => { ASSETS = []; toast('Không tải được kho tư liệu: ' + (e.message || ''), true); })
@@ -1221,9 +1281,9 @@ const assetCats = () => [...new Set([...ASSET_CATS, ...(ASSETS || []).map(a => a
 const kindLabel = k => (ASSET_KINDS.find(x => x[0] === k) || [k, k])[1];
 function filterAssets(list, f = AF) {
   const q = f.q.trim().toLowerCase();
-  return list.filter(a => (f.kind === 'all' || a.kind === f.kind) && (f.cat === 'all' || (a.category || 'Chưa phân loại') === f.cat)
+  return list.filter(a => (!f.group || f.group === 'all' || inGroup(a, f.group)) && (f.kind === 'all' || a.kind === f.kind) && (f.cat === 'all' || (a.category || 'Chưa phân loại') === f.cat)
     && (f.game === 'all' || (f.game === 'none' ? !a.game_id : a.game_id === f.game))
-    && (!q || [a.title, a.tags, a.note, a.content, a.url, a.category].join(' ').toLowerCase().includes(q)));
+    && (!q || [a.title, a.tags, a.note, a.content, a.url, a.category, a.group_name].join(' ').toLowerCase().includes(q)));
 }
 function assetPreview(a, small) {
   if (a.kind === 'image' && a.url) return `<img src="${esc(a.url)}" alt="" loading="lazy">`;
@@ -1234,17 +1294,31 @@ function assetPreview(a, small) {
 }
 function adminAssets() {
   if (!ASSETS) { loadAssets(); return `<div class="empty">Đang tải kho tư liệu…</div>`; }
-  const list = filterAssets(ASSETS);
-  const counts = Object.fromEntries(ASSET_KINDS.map(([k]) => [k, ASSETS.filter(a => a.kind === k).length]));
+  if (AF.group && !ASSETS.some(a => inGroup(a, AF.group)) && !LIB_PENDING.length) AF.group = null;
+  const G = AF.group;
+  const scope = G ? ASSETS.filter(a => inGroup(a, G)) : ASSETS;
+  const list = filterAssets(scope);
+  const counts = Object.fromEntries(ASSET_KINDS.map(([k]) => [k, scope.filter(a => a.kind === k).length]));
   const cats = assetCats();
-  const catCount = c => ASSETS.filter(a => (a.category || 'Chưa phân loại') === c).length;
-  return `
+  const catCount = c => scope.filter(a => (a.category || 'Chưa phân loại') === c).length;
+  const groups = assetGroupNames();
+  const pend = LIB_PENDING.length;
+
+  const upload = `
   <div class="lib-drop" data-lib-drop>
     <div class="lib-drop-in">
-      <b>Kéo thả ảnh, video vào đây</b>
-      <span>hoặc <span class="btn small primary file-btn">Chọn file<input type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime" data-lib-file></span></span>
+      ${realGroup()
+        ? `<b>Thêm ảnh, video vào nhóm “${esc(G)}”</b>`
+        : `<b>Tải lên một nhóm tư liệu mới</b>
+           <label class="lib-gname"><span>Tên nhóm *</span>
+             <input type="text" data-af="upGroup" list="lib-groups" value="${esc(AF.upGroup)}" placeholder="VD: Bộ KV Tết 2027 · Monster Breakout" maxlength="120" ${pend ? 'autofocus' : ''}>
+             <datalist id="lib-groups">${groups.map(g => `<option value="${esc(g)}">`).join('')}</datalist></label>`}
+      ${pend
+        ? `<div class="lib-pend"><span><b class="num">${pend}</b> file đang chờ · ${esc(LIB_PENDING.slice(0, 3).map(f => f.name).join(', '))}${pend > 3 ? '…' : ''}</span>
+             <button class="btn small primary" data-act="lib-go">Tải lên ${pend} file</button><button class="btn small line" data-act="lib-pend-clear">Bỏ</button></div>`
+        : `<span>Kéo thả ảnh, video vào đây hoặc <span class="btn small primary file-btn">Chọn file<input type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime" data-lib-file></span></span>`}
       <div class="lib-opts">
-        <label class="check"><span>Lưu vào danh mục</span>
+        <label class="check"><span>Danh mục</span>
           <select data-af="upCat">${cats.map(c => `<option ${AF.upCat === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
         <label class="check"><input type="checkbox" data-af="compress" ${AF.compress ? 'checked' : ''}> Nén ảnh WebP (2560px, chất lượng cao)</label>
       </div>
@@ -1255,23 +1329,74 @@ function adminAssets() {
       <button class="btn line" data-act="asset-new" data-kind="link">+ Link để dành</button>
       <button class="btn line" data-act="asset-new" data-kind="video">+ Link video / YouTube</button>
     </div>
-  </div>
-  ${editing && editing.kind === 'assets' ? formPanel('assets') : ''}
+  </div>`;
+
+  const filters = `
   <div class="lib-filters">
-    <div class="seg">${[['all', 'Tất cả', ASSETS.length], ...ASSET_KINDS.map(([k, l]) => [k, l, counts[k]])].map(([k, l, n]) => `<button class="${AF.kind === k ? 'on' : ''}" data-act="af" data-k="kind" data-v="${k}">${l} <span class="num">${n}</span></button>`).join('')}</div>
+    <div class="seg">${[['all', 'Tất cả', scope.length], ...ASSET_KINDS.map(([k, l]) => [k, l, counts[k]])].map(([k, l, n]) => `<button class="${AF.kind === k ? 'on' : ''}" data-act="af" data-k="kind" data-v="${k}">${l} <span class="num">${n}</span></button>`).join('')}</div>
     <div class="lib-filter-row">
-      <input type="search" placeholder="Tìm theo tên, tag, nội dung…" value="${esc(AF.q)}" data-af="q" aria-label="Tìm tư liệu">
+      <input type="search" placeholder="${G ? 'Tìm trong nhóm…' : 'Tìm theo tên nhóm, tên file, tag, nội dung…'}" value="${esc(AF.q)}" data-af="q" aria-label="Tìm tư liệu">
       <select data-af="game" aria-label="Lọc theo game"><option value="all">Mọi game</option><option value="none" ${AF.game === 'none' ? 'selected' : ''}>Không gắn game</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${AF.game === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>
     </div>
-    <div class="chips" style="margin:0;padding:0;border:0">
+    ${cats.filter(c => catCount(c)).length > 1 ? `<div class="chips" style="margin:0;padding:0;border:0">
       <button class="chip ${AF.cat === 'all' ? 'on' : ''}" data-act="af" data-k="cat" data-v="all">Mọi danh mục</button>
       ${cats.filter(c => catCount(c)).map(c => `<button class="chip ${AF.cat === c ? 'on' : ''}" data-act="af" data-k="cat" data-v="${esc(c)}">${esc(c)} <span class="num" style="opacity:.6">${catCount(c)}</span></button>`).join('')}
+    </div>` : ''}
+  </div>`;
+
+  // ----- Danh sách nhóm -----
+  if (!G) {
+    const gl = groupList(list);
+    return `${upload}${editing && editing.kind === 'assets' ? formPanel('assets') : ''}${filters}
+    ${gl.length ? `<div class="ag-grid">${gl.map(g => {
+      const vis = g.items.filter(a => a.kind === 'image' || a.kind === 'video').slice(0, 4);
+      const all = ASSETS.filter(a => inGroup(a, g.name));
+      const kinds = ASSET_KINDS.map(([k, l]) => [l, all.filter(a => a.kind === k).length]).filter(x => x[1]).map(([l, n]) => `${n} ${l.toLowerCase()}`).join(' · ');
+      const topCat = Object.entries(all.reduce((m, a) => (m[a.category || 'Chưa phân loại'] = (m[a.category || 'Chưa phân loại'] || 0) + 1, m), {})).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+      const gm = [...new Set(all.map(a => a.game_id).filter(Boolean))].map(id => gameById(id)?.title).filter(Boolean);
+      return `<button type="button" class="ag-card ${g.name === NOGROUP ? 'ag-none' : ''}" data-act="ag-open" data-v="${esc(g.name)}">
+        <span class="ag-cover n${Math.max(1, vis.length)}">${vis.length ? vis.map(a => `<span class="as-prev as-${a.kind}">${assetPreview(a, true)}</span>`).join('') : `<span class="as-prev">${assetPreview(g.items[0], true)}</span>`}</span>
+        <span class="ag-body">
+          <b class="ag-name">${esc(groupLabel(g.name))}</b>
+          <span class="ag-meta num">${all.length} tư liệu${kinds ? ' · ' + kinds : ''}</span>
+          <span class="ag-meta">${esc(topCat)}${gm.length ? ' · ' + esc(gm.slice(0, 2).join(', ')) : ''}</span>
+          <span class="ag-meta num">Cập nhật ${fmtTime(g.at)}</span>
+        </span>
+        <span class="ag-go" aria-hidden="true">→</span>
+      </button>`; }).join('')}</div>`
+      : `<div class="empty">${ASSETS.length ? 'Không có nhóm nào khớp bộ lọc.' : 'Kho tư liệu đang trống. Đặt tên nhóm, rồi kéo thả ảnh, video vào khung phía trên.'}</div>`}`;
+  }
+
+  // ----- Bên trong một nhóm -----
+  const total = scope.length;
+  const sel = AF.sel.filter(id => scope.some(a => a.id === id));
+  const head = `
+  <div class="ag-head">
+    <button class="btn small line" data-act="ag-back">← Tất cả nhóm</button>
+    <div class="ag-title">
+      ${AF.renaming && G !== NOGROUP
+        ? `<form class="ag-rename" data-ag-rename><input name="name" value="${esc(G)}" maxlength="120" aria-label="Tên nhóm mới" autofocus><button class="btn small primary">Lưu tên</button><button type="button" class="btn small line" data-act="ag-rename-no">Huỷ</button></form>`
+        : `<h3>${esc(groupLabel(G))}</h3>`}
+      <span class="hint num">${total} tư liệu${G === NOGROUP ? ' · Chọn các mục bên dưới rồi chuyển vào một nhóm.' : ''}</span>
     </div>
-  </div>
+    ${G !== NOGROUP && !AF.renaming ? `<div class="ag-tools">
+      <button class="btn small line" data-act="ag-rename">Đổi tên nhóm</button>
+      ${confirmDel === 'ag:' + G ? `<span class="confirm">Xoá ${total} tư liệu${uploadOn() ? ' và file trên B2' : ''}? <button class="btn small danger" data-act="ag-del-yes">Xoá cả nhóm</button><button class="btn small line" data-act="del-no">Không</button></span>` : `<button class="btn small danger" data-act="ag-del">Xoá nhóm</button>`}
+    </div>` : ''}
+  </div>`;
+  const bulk = sel.length ? `
+  <div class="ag-bulk">
+    <b class="num">Đã chọn ${sel.length}</b>
+    <form class="ag-move" data-ag-move><input name="to" list="lib-groups-mv" placeholder="Tên nhóm đích (có sẵn hoặc mới)" maxlength="120" required aria-label="Chuyển sang nhóm"><datalist id="lib-groups-mv">${groups.filter(g => g !== G).map(g => `<option value="${esc(g)}">`).join('')}</datalist><button class="btn small primary">Chuyển nhóm</button></form>
+    <button class="btn small line" data-act="ag-sel-all">Chọn tất cả</button>
+    <button class="btn small line" data-act="ag-sel-none">Bỏ chọn</button>
+  </div>` : '';
+  return `${head}${upload}${editing && editing.kind === 'assets' ? formPanel('assets') : ''}${total > 6 ? filters : ''}${bulk}
   ${list.length ? `<div class="lib-grid">${list.map(a => {
     const g = a.game_id ? gameById(a.game_id) : null;
-    return `<article class="as-card" data-asset="${esc(a.id)}">
-      <div class="as-prev as-${a.kind}">${assetPreview(a)}</div>
+    const on = sel.includes(a.id);
+    return `<article class="as-card ${on ? 'sel' : ''}" data-asset="${esc(a.id)}">
+      <div class="as-prev as-${a.kind}">${assetPreview(a)}<label class="as-check" title="Chọn để chuyển nhóm"><input type="checkbox" data-as-sel="${esc(a.id)}" ${on ? 'checked' : ''} aria-label="Chọn ${esc(a.title || '')}"></label></div>
       <div class="as-body">
         <div class="as-meta"><span class="pill draft">${kindLabel(a.kind)}</span><span>${esc(a.category || 'Chưa phân loại')}</span></div>
         <b class="as-title" title="${esc(a.title)}">${esc(a.title || '(chưa đặt tên)')}</b>
@@ -1286,13 +1411,20 @@ function adminAssets() {
         <button class="btn small line" data-act="asset-edit" data-id="${esc(a.id)}">Sửa</button>
         ${confirmDel === 'as:' + a.id ? `<span class="confirm">Xoá? <button class="btn small danger" data-act="asset-del-yes" data-id="${esc(a.id)}">Xoá</button><button class="btn small line" data-act="del-no">Không</button></span>` : `<button class="btn small danger" data-act="asset-del" data-id="${esc(a.id)}">Xoá</button>`}
       </div>
-    </article>`; }).join('')}</div>` : `<div class="empty">${ASSETS.length ? 'Không có tư liệu khớp bộ lọc.' : 'Kho tư liệu đang trống. Kéo thả ảnh, video vào khung phía trên, hoặc thêm nội dung / link để dành.'}</div>`}`;
+    </article>`; }).join('')}</div>` : `<div class="empty">${total ? 'Không có tư liệu khớp bộ lọc.' : 'Nhóm chưa có tư liệu. Kéo thả ảnh, video vào khung phía trên.'}</div>`}`;
 }
 async function libUpload(files, btn) {
   const ok = [], fail = [];
   const cat = AF.upCat || 'Chưa phân loại';
   const media = files.filter(f => /^(image|video)\//.test(f.type));
   if (!media.length) { toast('Chỉ nhận file ảnh hoặc video.', true); return; }
+  const group = realGroup() || AF.upGroup.trim();
+  if (!group) {                                           // chưa có tên nhóm: giữ file lại, chờ đặt tên
+    LIB_PENDING = media; render();
+    const inp = $('[data-af="upGroup"]'); inp?.focus(); inp?.classList.add('need');
+    toast(`Đặt tên nhóm cho ${media.length} file rồi bấm “Tải lên”.`); return;
+  }
+  LIB_PENDING = [];
   for (let i = 0; i < media.length; i++) {
     const f0 = media[i], tag = media.length > 1 ? `${i + 1}/${media.length}` : '';
     try {
@@ -1305,12 +1437,13 @@ async function libUpload(files, btn) {
       let url;
       if (uploadOn()) url = await uploadToB2(f, 'library', p => btnText(btn, `Đang tải ${tag} · ${p}%`));
       else { if (!isImg) throw new Error('video cần Worker'); if (f.size > 1.5 * 1024 * 1024) throw new Error('ảnh quá lớn cho chế độ demo'); url = await readData(f); }
-      const it = { id: uid(), kind: isImg ? 'image' : 'video', title: f0.name.replace(/\.[^.]+$/, ''), category: cat, url, size: f.size, dims, mime: f.type, tags: '', note: '', content: '', game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : null, created_at: new Date().toISOString(), created_by: String(ME || '') };
+      const it = { id: uid(), kind: isImg ? 'image' : 'video', title: f0.name.replace(/\.[^.]+$/, ''), group_name: group, category: cat, url, size: f.size, dims, mime: f.type, tags: '', note: '', content: '', game_id: AF.game !== 'all' && AF.game !== 'none' ? AF.game : null, created_at: new Date().toISOString(), created_by: String(ME || '') };
       const saved = await Assets.save(it); ASSETS.unshift(saved); ok.push(f);
     } catch (e) { fail.push(`${f0.name} (${reasonOf(e)})`); }
   }
+  if (ok.length && AF.group !== group) { AF.group = group; AF.upGroup = ''; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; AF.sel = []; }
   btnText(btn); render();
-  if (ok.length) toast(`Đã lưu ${ok.length}/${media.length} tư liệu vào “${cat}”${fail.length ? ' · lỗi: ' + fail.slice(0, 2).join(', ') : ''}`, !!fail.length, fail.length ? 6000 : 3000);
+  if (ok.length) toast(`Đã lưu ${ok.length}/${media.length} tư liệu vào nhóm “${group}”${fail.length ? ' · lỗi: ' + fail.slice(0, 2).join(', ') : ''}`, !!fail.length, fail.length ? 6000 : 3000);
   else toast('Không lưu được: ' + fail.slice(0, 2).join(', '), true, 6000);
 }
 const mediaKey = url => { const m = String(url || '').match(/\/media\/((?:banner|games|ads|misc|donate|library)\/[^?#]+)$/); return m ? decodeURIComponent(m[1]) : ''; };
@@ -1322,7 +1455,7 @@ async function deleteB2(url) {
 /* ---------- Hộp chọn từ kho tư liệu ---------- */
 let PICK = null;
 function openPicker(opts) {
-  PICK = { ...opts, sel: [], f: { kind: opts.kind, cat: 'all', game: 'all', q: '' } };
+  PICK = { ...opts, sel: [], f: { kind: opts.kind, cat: 'all', game: 'all', group: 'all', q: '' } };
   if (!ASSETS) { Assets.list().then(r => { ASSETS = r; drawPicker(); }).catch(() => { ASSETS = []; drawPicker(); }); }
   drawPicker();
 }
@@ -1336,6 +1469,7 @@ function drawPicker() {
     <div class="pk-head"><h2>Chọn ${PICK.kind === 'video' ? 'video' : 'ảnh'} từ kho tư liệu</h2><button class="btn small line" data-act="pk-close">Đóng</button></div>
     <div class="lib-filter-row" style="padding:0 18px">
       <input type="search" placeholder="Tìm…" value="${esc(PICK.f.q)}" data-pk="q" aria-label="Tìm">
+      <select data-pk="group" aria-label="Nhóm"><option value="all">Mọi nhóm</option>${groupList((ASSETS || []).filter(a => a.kind === PICK.kind)).map(g => `<option value="${esc(g.name)}" ${PICK.f.group === g.name ? 'selected' : ''}>${esc(groupLabel(g.name))} (${g.items.length})</option>`).join('')}</select>
       <select data-pk="cat" aria-label="Danh mục"><option value="all">Mọi danh mục</option>${cats.map(c => `<option ${PICK.f.cat === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>
       <select data-pk="game" aria-label="Game"><option value="all">Mọi game</option>${[...D.games].sort(bySort).map(g => `<option value="${esc(g.id)}" ${PICK.f.game === g.id ? 'selected' : ''}>${esc(g.title)}</option>`).join('')}</select>
     </div>
@@ -1646,6 +1780,7 @@ async function processFiles(input, files) {
 /* ---------- Kho tư liệu: bộ lọc, chọn file, kéo thả ---------- */
 document.addEventListener('input', e => {
   const k = e.target.dataset?.af;
+  if (k === 'upGroup') { AF.upGroup = e.target.value; e.target.classList.remove('need'); }
   if (k === 'q') { AF.q = e.target.value; const pos = e.target.selectionStart; render(); const s2 = document.querySelector('[data-af="q"]'); if (s2) { s2.focus(); s2.setSelectionRange(pos, pos); } }
   const pk = e.target.dataset?.pk;
   if (pk === 'q' && PICK) { PICK.f.q = e.target.value; const pos = e.target.selectionStart; drawPicker(); const s2 = document.querySelector('[data-pk="q"]'); if (s2) { s2.focus(); s2.setSelectionRange(pos, pos); } }
@@ -1654,9 +1789,10 @@ document.addEventListener('change', async e => {
   const k = e.target.dataset?.af;
   if (k === 'game') { AF.game = e.target.value; render(); }
   if (k === 'upCat') AF.upCat = e.target.value;
+  if (e.target.matches('[data-as-sel]')) { const id = e.target.dataset.asSel; AF.sel = e.target.checked ? [...new Set([...AF.sel, id])] : AF.sel.filter(x => x !== id); render(); }
   if (k === 'compress') AF.compress = e.target.checked;
   const pk = e.target.dataset?.pk;
-  if (PICK && (pk === 'cat' || pk === 'game')) { PICK.f[pk] = e.target.value; drawPicker(); }
+  if (PICK && (pk === 'cat' || pk === 'game' || pk === 'group')) { PICK.f[pk] = e.target.value; drawPicker(); }
   if (e.target.matches('[data-lib-file]') && e.target.files.length) { const files = [...e.target.files]; e.target.value = ''; await libUpload(files, e.target.closest('.file-btn')); }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && PICK) { PICK = null; drawPicker(); } });
@@ -1843,6 +1979,21 @@ document.addEventListener('click', async e => {
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
       case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
       case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'ag-open': AF.group = t.dataset.v; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; AF.sel = []; AF.renaming = false; editing = null; confirmDel = null; render(); $('#admin-main, main')?.scrollIntoView?.({ block: 'start' }); break;
+      case 'ag-back': AF.group = null; AF.sel = []; AF.renaming = false; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; editing = null; confirmDel = null; LIB_PENDING = []; render(); break;
+      case 'ag-rename': AF.renaming = true; render(); $('[data-ag-rename] input')?.select(); break;
+      case 'ag-rename-no': AF.renaming = false; render(); break;
+      case 'ag-del': confirmDel = 'ag:' + AF.group; render(); break;
+      case 'ag-del-yes': {
+        const items = ASSETS.filter(a => inGroup(a, AF.group)), ids = items.map(a => a.id);
+        await Assets.removeMany(ids); items.forEach(a => a.url && deleteB2(a.url));
+        ASSETS = ASSETS.filter(a => !ids.includes(a.id)); toast(`Đã xoá nhóm “${AF.group}” (${ids.length} tư liệu)`);
+        AF.group = null; AF.sel = []; confirmDel = null; render(); break;
+      }
+      case 'ag-sel-all': AF.sel = filterAssets(ASSETS.filter(a => inGroup(a, AF.group))).map(a => a.id); render(); break;
+      case 'ag-sel-none': AF.sel = []; render(); break;
+      case 'lib-go': { const f = LIB_PENDING; if (!realGroup() && !AF.upGroup.trim()) { const inp = $('[data-af="upGroup"]'); inp?.focus(); inp?.classList.add('need'); toast('Hãy đặt tên nhóm trước.', true); break; } LIB_PENDING = []; await libUpload(f, t); break; }
+      case 'lib-pend-clear': LIB_PENDING = []; render(); break;
       case 'asset-new': editing = { kind: 'assets', item: { ...BLANK.assets(), kind: t.dataset.kind, category: AF.cat !== 'all' ? AF.cat : ({ text: 'Bài viết & Caption', link: 'Link tham khảo', video: 'Video' }[t.dataset.kind] || 'Chưa phân loại') } }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'asset-edit': editing = { kind: 'assets', item: structuredClone(ASSETS.find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'asset-del': confirmDel = 'as:' + id; render(); break;
@@ -1887,6 +2038,27 @@ document.addEventListener('change', async e => {
 });
 
 document.addEventListener('submit', async e => {
+  const rn = e.target.closest?.('[data-ag-rename]'), mv = e.target.closest?.('[data-ag-move]');
+  if (rn || mv) {
+    e.preventDefault();
+    const name = String((rn ? rn.elements.name : mv.elements.to).value).trim().slice(0, 120);
+    if (!name) { toast('Hãy nhập tên nhóm.', true); return; }
+    try {
+      if (rn) {
+        if (name === AF.group) { AF.renaming = false; render(); return; }
+        const merge = assetGroupNames().includes(name);
+        const ids = ASSETS.filter(a => inGroup(a, AF.group)).map(a => a.id);
+        await Assets.setGroup(ids, name); ASSETS.forEach(a => { if (ids.includes(a.id)) a.group_name = name; });
+        toast(merge ? `Đã gộp vào nhóm “${name}”` : 'Đã đổi tên nhóm'); AF.group = name; AF.renaming = false;
+      } else {
+        const ids = AF.sel.filter(id => ASSETS.some(a => a.id === id));
+        await Assets.setGroup(ids, name); ASSETS.forEach(a => { if (ids.includes(a.id)) a.group_name = name; });
+        toast(`Đã chuyển ${ids.length} tư liệu sang nhóm “${name}”`); AF.sel = [];
+      }
+      render();
+    } catch (err) { toast('Không lưu được: ' + (err.message || err), true); }
+    return;
+  }
   const form = e.target.closest('[data-form]');
   if (!form) return;
   e.preventDefault();
@@ -1936,6 +2108,7 @@ document.addEventListener('submit', async e => {
       const it = { ...editing.item, ...v, id: editing.item.id || uid() };
       if (!it.created_at) { it.created_at = new Date().toISOString(); it.created_by = String(ME || ''); }
       if (!it.game_id) it.game_id = null;
+      it.group_name = String(it.group_name || '').trim().slice(0, 120);
       if (it.kind !== 'text') it.content = it.content || '';
       if (it.kind !== 'text' && !it.url) { toast('Hãy dán link hoặc tải file lên.', true); return; }
       const saved = await Assets.save(it);

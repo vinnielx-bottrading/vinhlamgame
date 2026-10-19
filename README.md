@@ -154,12 +154,16 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 
 Tab **Kho tư liệu** trong admin lưu ảnh, video, nội dung/caption và link để dành dùng sau.
 
+- **Nhóm:** kho hiển thị theo nhóm (thẻ có ảnh bìa, số tư liệu, ngày cập nhật). Bấm vào nhóm để xem nội dung bên trong.
 - **Lưu:**
-  - Kéo thả nhiều ảnh, video vào khung, chọn danh mục trước khi thả. Ảnh nén WebP 2560px; bỏ tick nếu muốn giữ ảnh gốc.
-  - Nút **+ Nội dung / caption**, **+ Link để dành**, **+ Link video / YouTube**.
+  - Ở trang danh sách nhóm: gõ **Tên nhóm**, chọn danh mục, rồi kéo thả hoặc chọn nhiều ảnh, video. Nếu thả file trước khi đặt tên, file được giữ lại chờ; đặt tên rồi bấm **Tải lên**.
+  - Bên trong một nhóm: kéo thả file vào là thêm thẳng vào nhóm đó.
+  - Ảnh nén WebP 2560px; bỏ tick nếu muốn giữ ảnh gốc.
+  - Nút **+ Nội dung / caption**, **+ Link để dành**, **+ Link video / YouTube** (trong form có ô **Nhóm**).
+- **Sắp xếp nhóm:** **Đổi tên nhóm** (trùng tên nhóm có sẵn thì gộp lại), **Xoá nhóm** (xoá cả file trên B2), tick chọn từng tư liệu rồi **Chuyển nhóm**. Tư liệu tải lên trước khi có tính năng nhóm nằm ở **Chưa đặt nhóm**, tick chọn rồi chuyển vào nhóm.
 - **Phân loại:** danh mục (có sẵn: KV & Banner, Ảnh game, Video, Bài viết & Caption, Logo & Thương hiệu, Link tham khảo; gõ thêm danh mục mới tuỳ ý), gắn với game, tag, ghi chú.
-- **Tìm:** lọc theo loại, danh mục, game; ô tìm kiếm tìm trong tên, tag, nội dung, ghi chú.
-- **Dùng:** nút **Chép link** / **Chép nội dung**. Mọi ô ảnh, ô slide và ô video trong form đều có nút **Từ tư liệu** để chọn thẳng từ kho; ô slide chọn được nhiều ảnh, theo thứ tự bấm.
+- **Tìm:** lọc theo loại, danh mục, game; ô tìm kiếm tìm trong tên nhóm, tên file, tag, nội dung, ghi chú.
+- **Dùng:** nút **Chép link** / **Chép nội dung**. Mọi ô ảnh, ô slide và ô video trong form đều có nút **Từ tư liệu** để chọn thẳng từ kho; ô slide chọn được nhiều ảnh, theo thứ tự bấm. Hộp chọn có bộ lọc theo nhóm.
 - Tư liệu chỉ quản trị viên xem được (bảng `assets` trong Supabase). File nằm trong thư mục `library/` trên B2. Xoá tư liệu thì xoá luôn file trên B2.
 
 ## Cập nhật trực tiếp

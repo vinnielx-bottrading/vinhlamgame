@@ -216,7 +216,9 @@ create table if not exists assets (
   created_by text default '',
   created_at timestamptz default now()
 );
+alter table assets add column if not exists group_name text default '';
 create index if not exists assets_created_idx on assets (created_at desc);
+create index if not exists assets_group_idx on assets (group_name);
 create index if not exists assets_category_idx on assets (category);
 alter table assets enable row level security;
 drop policy if exists "admin manage assets" on assets;

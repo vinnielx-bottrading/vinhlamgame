@@ -1092,6 +1092,21 @@ document.addEventListener('click', async e => {
       case 'img-clear': { const w = t.closest('[data-img]'); setImg(w, ''); w.querySelector('[data-img-url]').value = ''; w.querySelector('[data-img-url]').placeholder = 'Dán link ảnh https://…'; break; }
       case 'shot-add': { const w = t.closest('[data-imgs]'), inp = w.querySelector('[data-shot-url]'); if (!inp.value.trim()) break; const arr = JSON.parse(w.querySelector('input[type=hidden]').value); arr.push(inp.value.trim()); inp.value = ''; setShots(w, arr); break; }
       case 'af': AF[t.dataset.k] = t.dataset.v; render(); break;
+      case 'ag-open': AF.group = t.dataset.v; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; AF.sel = []; AF.renaming = false; editing = null; confirmDel = null; render(); $('#admin-main, main')?.scrollIntoView?.({ block: 'start' }); break;
+      case 'ag-back': AF.group = null; AF.sel = []; AF.renaming = false; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; editing = null; confirmDel = null; LIB_PENDING = []; render(); break;
+      case 'ag-rename': AF.renaming = true; render(); $('[data-ag-rename] input')?.select(); break;
+      case 'ag-rename-no': AF.renaming = false; render(); break;
+      case 'ag-del': confirmDel = 'ag:' + AF.group; render(); break;
+      case 'ag-del-yes': {
+        const items = ASSETS.filter(a => inGroup(a, AF.group)), ids = items.map(a => a.id);
+        await Assets.removeMany(ids); items.forEach(a => a.url && deleteB2(a.url));
+        ASSETS = ASSETS.filter(a => !ids.includes(a.id)); toast(`Đã xoá nhóm “${AF.group}” (${ids.length} tư liệu)`);
+        AF.group = null; AF.sel = []; confirmDel = null; render(); break;
+      }
+      case 'ag-sel-all': AF.sel = filterAssets(ASSETS.filter(a => inGroup(a, AF.group))).map(a => a.id); render(); break;
+      case 'ag-sel-none': AF.sel = []; render(); break;
+      case 'lib-go': { const f = LIB_PENDING; if (!realGroup() && !AF.upGroup.trim()) { const inp = $('[data-af="upGroup"]'); inp?.focus(); inp?.classList.add('need'); toast('Hãy đặt tên nhóm trước.', true); break; } LIB_PENDING = []; await libUpload(f, t); break; }
+      case 'lib-pend-clear': LIB_PENDING = []; render(); break;
       case 'asset-new': editing = { kind: 'assets', item: { ...BLANK.assets(), kind: t.dataset.kind, category: AF.cat !== 'all' ? AF.cat : ({ text: 'Bài viết & Caption', link: 'Link tham khảo', video: 'Video' }[t.dataset.kind] || 'Chưa phân loại') } }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'asset-edit': editing = { kind: 'assets', item: structuredClone(ASSETS.find(x => x.id === id)) }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'asset-del': confirmDel = 'as:' + id; render(); break;

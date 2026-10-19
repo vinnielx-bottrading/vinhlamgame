@@ -612,12 +612,7 @@ const SEED = {
       description: 'Monster Breakout là game bắn súng sinh tồn góc nhìn từ trên xuống. Người hùng phải vượt qua từng cổng đầy quái virus.\nVượt thử thách và nhặt trang bị để nâng sức mạnh khẩu súng. Chơi được trên máy tính và điện thoại.',
       genre_ids: ['g-hanh-dong'], cover: '', screenshots: [], play_url: '',
       released: '2026', platforms: 'Web · Mobile', controls: '', status: 'published', hot: true, sort: 3,
-      kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Vượt từng cổng, diệt quái virus\nNâng cấp súng qua từng thử thách\nChơi được trên máy tính và điện thoại', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: '', language: 'Tiếng Việt' },
-    { id: 'game-mua', slug: 'qua-mua-mua', title: 'Qua Mùa Mưa', tagline: 'Chạy xe máy về nhà qua bốn cửa của mùa mưa.',
-      description: 'Qua Mùa Mưa là mini game chạy xe máy về nhà trong mùa mưa, qua bốn cửa với độ khó tăng dần.\nChọn nhân vật, đặt tên và ảnh đại diện của riêng bạn, rồi lên đường. Trên đường đi có gì thì bạn tự khám phá nhé.',
-      genre_ids: ['g-casual'], cover: '', screenshots: [], play_url: '',
-      released: '2026', platforms: 'Web', controls: '', status: 'published', hot: false, sort: 4,
-      kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Bốn cửa, độ khó tăng dần\nTự đặt tên và ảnh đại diện\nMỗi chuyến về nhà một bất ngờ', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: 'Mọi lứa tuổi', language: 'Tiếng Việt' }
+      kv: '', video_url: '', youtube_url: '', clip_url: '', highlights: 'Vượt từng cổng, diệt quái virus\nNâng cấp súng qua từng thử thách\nChơi được trên máy tính và điện thoại', controls_detail: '', tips: '', dev_notes: '', play_time: '', age: '', language: 'Tiếng Việt' }
   ],
   banners: [
     { id: 'b-1', eyebrow: 'Đang hot', title: 'Hành Tinh LAJ', subtitle: 'Nhảy qua những vùng đất lạ trên một hành tinh chưa ai đặt chân tới.', game_id: 'game-laj', image: '', cta_text: 'Xem giới thiệu', link_url: '', active: true, sort: 1, kind: 'game', media_type: 'image', video_url: '', sponsor: '', start_at: '', end_at: '', duration: 0 },
@@ -768,6 +763,14 @@ const Msg = {
     this.saveLocal(this.local().filter(x => x.id !== id));
   }
 };
+
+let LOAD_ERROR = false;
+const loadErrorHTML = () => `<section class="wrap" style="padding-block:clamp(64px,10vw,120px);display:grid;gap:18px;justify-items:start;max-width:640px">
+  <p class="eyebrow"><span class="dot"></span>Đang cập nhật</p>
+  <h1 style="font-size:clamp(2.2rem,5vw,3.4rem)">Trang đang được cập nhật, vui lòng tải lại sau ít phút.</h1>
+  <p style="color:var(--muted)">Không kết nối được máy chủ dữ liệu. Kiểm tra mạng của bạn rồi thử lại.</p>
+  <button class="btn primary" type="button" onclick="location.reload()">Tải lại trang</button>
+</section>`;
 
 /* ============ TRUY VẤN ============ */
 const pubGames = () => D.games.filter(g => g.status === 'published').sort(bySort);
@@ -1473,7 +1476,7 @@ if (!['games', 'banners', 'genres', 'assets', 'messages', 'display', 'settings',
 function render() {
   if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
   if (ASSETS === null && TAB !== 'assets' && (MODE === 'local' || (session && IS_ADMIN))) loadAssets();
-  $('#main').innerHTML = viewAdmin(TAB);
+  $('#main').innerHTML = LOAD_ERROR ? loadErrorHTML() : viewAdmin(TAB);
   applyWhen();
   document.querySelectorAll('.rte-area').forEach(rteSync);
   $('#logoText').innerHTML = logoHTML(D.settings.studio_name);
@@ -1956,7 +1959,10 @@ document.addEventListener('submit', async e => {
 /* ============ KHỞI ĐỘNG ============ */
 (async () => {
   try { await Store.load(); }
-  catch (err) { D = structuredClone(SEED); toast('Không kết nối được Supabase — đang hiển thị dữ liệu mẫu.', true); }
+  catch (err) {
+    if (MODE === 'cloud') { LOAD_ERROR = true; D = { settings: { ...SEED.settings }, genres: [], games: [], banners: [] }; }   // KHÔNG hiện dữ liệu mẫu cho khách
+    else D = structuredClone(SEED);
+  }
   if (sb) sb.auth.onAuthStateChange((ev, s) => { session = s; if (typeof onAuthEvent === 'function') onAuthEvent(ev, s); });
   if (typeof afterBoot === 'function') await afterBoot();
   render();

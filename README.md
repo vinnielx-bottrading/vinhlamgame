@@ -6,7 +6,8 @@ Trang studio trưng bày game web của Vinh, kèm trang quản trị riêng.
 vinh-lam-game/
 ├── index.html            Trang cho khách: trang chủ, thể loại, trang game, chơi game, About, Ủng hộ, Liên hệ
 ├── admin.html            Trang quản trị (không có link nào từ trang chủ) → ten-mien/admin
-├── schema.sql            Cấu trúc database Supabase + phân quyền
+├── schema.sql            Cấu trúc database Supabase + phân quyền (chạy lại thoải mái, không đụng dữ liệu)
+├── seed.sql              Dữ liệu mẫu — chỉ dùng khi cài mới, database còn trống
 ├── vercel.json           Cấu hình Vercel (/admin, chặn Google index admin)
 ├── robots.txt
 ├── .vercelignore         Không đưa schema.sql, README và thư mục Worker lên web
@@ -28,7 +29,9 @@ Chưa kết nối Supabase thì site chạy **chế độ demo**: dữ liệu ad
 ## 2. Kết nối Supabase
 
 1. Tạo project Supabase mới.
-2. **SQL Editor** → dán toàn bộ `schema.sql` → **Run**. Chạy lại nhiều lần cũng không sao.
+2. **SQL Editor** → dán toàn bộ `schema.sql` → **Run**.
+   - Chạy lại bao nhiêu lần cũng được. File này chỉ tạo hoặc bổ sung cấu trúc bảng và phân quyền, **không** thêm lại hay ghi đè game, banner, thể loại, tư liệu, tin nhắn anh đã tạo hoặc xoá trong admin.
+   - **Cài mới** (database trống) và muốn có sẵn vài game mẫu: chạy thêm `seed.sql` một lần. File này chỉ thêm khi bảng còn trống, nên lỡ chạy lại cũng không sao. Database đang dùng thì **không cần** chạy `seed.sql`.
 3. URL và key **đã điền sẵn** trong `CONFIG` ở đầu cả `index.html` và `admin.html`:
 
 ```js
@@ -164,6 +167,8 @@ Tab **Kho tư liệu** trong admin lưu ảnh, video, nội dung/caption và lin
 Admin bấm **Lưu** thì trang khách đang mở tự cập nhật sau khoảng 1 giây, không cần tải lại (Supabase Realtime, đã bật trong `schema.sql`). Khách đang chơi game thì trang chờ đến khi họ rời trang chơi mới cập nhật, để không làm gián đoạn game. Nếu Realtime chưa bật, trang vẫn tự tải lại dữ liệu khi khách quay lại tab sau hơn 1 phút.
 
 ## Lưu ý
+
+- Khi đã cấu hình Supabase mà trang không kết nối được (mạng lỗi, Supabase bảo trì), khách thấy thông báo "Trang đang được cập nhật" kèm nút tải lại. Trang **không** hiện dữ liệu mẫu.
 
 - Link chơi game được nhúng bằng iframe. Nếu game nào chặn nhúng, khách vẫn có nút "Mở tab mới".
 - Không có Worker thì ảnh tải lên trong admin được nén và lưu thẳng vào database, nên chỉ hợp với ảnh nhỏ. Có Worker thì mọi ảnh và video đều lên B2.

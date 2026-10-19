@@ -1,6 +1,8 @@
 -- =====================================================================
--- Vinh Làm Game — Supabase schema
--- Chạy TOÀN BỘ file này trong Supabase › SQL Editor. Chạy lại nhiều lần không sao.
+-- Vinh Làm Game — Supabase schema (CHỈ cấu trúc bảng + phân quyền)
+-- Chạy TOÀN BỘ file này trong Supabase › SQL Editor. Chạy lại bao nhiêu lần cũng được:
+-- file này KHÔNG thêm, sửa hay xoá game / banner / thể loại / tư liệu / tin nhắn của bạn.
+-- Dữ liệu mẫu nằm riêng ở seed.sql (chỉ dùng khi cài mới, database còn trống).
 --
 -- Quản trị viên:
 --   • Chủ sở hữu (owner) mặc định: vinnielx@gmail.com — không xoá được.
@@ -194,30 +196,8 @@ create policy "public send messages" on messages for insert
 create policy "admin manage messages" on messages for all
   using (public.is_admin()) with check (public.is_admin());
 
--- ---------- Dữ liệu khởi đầu ----------
-insert into settings (id, data) values (1, jsonb_build_object(
-  'studio_name', 'Vinh Làm Game',
-  'tagline', 'Những trò chơi nhỏ làm bằng HTML5, chơi ngay trên trình duyệt.',
-  'footer_text', 'Làm game nhỏ, chơi trên trình duyệt.',
-  'bank_name', 'Vietcombank', 'bank_bin', '970436',
-  'bank_account', '0111000182684', 'bank_holder', 'NGUYEN HOANG VINH',
-  'donate_amounts', '20000, 50000, 100000, 200000', 'donate_memo', 'Ung ho Vinh Lam Game'
-)) on conflict (id) do nothing;
-
-insert into genres (id, name, slug, sort) values
-  ('g-phieu-luu', 'Phiêu lưu',  'phieu-luu',  1),
-  ('g-platformer','Platformer', 'platformer', 2),
-  ('g-hanh-dong', 'Hành động',  'hanh-dong',  3),
-  ('g-casual',    'Casual',     'casual',     4),
-  ('g-thieu-nhi', 'Thiếu nhi',  'thieu-nhi',  5)
-on conflict (id) do nothing;
-
-insert into games (id, slug, title, tagline, genre_ids, play_url, hot, sort) values
-  ('game-laj',     'hanh-tinh-laj',             'Hành Tinh LAJ',             'Một chuyến platformer tĩnh lặng trên hành tinh lạ.', '["g-platformer","g-phieu-luu"]', 'https://hanhtinhlaj.vercel.app',           true,  1),
-  ('game-chu',     'chu-va-qua-trung-that-lac', 'Chu và Quả Trứng Thất Lạc', 'Cùng chú khủng long Chu đi tìm quả trứng bị lạc.',    '["g-phieu-luu","g-thieu-nhi"]',  'https://chuvaquatrungkhunglong.vercel.app', true,  2),
-  ('game-monster', 'monster-breakout',          'Monster Breakout',          'Bắn súng sinh tồn: vượt từng cổng, diệt quái virus.', '["g-hanh-dong"]',                '',                                          true,  3),
-  ('game-mua',     'qua-mua-mua',               'Qua Mùa Mưa',               'Chạy xe máy về nhà qua bốn cửa của mùa mưa.',         '["g-casual"]',                   '',                                          false, 4)
-on conflict (id) do nothing;
+-- ---------- Dòng cài đặt duy nhất (bắt buộc có, không chứa dữ liệu mẫu) ----------
+insert into settings (id, data) values (1, '{}'::jsonb) on conflict (id) do nothing;
 
 -- ---------- Kho tư liệu (chỉ quản trị viên xem / sửa) ----------
 create table if not exists assets (

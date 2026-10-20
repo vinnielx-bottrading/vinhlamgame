@@ -124,6 +124,10 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 - Lượt chơi được tính ở trang chơi (tab Thống kê).
 - Điện thoại: lần đầu bấm Chơi ngay hiện hướng dẫn thêm ra màn hình chính.
 - `vlg.js` trong từng game là tuỳ chọn, chỉ cần khi muốn có nút "Chơi game khác" (`VLG.more()`) hoặc khi game mở trực tiếp. Trong trang chơi, vlg.js tự ẩn nên không bị trùng logo.
+- **Dòng bản quyền khi ngừng chơi:** ngoài logo hiện một lần lúc mở game, có thêm dòng nhỏ dưới màn hình "Bản quyền game thuộc về Vinh Làm Game" — tự hiện khi khách ngừng thao tác một lúc (không rê chuột/chạm/gõ phím), tự ẩn ngay khi thao tác lại, lặp lại mỗi lần ngừng. Bật/tắt, đổi nội dung và số giây ngừng trước khi hiện ở **Giao diện › Trang chơi game**. Lưu ý kỹ thuật: trình duyệt không cho trang chơi biết chuột di chuyển *bên trong* khung game (khác tên miền), nên "đang thao tác" được tính khi con trỏ ở trên vùng game hoặc có thao tác ở đâu đó trên trang — gần đúng chứ không bắt được từng cử động chuột trong game.
+- **Khách đã cài game ra màn hình chính (Add to Home Screen):** khi mở lại từ icon đã cài (chạy ở chế độ standalone), cả logo lẫn dòng bản quyền đều **không hiện** — vì lúc đó khách coi đây là app riêng của họ, không cần nhắc thương hiệu nữa.
+
+**Admin game con** (tab riêng trong admin): dán link trang quản trị của từng game (ví dụ `tengame.vercel.app/admin`) để mở ngay trong khung tại đây, không phải đăng nhập qua lại nhiều trang quản trị khác nhau. Chỉ mở được nếu trang quản trị đó cho phép hiển thị trong iframe (không chặn bằng `X-Frame-Options`/`frame-ancestors`); nếu bị chặn, dùng nút "Mở tab mới" cạnh bên.
 
 **Banner trang chủ (hero):**
 - Chỉ hiện hình hoặc video, tự trượt mờ dần, không có chữ.

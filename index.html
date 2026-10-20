@@ -595,7 +595,7 @@ const SEED = {
     donate_amounts: '20000, 50000, 100000, 200000', donate_memo: 'Ung ho Vinh Lam Game',
     footer_text: 'Làm game nhỏ, chơi trên trình duyệt.',
     facebook: '', youtube: '', github: '',
-    banner_autoplay: true, banner_speed: 6, logo_seconds: 4, logo_corner: 'tl',
+    banner_autoplay: true, banner_speed: 6, logo_seconds: 4, logo_corner: 'tl', cr_on: true, cr_text: 'Bản quyền game thuộc về Vinh Làm Game', cr_seconds: 15,
     grid_cols: '3', pagination_on: false, grid_rows: 3,
     genre_show_count: true,
     ad_on: true, ad_image: '', ad_link: '', ad_size: '6/1',
@@ -1535,6 +1535,8 @@ document.addEventListener('click', async e => {
         await Store.save('ads', { id: uid(), advertiser: s.ad_title || 'Khách hàng', title: '', image: s.ad_image, image_mobile: '', link_url: s.ad_link, placement: 'home', game_ids: [], start_at: today(), end_at: '', active: true, weight: 1, note: '' });
         await Store.saveSettings({ ...s, ad_image: '', ad_link: '' }); render(); toast('Đã chuyển thành chiến dịch, hãy bổ sung tên khách và ngày kết thúc.'); break;
       }
+      case 'sa-open': SUBSEL = id; render(); break;
+      case 'sa-save': { const g = { ...D.games.find(x => x.id === id) }; const inp = $('#sa-url-' + id); g.admin_url = (inp?.value || '').trim(); await Store.save('games', g); SUBSEL = id; render(); toast('Đã lưu link quản trị'); break; }
       case 'ag-open': AF.group = t.dataset.v; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; AF.sel = []; AF.renaming = false; editing = null; confirmDel = null; render(); $('#admin-main, main')?.scrollIntoView?.({ block: 'start' }); break;
       case 'ag-back': AF.group = null; AF.sel = []; AF.renaming = false; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; editing = null; confirmDel = null; LIB_PENDING = []; render(); break;
       case 'ag-rename': AF.renaming = true; render(); $('[data-ag-rename] input')?.select(); break;

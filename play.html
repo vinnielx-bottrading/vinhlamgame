@@ -27,10 +27,15 @@
   .tr{top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px))}
   .bl{bottom:calc(12px + env(safe-area-inset-bottom,0px));left:calc(12px + env(safe-area-inset-left,0px))}
   .br{bottom:calc(12px + env(safe-area-inset-bottom,0px));right:calc(12px + env(safe-area-inset-right,0px))}
+  /* Dòng bản quyền: hiện khi khách ngừng thao tác, ẩn khi thao tác lại */
+  .cr{position:fixed;z-index:9;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom,0px));margin:0 auto;width:max-content;max-width:88vw;padding:7px 16px;border-radius:999px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+      color:#fff;text-align:center;font:600 13px/1.4 system-ui,-apple-system,'Segoe UI',sans-serif;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;pointer-events:none}
+  .cr em{color:#E7AEBA;font-style:normal}
+  .cr.show{opacity:1;transform:none}
   .msg{position:fixed;inset:0;display:grid;place-items:center;color:#fff;text-align:center;padding:24px;font-size:15px;line-height:1.6;background:#000}
   .msg[hidden]{display:none}
   .msg a{color:#fff}
-  @media (prefers-reduced-motion: reduce){ .vlg{transition:opacity .2s;transform:none !important} }
+  @media (prefers-reduced-motion: reduce){ .vlg,.cr{transition:opacity .2s;transform:none !important} }
 </style>
 </head>
 <body>
@@ -39,6 +44,7 @@
   <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><g fill="#6B1A2D"><rect x="0" y="0" width="8" height="8"/><rect x="18" y="0" width="8" height="8"/><rect x="0" y="9" width="8" height="8"/><rect x="18" y="9" width="8" height="8"/><rect x="9" y="18" width="8" height="8"/></g></svg>
   <span>Vinh <em>Làm Game</em></span>
 </a>
+<div class="cr" id="cr"></div>
 <div class="msg" id="msg" hidden></div>
 <script>
 /* Trang chơi chung của Vinh Làm Game — không sửa code gốc của game.
@@ -53,8 +59,10 @@
   };
   var slug = new URLSearchParams(location.search).get('g') || location.pathname.split('/').filter(Boolean).pop() || '';
   var $ = function (id) { return document.getElementById(id); };
-  var logo = $('vlg');
+  var logo = $('vlg'), cr = $('cr');
   logo.href = CONFIG.HOME;
+  // Đã cài ra màn hình chính (PWA) thì xem như app riêng của khách: không hiện logo / dòng bản quyền nữa.
+  var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
 
   function fail(t) { var m = $('msg'); m.hidden = false; m.innerHTML = t + '<br><a href="' + CONFIG.HOME + '">← Về Vinh Làm Game</a>'; }
   function api(path) {
@@ -85,12 +93,37 @@
     } catch (e) {}
   }
   function showLogo(corner, seconds) {
-    if (logo.dataset.done) return; logo.dataset.done = 1;
+    if (standalone || logo.dataset.done) return; logo.dataset.done = 1;
     if (!(seconds > 0)) return;
     logo.className = 'vlg ' + corner + (corner[0] === 'b' ? ' b' : '');
     requestAnimationFrame(function () { requestAnimationFrame(function () { logo.classList.add('show'); }); });
     setTimeout(function () { logo.classList.remove('show'); }, seconds * 1000);
   }
+  // Dòng bản quyền: hiện khi khách ngừng thao tác (chuột/phím/chạm) một lúc, ẩn ngay khi thao tác lại.
+  // Lưu ý: trình duyệt không cho trang này biết chuột di chuyển BÊN TRONG khung game (khác tên miền),
+  // nên "đang thao tác" được tính khi con trỏ đang ở trên vùng game hoặc trang vẫn đang được dùng;
+  // rời khỏi vùng game / không đụng gì tới trang mới tính là ngừng.
+  function setupCr(text, idleMs) {
+    if (standalone || !idleMs) return;
+    cr.innerHTML = esc(text) + ' · <em>Vinh Làm Game</em>';
+    var flashMs = Math.min(4000, idleMs), idleTimer = null, flashTimer = null;
+    function hide() { cr.classList.remove('show'); }
+    function flash() { cr.classList.add('show'); clearTimeout(flashTimer); flashTimer = setTimeout(hide, flashMs); }
+    function arm() { clearTimeout(idleTimer); hide(); idleTimer = setTimeout(flash, idleMs); }
+    function pause() { clearTimeout(idleTimer); hide(); }
+    var f = $('game');
+    f.addEventListener('mouseenter', pause);
+    f.addEventListener('mouseleave', arm);
+    ['mousemove', 'keydown', 'touchstart', 'wheel'].forEach(function (ev) { document.addEventListener(ev, arm, { passive: true }); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flash(); else arm(); });
+    addEventListener('blur', flash);
+    addEventListener('focus', arm);
+    // Trình duyệt không thấy chuột di chuyển BÊN TRONG khung game (khác tên miền), nên dù khách
+    // đang rê chuột liên tục trong game, dòng này vẫn tự nhắc lại chớp nhoáng theo chu kỳ.
+    setInterval(flash, Math.max(idleMs * 3, 20000));
+    arm();
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
 
   if (!slug) { fail('Thiếu tên game trong đường dẫn.'); return; }
   load().then(function (d) {
@@ -104,6 +137,7 @@
     var secs = s.logo_seconds === undefined || s.logo_seconds === '' ? 4 : Number(s.logo_seconds);
     f.addEventListener('load', function () { showLogo(corner, secs); }, { once: true });
     setTimeout(function () { showLogo(corner, secs); }, 2500);   // game tải chậm vẫn hiện logo
+    if (s.cr_on !== false) setupCr(s.cr_text || 'Bản quyền game thuộc về Vinh Làm Game', (s.cr_seconds === undefined || s.cr_seconds === '' ? 15 : Number(s.cr_seconds)) * 1000);
     track(g);
   });
 })();

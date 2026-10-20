@@ -521,7 +521,19 @@ main{flex:1}
 .auth-wrap .link{font-size:13px;color:var(--wine);justify-self:start;border-bottom:1px solid currentColor}
 .auth-note{font-size:13px;color:var(--muted)}
 .upl{font-variant-numeric:tabular-nums}
+.subadmin-shell{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;align-items:start}
+.subadmin-list{display:grid;gap:8px;align-content:start}
+.subadmin-row{display:grid;gap:6px;padding:10px;border:1px solid var(--line);border-radius:var(--r)}
+.subadmin-row.on{border-color:var(--wine);background:var(--wine-tint)}
+.subadmin-name{text-align:left;font-weight:600;font-size:14px;padding:2px 0}
+.subadmin-row input{width:100%;font-size:12.5px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.subadmin-row .row-act{display:flex;gap:6px;flex-wrap:wrap}
+.subadmin-frame{min-height:70vh;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--paper-2)}
+.subadmin-frame iframe{width:100%;height:100%;min-height:70vh;border:0;display:block}
+.subadmin-frame .empty{min-height:70vh;display:grid;place-items:center;text-align:center;padding:24px}
 @media (max-width:900px){
+  .subadmin-shell{grid-template-columns:minmax(0,1fr)}
+  .subadmin-frame,.subadmin-frame iframe,.subadmin-frame .empty{min-height:60vh}
   .admin-shell{grid-template-columns:minmax(0,1fr)}
   .admin-side{position:static;order:-1;padding:10px}
   .side-groups{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
@@ -826,7 +838,7 @@ const SEED = {
     donate_amounts: '20000, 50000, 100000, 200000', donate_memo: 'Ung ho Vinh Lam Game',
     footer_text: 'Làm game nhỏ, chơi trên trình duyệt.',
     facebook: '', youtube: '', github: '',
-    banner_autoplay: true, banner_speed: 6, logo_seconds: 4, logo_corner: 'tl',
+    banner_autoplay: true, banner_speed: 6, logo_seconds: 4, logo_corner: 'tl', cr_on: true, cr_text: 'Bản quyền game thuộc về Vinh Làm Game', cr_seconds: 15,
     grid_cols: '3', pagination_on: false, grid_rows: 3,
     genre_show_count: true,
     ad_on: true, ad_image: '', ad_link: '', ad_size: '6/1',
@@ -1077,6 +1089,7 @@ function logoHTML(name) {
 }
 let editing = null;          // { kind, item }
 let confirmDel = null;       // id
+let SUBSEL = null;           // id game đang chọn trong tab "Admin game con"
 
 const FIELDS = {
   games: [
@@ -1182,6 +1195,9 @@ const FIELDS = {
     { type: 'heading', label: 'Trang chơi game' },
     { k: 'logo_seconds', label: 'Thời gian hiện logo Vinh Làm Game (giây)', type: 'number', hint: 'Logo hiện ở một góc nhỏ khi khách mở game, rồi tự ẩn. 0 = không hiện. Mặc định 4.' },
     { k: 'logo_corner', label: 'Góc hiện logo', type: 'select', options: [['tl', 'Trên trái'], ['tr', 'Trên phải'], ['bl', 'Dưới trái'], ['br', 'Dưới phải']], hint: 'Từng game có thể chọn góc riêng để không đè nút của game.' },
+    { k: 'cr_on', label: 'Hiện dòng bản quyền khi khách ngừng chơi', type: 'checkbox', hint: 'Dòng nhỏ dưới màn hình, tự ẩn khi khách thao tác lại, tự hiện lại khi ngừng. Không hiện khi khách đã cài game ra màn hình chính (PWA).' },
+    { k: 'cr_text', label: 'Nội dung dòng bản quyền', type: 'text', hint: 'Mặc định: Bản quyền game thuộc về Vinh Làm Game.' },
+    { k: 'cr_seconds', label: 'Thời gian ngừng thao tác trước khi hiện (giây)', type: 'number', hint: 'Mặc định 15.' },
     { type: 'heading', label: 'Thư viện game' },
     { k: 'grid_cols', label: 'Số game mỗi hàng', type: 'select', options: [['2', '2 game'], ['3', '3 game'], ['4', '4 game'], ['5', '5 game']], hint: 'Trên máy tính. Tablet tự về 2, điện thoại 1.' },
     { k: 'grid_rows', label: 'Số hàng mỗi trang', type: 'number', hint: 'Dùng khi bật phân trang.' },
@@ -1591,6 +1607,27 @@ function adminDisplay() {
     <div class="form-act"><button class="btn primary" type="submit">Lưu giao diện</button></div>
   </form>`;
 }
+function adminSubadmin() {
+  const games = D.games.filter(g => g.title);
+  const sel = games.find(g => g.id === SUBSEL) || games[0] || null;
+  if (sel && !SUBSEL) SUBSEL = sel.id;
+  return `<div class="subadmin-shell">
+    <div class="subadmin-list">
+      <p class="hint" style="color:var(--muted);margin:0 0 4px">Dán link trang quản trị riêng của từng game (vd: tengame.vercel.app/admin) để mở ngay tại đây, khỏi phải đăng nhập qua lại nhiều nơi. Chỉ mở được nếu trang đó cho phép hiển thị trong khung iframe.</p>
+      ${games.length ? games.map(g => `<div class="subadmin-row ${g.id === sel?.id ? 'on' : ''}">
+        <button class="subadmin-name" data-act="sa-open" data-id="${esc(g.id)}">${esc(g.title)}</button>
+        <input class="mono" id="sa-url-${esc(g.id)}" placeholder="https://…/admin" value="${esc(g.admin_url || '')}">
+        <span class="row-act">
+          <button class="btn small line" data-act="sa-save" data-id="${esc(g.id)}">Lưu link</button>
+          ${g.admin_url ? `<a class="btn small line" href="${esc(g.admin_url)}" target="_blank" rel="noopener">Mở tab mới ↗</a>` : ''}
+        </span>
+      </div>`).join('') : `<div class="empty">Chưa có game nào.</div>`}
+    </div>
+    <div class="subadmin-frame">
+      ${sel ? (sel.admin_url ? `<iframe src="${esc(sel.admin_url)}" title="Admin · ${esc(sel.title)}"></iframe>` : `<div class="empty">Chưa có link quản trị cho “${esc(sel.title)}”. Dán link bên trái rồi bấm Lưu.</div>`) : `<div class="empty">Chọn một game bên trái.</div>`}
+    </div>
+  </div>`;
+}
 function adminBackup() {
   return `<div class="panel">
     <h2>Sao lưu dữ liệu</h2>
@@ -1607,6 +1644,7 @@ function adminBackup() {
 const TAB_GROUPS = () => [
   ['Nội dung', [['games', 'Game', D.games.length], ['ads', 'Quảng cáo', (D.ads || []).length], ['genres', 'Thể loại', D.genres.length]]],
   ['Tư liệu', [['assets', 'Kho tư liệu', ASSETS ? ASSETS.length : null]]],
+  ['Game con', [['subadmin', 'Admin game con']]],
   ['Khách hàng', [['stats', 'Thống kê'], ['messages', 'Liên hệ', null, MSGS ? MSGS.filter(m => !m.handled).length : 0]]],
   ['Cài đặt', [['display', 'Giao diện'], ['settings', 'Thông tin trang'], ['admins', 'Quản trị viên'], ['backup', 'Sao lưu']]]
 ];
@@ -1647,7 +1685,7 @@ function viewAdmin(tab = 'games') {
   const groups = TAB_GROUPS();
   const flat = groups.flatMap(g => g[1]);
   const canAdd = ['games', 'genres', 'ads'].includes(tab);
-  const body = { games: adminGames, banners: adminBanners, ads: adminAds, stats: adminStats, genres: adminGenres, messages: adminMessages, assets: adminAssets, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup }[tab] || adminGames;
+  const body = { games: adminGames, banners: adminBanners, ads: adminAds, stats: adminStats, genres: adminGenres, messages: adminMessages, assets: adminAssets, display: adminDisplay, settings: adminSettings, admins: adminAdmins, backup: adminBackup, subadmin: adminSubadmin }[tab] || adminGames;
   const side = `<aside class="admin-side" aria-label="Mục quản trị">
       <div class="side-groups">${groups.map(([name, tabs]) => `<div class="side-group"><span>${name}</span>${tabs.map(t => `<button class="side-tab ${t[0] === tab ? 'on' : ''}" data-act="tab" data-tab="${t[0]}" ${t[0] === tab ? 'aria-current="page"' : ''}><span>${t[1]}</span>${t[3] ? `<span class="tab-badge num">${t[3]}</span>` : t[2] != null ? `<span class="cnt num">${t[2]}</span>` : ''}</button>`).join('')}</div>`).join('')}</div>
       <div class="side-me">
@@ -2052,7 +2090,7 @@ async function uploadWithButton(btn, file, folder) {
 }
 
 let TAB = location.hash.replace(/^#\/?/, '') || 'games';
-if (!['games', 'ads', 'stats', 'genres', 'assets', 'messages', 'display', 'settings', 'admins', 'backup'].includes(TAB)) TAB = 'games';
+if (!['games', 'ads', 'stats', 'genres', 'assets', 'messages', 'display', 'settings', 'admins', 'backup', 'subadmin'].includes(TAB)) TAB = 'games';
 function render() {
   if (MSGS === null && (MODE === 'local' || session)) loadMsgs();
   if (ASSETS === null && TAB !== 'assets' && (MODE === 'local' || (session && IS_ADMIN))) loadAssets();
@@ -2474,6 +2512,8 @@ document.addEventListener('click', async e => {
         await Store.save('ads', { id: uid(), advertiser: s.ad_title || 'Khách hàng', title: '', image: s.ad_image, image_mobile: '', link_url: s.ad_link, placement: 'home', game_ids: [], start_at: today(), end_at: '', active: true, weight: 1, note: '' });
         await Store.saveSettings({ ...s, ad_image: '', ad_link: '' }); render(); toast('Đã chuyển thành chiến dịch, hãy bổ sung tên khách và ngày kết thúc.'); break;
       }
+      case 'sa-open': SUBSEL = id; render(); break;
+      case 'sa-save': { const g = { ...D.games.find(x => x.id === id) }; const inp = $('#sa-url-' + id); g.admin_url = (inp?.value || '').trim(); await Store.save('games', g); SUBSEL = id; render(); toast('Đã lưu link quản trị'); break; }
       case 'ag-open': AF.group = t.dataset.v; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; AF.sel = []; AF.renaming = false; editing = null; confirmDel = null; render(); $('#admin-main, main')?.scrollIntoView?.({ block: 'start' }); break;
       case 'ag-back': AF.group = null; AF.sel = []; AF.renaming = false; AF.q = ''; AF.kind = 'all'; AF.cat = 'all'; editing = null; confirmDel = null; LIB_PENDING = []; render(); break;
       case 'ag-rename': AF.renaming = true; render(); $('[data-ag-rename] input')?.select(); break;

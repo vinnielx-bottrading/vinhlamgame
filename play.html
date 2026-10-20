@@ -27,7 +27,8 @@
   .tr{top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px))}
   .bl{bottom:calc(12px + env(safe-area-inset-bottom,0px));left:calc(12px + env(safe-area-inset-left,0px))}
   .br{bottom:calc(12px + env(safe-area-inset-bottom,0px));right:calc(12px + env(safe-area-inset-right,0px))}
-  .msg{position:fixed;inset:0;display:grid;place-items:center;color:#fff;text-align:center;padding:24px;font-size:15px;line-height:1.6}
+  .msg{position:fixed;inset:0;display:grid;place-items:center;color:#fff;text-align:center;padding:24px;font-size:15px;line-height:1.6;background:#000}
+  .msg[hidden]{display:none}
   .msg a{color:#fff}
   @media (prefers-reduced-motion: reduce){ .vlg{transition:opacity .2s;transform:none !important} }
 </style>

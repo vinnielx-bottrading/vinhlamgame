@@ -154,6 +154,11 @@ p{margin:0}
 .card{display:grid;gap:14px;align-content:start;color:var(--ink)}
 .card-media{position:relative}
 .badge-hot{position:absolute;top:12px;left:12px;z-index:1;display:inline-flex;align-items:center;gap:6px;background:var(--wine);color:#fff;font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;padding:7px 10px 7px 9px;box-shadow:0 6px 16px -6px rgba(74,15,31,.7)}
+.dev-badge{position:absolute;right:10px;bottom:10px;z-index:1;display:inline-flex;align-items:center;gap:5px;font:600 11px/1 var(--body);letter-spacing:.02em;background:rgba(255,255,255,.94);color:var(--wine);padding:6px 9px;border-radius:999px;box-shadow:0 4px 12px -4px rgba(0,0,0,.35)}
+.dev-inline{display:inline-flex;gap:3px;vertical-align:-2px;color:var(--wine)}
+.gp-dev{display:flex;align-items:center;gap:10px;font-size:14px;color:#4A3A41;margin:-4px 0 0}
+.gp-dev-ic{display:inline-flex;align-items:center;gap:4px;padding:6px 9px;border-radius:999px;background:var(--wine-tint);color:var(--wine)}
+.gp-dev-note{font-size:13px;line-height:1.5;color:#8A3B12;background:#FFF3E8;padding:8px 12px;border-radius:6px;margin:-6px 0 0}
 .badge-hot::before{content:"";width:6px;height:6px;border-radius:50%;background:#FFD7DF;animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.25}}
 .card-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -819,10 +824,14 @@ function genArt(g) {
 const coverOf = (g, img) => `<div class="cover">${(img || g?.cover) ? `<img src="${esc(img || g.cover)}" alt="${esc(g?.title || '')}" loading="lazy">` : genArt(g || { title: '?' })}</div>`;
 
 const ARROW = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>';
+const IC_LAPTOP = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>';
+const IC_PHONE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18h2"/></svg>';
+const DEVICE = { both: ['Máy tính và điện thoại', IC_LAPTOP + IC_PHONE, 'Mọi thiết bị'], desktop: ['Máy tính', IC_LAPTOP, 'Máy tính'], mobile: ['Điện thoại', IC_PHONE, 'Điện thoại'] };
+const deviceBadge = g => DEVICE[g.device] ? `<span class="dev-badge" title="Tối ưu cho ${DEVICE[g.device][0].toLowerCase()}" aria-label="Tối ưu cho ${DEVICE[g.device][0].toLowerCase()}">${DEVICE[g.device][1]}<span>${DEVICE[g.device][2]}</span></span>` : '';
 function card(g) {
   const gn = genreNames(g).join(' · ');
   return `<a class="card" href="#/game/${esc(g.slug)}" aria-label="Xem chi tiết ${esc(g.title)}">
-    <div class="card-media">${coverOf(g)}${g.hot ? '<span class="badge-hot">Hot</span>' : ''}</div>
+    <div class="card-media">${coverOf(g)}${g.hot ? '<span class="badge-hot">Hot</span>' : ''}${deviceBadge(g)}</div>
     <div class="card-row">
       <div class="card-body"><h3>${esc(g.title)}</h3>${gn ? `<span class="card-genre">${esc(gn)}</span>` : ''}</div>
       <span class="card-arrow">${ARROW}</span>
@@ -1095,6 +1104,9 @@ function viewGame(slug) {
         ${g.tagline ? `<p class="gp-hook">${esc(g.tagline)}</p>` : ''}
         ${g.summary ? `<p class="gp-sum">${esc(g.summary)}</p>` : ''}
         <div id="gpPlay">${playBtn(g, 'big')}</div>
+        ${DEVICE[g.device] ? `<p class="gp-dev"><span class="gp-dev-ic">${DEVICE[g.device][1]}</span><span>Tối ưu cho <b>${DEVICE[g.device][0].toLowerCase()}</b></span></p>
+          ${g.device === 'desktop' && touchOnly() ? '<p class="gp-dev-note">Game này chơi tốt nhất trên máy tính. Trên điện thoại một số nút có thể khó bấm.</p>' : ''}
+          ${g.device === 'mobile' && !touchOnly() ? '<p class="gp-dev-note">Game này thiết kế cho điện thoại. Mở bằng điện thoại để chơi đẹp nhất.</p>' : ''}` : ''}
         ${shareHTML(g)}
       </div>
     </div>

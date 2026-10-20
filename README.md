@@ -117,11 +117,13 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 - **Slide**: ảnh, video .mp4/.webm và link YouTube xếp chung một danh sách, kéo để đổi thứ tự, mỗi mục có ô caption. Video và link YouTube cũ của game tự gộp vào slide khi mở form sửa. Cụm marketing cũ tự chuyển thành thẻ Điểm nổi bật.
 - Icon mạng xã hội lấy từ bộ Simple Icons (giấy phép CC0), nhúng sẵn trong trang. Instagram và Zalo không có link chia sẻ trên web: trên điện thoại mở bảng chia sẻ của máy, trên máy tính tự chép link.
 
-**Chơi game:**
-- **Máy tính:** bấm Chơi ngay thì game phủ kín cửa sổ (chế độ rạp chiếu) và tự bật toàn màn hình. Trên cùng chỉ còn thanh mảnh: logo Vinh Làm Game, tên game, Toàn màn hình, Chia sẻ, Game khác, Thoát. Esc thoát toàn màn hình nhưng vẫn ở trong game.
-- Game cần đăng nhập / lưu tiến độ: trong form game chọn **Cách mở = Mở trực tiếp**.
-- **Điện thoại:** game luôn mở trực tiếp. Lần đầu bấm Chơi ngay, trang hiện hướng dẫn **thêm game ra màn hình chính** đúng theo máy (Safari iPhone, Chrome iPhone, Chrome Android, hoặc báo "mở bằng trình duyệt" khi đang ở trong Facebook / Zalo / Instagram / TikTok). Khách tick "Không hiện lại" thì thôi.
-- **Trong từng game:** gắn đoạn code `vlg.js` theo hướng dẫn trong thư mục `game-kit/` để có nút "← Vinh Làm Game", hướng dẫn cài ra màn hình chính ngay trong game, và thẻ "Chơi game khác" ở màn hình thắng / thua.
+**Chơi game — trang chơi chung `play.html` (không sửa code game):**
+- Nút **Chơi ngay** mở `play.html?g=<slug>` (hoặc `/play/<slug>`): game chạy toàn màn hình trong khung, **logo Vinh Làm Game** hiện ở một góc nhỏ vài giây rồi tự ẩn; bấm logo về https://vinhlamgame.vercel.app/.
+- Chỉnh ở admin: **Giao diện › Trang chơi game** (số giây hiện logo, 0 = không hiện; góc mặc định) và trong từng game (**Góc hiện logo trong game này** để tránh đè nút của game).
+- Game cần đăng nhập / lưu tiến độ: chọn **Cách mở game = Mở trực tiếp link game** (trình duyệt chặn đăng nhập và lưu dữ liệu của game nằm trong khung tên miền khác, nhất là Safari). Game mở thẳng, không có logo.
+- Lượt chơi được tính ở trang chơi (tab Thống kê).
+- Điện thoại: lần đầu bấm Chơi ngay hiện hướng dẫn thêm ra màn hình chính.
+- `vlg.js` trong từng game là tuỳ chọn, chỉ cần khi muốn có nút "Chơi game khác" (`VLG.more()`) hoặc khi game mở trực tiếp. Trong trang chơi, vlg.js tự ẩn nên không bị trùng logo.
 
 **Banner trang chủ (hero):**
 - Chỉ hiện hình hoặc video, tự trượt mờ dần, không có chữ.

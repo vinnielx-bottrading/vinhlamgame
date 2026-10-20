@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vinh Làm Game</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link id="touchIcon" rel="apple-touch-icon" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&display=swap">
+<style>
+  :root{--wine:#6B1A2D}
+  html,body{margin:0;height:100%;background:#000;overflow:hidden}
+  body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+  #game{position:fixed;inset:0;width:100%;height:100%;height:100dvh;border:0;display:block;background:#000}
+  /* Logo bản quyền: hiện vài giây ở một góc nhỏ rồi ẩn */
+  .vlg{position:fixed;z-index:10;display:flex;align-items:center;gap:8px;padding:7px 14px 7px 10px;border-radius:999px;background:rgba(255,255,255,.95);color:#22151B;text-decoration:none;
+       font:600 17px/1 'Cormorant Garamond','Iowan Old Style',serif;box-shadow:0 6px 20px rgba(0,0,0,.35);opacity:0;transform:translateY(-6px);transition:opacity .45s,transform .45s;pointer-events:none}
+  .vlg em{color:var(--wine)}
+  .vlg.show{opacity:1;transform:none;pointer-events:auto}
+  .vlg.b{transform:translateY(6px)}.vlg.b.show{transform:none}
+  .tl{top:calc(12px + env(safe-area-inset-top,0px));left:calc(12px + env(safe-area-inset-left,0px))}
+  .tr{top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px))}
+  .bl{bottom:calc(12px + env(safe-area-inset-bottom,0px));left:calc(12px + env(safe-area-inset-left,0px))}
+  .br{bottom:calc(12px + env(safe-area-inset-bottom,0px));right:calc(12px + env(safe-area-inset-right,0px))}
+  .msg{position:fixed;inset:0;display:grid;place-items:center;color:#fff;text-align:center;padding:24px;font-size:15px;line-height:1.6}
+  .msg a{color:#fff}
+  @media (prefers-reduced-motion: reduce){ .vlg{transition:opacity .2s;transform:none !important} }
+</style>
+</head>
+<body>
+<iframe id="game" title="Game" allow="autoplay; fullscreen; gamepad; clipboard-write; accelerometer; gyroscope" allowfullscreen hidden></iframe>
+<a class="vlg" id="vlg" href="https://vinhlamgame.vercel.app/" target="_top" aria-label="Vinh Làm Game — về trang chủ">
+  <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><g fill="#6B1A2D"><rect x="0" y="0" width="8" height="8"/><rect x="18" y="0" width="8" height="8"/><rect x="0" y="9" width="8" height="8"/><rect x="18" y="9" width="8" height="8"/><rect x="9" y="18" width="8" height="8"/></g></svg>
+  <span>Vinh <em>Làm Game</em></span>
+</a>
+<div class="msg" id="msg" hidden></div>
+<script>
+/* Trang chơi chung của Vinh Làm Game — không sửa code gốc của game.
+   Mở: play.html?g=<slug>  (trên Vercel: /play?g=<slug>)
+   Đọc game từ Supabase (bảng games + settings), mở game toàn màn hình trong khung,
+   hiện logo Vinh Làm Game ở một góc trong vài giây (chỉnh ở admin › Giao diện và từng game). */
+(function () {
+  var CONFIG = {
+    SUPABASE_URL: 'https://yzyepdkzownfajvqmzbf.supabase.co',
+    SUPABASE_ANON_KEY: 'sb_publishable_bFh-bM6FkvlbIDSDsfX4pA_B7wDMZ2k',
+    HOME: 'https://vinhlamgame.vercel.app/'
+  };
+  var slug = new URLSearchParams(location.search).get('g') || location.pathname.split('/').filter(Boolean).pop() || '';
+  var $ = function (id) { return document.getElementById(id); };
+  var logo = $('vlg');
+  logo.href = CONFIG.HOME;
+
+  function fail(t) { var m = $('msg'); m.hidden = false; m.innerHTML = t + '<br><a href="' + CONFIG.HOME + '">← Về Vinh Làm Game</a>'; }
+  function api(path) {
+    return fetch(CONFIG.SUPABASE_URL.replace(/\/+$/, '') + '/rest/v1/' + path, { headers: { apikey: CONFIG.SUPABASE_ANON_KEY } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function local() {   // chế độ demo: đọc dữ liệu admin lưu trên trình duyệt
+    try { var d = JSON.parse(localStorage.getItem('vlg_data_v1')); if (d && d.games) return { games: d.games, settings: d.settings || {} }; } catch (e) {}
+    return null;
+  }
+  function load() {
+    if (!/^https?:/.test(location.protocol) || !CONFIG.SUPABASE_URL) return Promise.resolve(local());
+    return Promise.all([
+      api('games?select=id,slug,title,play_url,cover,logo_corner,status&slug=eq.' + encodeURIComponent(slug)),
+      api('settings?select=data&id=eq.1')
+    ]).then(function (r) { return { games: r[0], settings: (r[1][0] || {}).data || {} }; })
+      .catch(function () { return local(); });
+  }
+  function track(g) {
+    try {
+      if (localStorage.getItem('vlg_no_track') === '1' || navigator.webdriver) return;
+      var vid = localStorage.getItem('vlg_vid');
+      if (!vid) { vid = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()).replace(/-/g, '').slice(0, 24); localStorage.setItem('vlg_vid', vid); }
+      var mobile = matchMedia('(pointer: coarse)').matches && !matchMedia('(hover: hover)').matches;
+      fetch(CONFIG.SUPABASE_URL.replace(/\/+$/, '') + '/rest/v1/events', { method: 'POST', keepalive: true,
+        headers: { apikey: CONFIG.SUPABASE_ANON_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify([{ vid: vid, type: 'play', ref: String(g.id).slice(0, 80), path: '/play/' + slug, device: mobile ? 'mobile' : 'desktop', src: '' }]) }).catch(function () {});
+    } catch (e) {}
+  }
+  function showLogo(corner, seconds) {
+    if (logo.dataset.done) return; logo.dataset.done = 1;
+    if (!(seconds > 0)) return;
+    logo.className = 'vlg ' + corner + (corner[0] === 'b' ? ' b' : '');
+    requestAnimationFrame(function () { requestAnimationFrame(function () { logo.classList.add('show'); }); });
+    setTimeout(function () { logo.classList.remove('show'); }, seconds * 1000);
+  }
+
+  if (!slug) { fail('Thiếu tên game trong đường dẫn.'); return; }
+  load().then(function (d) {
+    var g = d && (d.games || []).filter(function (x) { return x.slug === slug; })[0];
+    if (!g || !g.play_url) { fail(g ? 'Game này sắp ra mắt.' : 'Không tìm thấy game.'); return; }
+    var s = d.settings || {};
+    document.title = g.title + ' · Vinh Làm Game';
+    if (g.cover && !/^data:/.test(g.cover)) $('touchIcon').href = g.cover;
+    var f = $('game'); f.title = g.title; f.src = g.play_url; f.hidden = false; f.focus();
+    var corner = /^(tl|tr|bl|br)$/.test(g.logo_corner || '') ? g.logo_corner : (/^(tl|tr|bl|br)$/.test(s.logo_corner || '') ? s.logo_corner : 'tl');
+    var secs = s.logo_seconds === undefined || s.logo_seconds === '' ? 4 : Number(s.logo_seconds);
+    f.addEventListener('load', function () { showLogo(corner, secs); }, { once: true });
+    setTimeout(function () { showLogo(corner, secs); }, 2500);   // game tải chậm vẫn hiện logo
+    track(g);
+  });
+})();
+</script>
+</body>
+</html>

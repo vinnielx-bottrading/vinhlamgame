@@ -138,7 +138,8 @@ alter table games   add column if not exists show_gallery boolean default true;
 alter table games   add column if not exists cta_title    text default '';
 alter table games   add column if not exists cta_sub      text default '';
 alter table games   add column if not exists device       text default '';        -- both | desktop | mobile
-alter table games   add column if not exists play_mode    text default 'frame';   -- frame = chơi trong trang, direct = mở trực tiếp
+alter table games   add column if not exists play_mode    text default 'frame';
+alter table games   add column if not exists logo_corner  text default '';        -- tl | tr | bl | br, trống = theo cài đặt chung   -- frame = chơi trong trang, direct = mở trực tiếp
 alter table games   alter column kv_in_slide set default false;
 alter table games   add column if not exists highlights text default '';
 alter table games   add column if not exists released text default '';

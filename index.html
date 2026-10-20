@@ -595,7 +595,7 @@ const SEED = {
     donate_amounts: '20000, 50000, 100000, 200000', donate_memo: 'Ung ho Vinh Lam Game',
     footer_text: 'Làm game nhỏ, chơi trên trình duyệt.',
     facebook: '', youtube: '', github: '',
-    banner_autoplay: true, banner_speed: 6,
+    banner_autoplay: true, banner_speed: 6, logo_seconds: 4, logo_corner: 'tl',
     grid_cols: '3', pagination_on: false, grid_rows: 3,
     genre_show_count: true,
     ad_on: true, ad_image: '', ad_link: '', ad_size: '6/1',
@@ -1067,8 +1067,8 @@ function shareHTML(g) {
 function playBtn(g, cls = '') {
   const free = g.is_free !== false;
   if (!g.play_url) return `<span class="gp-btn ${cls} soon" aria-disabled="true">Sắp ra mắt</span>`;
-  const direct = touchOnly() || g.play_mode === 'direct';
-  return `<a class="gp-btn ${cls}" href="${direct ? esc(g.play_url) : '#/play/' + esc(g.slug)}"${direct ? ` data-direct data-gid="${esc(g.id)}"` : ''}><span class="play-ico"></span>Chơi ngay${free ? '<span class="gp-free"> · Miễn phí</span>' : ''}</a>`;
+  const direct = g.play_mode === 'direct';
+  return `<a class="gp-btn ${cls}" href="${direct ? esc(g.play_url) : 'play.html?g=' + encodeURIComponent(g.slug)}" data-direct${direct ? ` data-gid="${esc(g.id)}"` : ''}><span class="play-ico"></span>Chơi ngay${free ? '<span class="gp-free"> · Miễn phí</span>' : ''}</a>`;
 }
 function viewGame(slug) {
   const g = D.games.find(x => x.slug === slug && (x.status === 'published' || isAdmin()));
@@ -1216,6 +1216,7 @@ async function shareGame(net) {
 function viewPlay(slug) {
   const g = D.games.find(x => x.slug === slug);
   if (!g) return notFound();
+  if (g.play_url && g.play_mode !== 'direct') { location.replace('play.html?g=' + encodeURIComponent(g.slug)); return ''; }   // link #/play cũ → trang chơi mới
   if (!g.play_url) return `<div class="wrap play"><div class="empty">Game này chưa có link chơi. <a href="#/game/${esc(g.slug)}" style="color:var(--wine)">Quay lại trang giới thiệu</a></div></div>`;
   if (touchOnly()) return `<div class="wrap play">
     <nav class="crumbs" style="padding-top:8px"><a href="#/">Thư viện</a><span>/</span><a href="#/game/${esc(g.slug)}">${esc(g.title)}</a><span>/</span><span>Chơi</span></nav>

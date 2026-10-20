@@ -117,6 +117,12 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 - **Slide**: ảnh, video .mp4/.webm và link YouTube xếp chung một danh sách, kéo để đổi thứ tự, mỗi mục có ô caption. Video và link YouTube cũ của game tự gộp vào slide khi mở form sửa. Cụm marketing cũ tự chuyển thành thẻ Điểm nổi bật.
 - Icon mạng xã hội lấy từ bộ Simple Icons (giấy phép CC0), nhúng sẵn trong trang. Instagram và Zalo không có link chia sẻ trên web: trên điện thoại mở bảng chia sẻ của máy, trên máy tính tự chép link.
 
+**Chơi game:**
+- **Máy tính:** bấm Chơi ngay thì game phủ kín cửa sổ (chế độ rạp chiếu) và tự bật toàn màn hình. Trên cùng chỉ còn thanh mảnh: logo Vinh Làm Game, tên game, Toàn màn hình, Chia sẻ, Game khác, Thoát. Esc thoát toàn màn hình nhưng vẫn ở trong game.
+- Game cần đăng nhập / lưu tiến độ: trong form game chọn **Cách mở = Mở trực tiếp**.
+- **Điện thoại:** game luôn mở trực tiếp. Lần đầu bấm Chơi ngay, trang hiện hướng dẫn **thêm game ra màn hình chính** đúng theo máy (Safari iPhone, Chrome iPhone, Chrome Android, hoặc báo "mở bằng trình duyệt" khi đang ở trong Facebook / Zalo / Instagram / TikTok). Khách tick "Không hiện lại" thì thôi.
+- **Trong từng game:** gắn đoạn code `vlg.js` theo hướng dẫn trong thư mục `game-kit/` để có nút "← Vinh Làm Game", hướng dẫn cài ra màn hình chính ngay trong game, và thẻ "Chơi game khác" ở màn hình thắng / thua.
+
 **Banner trang chủ (hero):**
 - Chỉ hiện hình hoặc video, tự trượt mờ dần, không có chữ.
 - Gồm **KV chính của các game được bật cột "Banner trang chủ"** trong tab Game, cộng các **quảng cáo có vị trí Banner trang chủ** trong tab Quảng cáo. Số lượng không giới hạn, admin tự quyết. Thứ tự: cột Thứ tự của game và ô "Thứ tự trong banner trang chủ" của quảng cáo, xếp chung.

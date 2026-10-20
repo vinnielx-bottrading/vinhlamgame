@@ -137,6 +137,7 @@ alter table games   add column if not exists show_story   boolean default false;
 alter table games   add column if not exists show_gallery boolean default true;
 alter table games   add column if not exists cta_title    text default '';
 alter table games   add column if not exists cta_sub      text default '';
+alter table games   add column if not exists play_mode    text default 'frame';   -- frame = chơi trong trang, direct = mở trực tiếp
 alter table games   alter column kv_in_slide set default false;
 alter table games   add column if not exists highlights text default '';
 alter table games   add column if not exists released text default '';

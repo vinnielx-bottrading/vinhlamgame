@@ -380,6 +380,43 @@ p{margin:0}
 
 /* Play */
 .play{padding-block:20px 48px;display:grid;gap:16px}
+/* ---- Chế độ rạp chiếu khi chơi game trên máy tính ---- */
+body.theater{overflow:hidden}
+body.theater .site-head,body.theater .site-foot{display:none}
+.th{position:fixed;inset:0;z-index:60;background:#0E0709;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.th-bar{display:flex;align-items:center;gap:14px;height:46px;padding:0 12px 0 16px;background:#fff;border-bottom:1px solid var(--line);min-width:0}
+.th-logo{display:flex;align-items:center;gap:8px;font:600 18px/1 var(--display);color:var(--ink);flex:none}
+.th-logo em{color:var(--wine)}
+.th-sep{width:1px;height:20px;background:var(--line);flex:none}
+.th-title{font:700 15px/1.2 var(--body);margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.th-act{display:flex;align-items:center;gap:4px;flex:none}
+.th-b{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:4px;font-size:13px;font-weight:600;color:var(--ink);background:transparent}
+.th-b:hover{background:var(--wine-tint);color:var(--wine)}
+.th-x{background:var(--ac);color:#fff;margin-left:4px}
+.th-x:hover{background:var(--ac);color:#fff;filter:brightness(1.12)}
+.th iframe{width:100%;height:100%;border:0;background:#0E0709;display:block}
+.th-alt{position:absolute;right:12px;bottom:10px;font-size:12px;color:rgba(255,255,255,.55);background:rgba(0,0,0,.35);padding:4px 10px;border-radius:999px;opacity:0;transition:opacity .2s}
+.th:hover .th-alt{opacity:1}
+.th-more{position:relative}
+.th-menu{position:absolute;right:0;top:40px;width:300px;background:#fff;border:1px solid var(--line);box-shadow:0 18px 40px -16px rgba(0,0,0,.35);padding:8px;display:grid;gap:4px;z-index:2}
+.th-menu a{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;padding:6px;border-radius:4px;font-size:14px;font-weight:600;color:var(--ink)}
+.th-menu a:hover{background:var(--wine-tint)}
+.th-menu .cover{aspect-ratio:4/3;width:72px}
+.th-menu .th-all{display:block;text-align:center;font-size:13px;color:var(--wine);padding:8px}
+@media (max-width:900px){ .th-b span:not(.caret){display:none} .th-logo span{display:none} }
+/* ---- Hướng dẫn thêm ra màn hình chính ---- */
+.tip-wrap{position:fixed;inset:0;z-index:90;background:rgba(20,10,14,.55);display:flex;align-items:flex-end;justify-content:center}
+.tip{--ac:var(--wine);position:relative;background:#fff;width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:14px 14px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;animation:tipUp .25s ease-out}
+@keyframes tipUp{from{transform:translateY(40px);opacity:0}}
+.tip h2{font:800 1.35rem/1.2 'Bricolage Grotesque',var(--body);padding-right:30px}
+.tip-x{position:absolute;top:10px;right:12px;width:40px;height:40px;font-size:24px;color:var(--muted)}
+.tip-why{list-style:none;margin:0;padding:12px 14px;background:var(--wine-tint);border-radius:6px;display:grid;gap:6px;font-size:14px;color:var(--wine)}
+.tip-why li::before{content:'✓ ';font-weight:700}
+.tip ol{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:1.5}
+.tip ol svg{vertical-align:-3px;color:#1F5A85}
+.tip-warn{font-size:14px;color:#8A3B12;background:#FFF3E8;padding:10px 12px;border-radius:6px}
+.tip .gp-btn{align-self:stretch;justify-content:center}
+.tip-off{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
 .play-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .fs-close{display:none}
 body.pseudo-fs{overflow:hidden}
@@ -937,7 +974,7 @@ const Track = {
 };
 document.addEventListener('click', e => {
   const a = e.target.closest?.('[data-adref]'); if (a) Track.push('ad_click', a.dataset.adref, true);
-  const d = e.target.closest?.('a[data-direct][data-gid]'); if (d) Track.push('play', d.dataset.gid, true);
+  const d = e.target.closest?.('a[data-direct][data-gid]'); if (d && !(needTip() && !d.closest('#tip'))) Track.push('play', d.dataset.gid, true);
 }, true);
 addEventListener('pagehide', () => Track.flush(true));
 document.addEventListener('visibilitychange', () => { if (document.hidden) Track.flush(true); });
@@ -1021,7 +1058,7 @@ function shareHTML(g) {
 function playBtn(g, cls = '') {
   const free = g.is_free !== false;
   if (!g.play_url) return `<span class="gp-btn ${cls} soon" aria-disabled="true">Sắp ra mắt</span>`;
-  const direct = touchOnly();
+  const direct = touchOnly() || g.play_mode === 'direct';
   return `<a class="gp-btn ${cls}" href="${direct ? esc(g.play_url) : '#/play/' + esc(g.slug)}"${direct ? ` data-direct data-gid="${esc(g.id)}"` : ''}><span class="play-ico"></span>Chơi ngay${free ? '<span class="gp-free"> · Miễn phí</span>' : ''}</a>`;
 }
 function viewGame(slug) {
@@ -1096,6 +1133,46 @@ function viewGame(slug) {
   ${g.play_url ? `<div class="gp-mbar" id="gpBar" aria-hidden="true"><b>${esc(g.title)}</b>${playBtn(g)}</div>` : ''}
   </div>`;
 }
+/* ---------- Hướng dẫn thêm game ra màn hình chính (điện thoại) ---------- */
+const UA = navigator.userAgent || '';
+const isIOS = /iPhone|iPad|iPod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
+const inApp = (/FBAN|FBAV|FB_IAB|Instagram|Zalo|Line\/|TikTok|musical_ly/i.exec(UA) || [''])[0];
+function needTip() {
+  if (typeof touchOnly !== 'function' || !touchOnly()) return false;
+  try { return localStorage.getItem('vlg_tip_off') !== '1'; } catch (_) { return true; }
+}
+const SHARE_GLYPH = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9M16 6l-4-4-4 4M12 2v13"/></svg>';
+function tipSteps() {
+  if (inApp) { const app = /Zalo/i.test(inApp) ? 'Zalo' : /Instagram/i.test(inApp) ? 'Instagram' : /TikTok|musical/i.test(inApp) ? 'TikTok' : 'Facebook';
+    return `<p class="tip-warn">Bạn đang mở trong <b>${app}</b>. Ứng dụng này không cho thêm game ra màn hình chính.</p>
+      <ol><li>Bấm nút <b>⋯</b> ở góc trên.</li><li>Chọn <b>Mở bằng trình duyệt</b> (${isIOS ? 'Safari' : 'Chrome'}).</li><li>Mở lại game và làm theo hướng dẫn hiện ra.</li></ol>`; }
+  if (isIOS && /CriOS|FxiOS|EdgiOS/.test(UA)) return `<ol><li>Mở game.</li><li>Bấm nút chia sẻ ${SHARE_GLYPH} ở góc trên bên phải thanh địa chỉ.</li><li>Chọn <b>Thêm vào MH chính</b> (Add to Home Screen).</li><li>Từ nay mở game bằng biểu tượng trên màn hình chính.</li></ol>`;
+  if (isIOS) return `<ol><li>Mở game.</li><li>Bấm nút <b>Chia sẻ</b> ${SHARE_GLYPH} ở thanh dưới cùng của Safari.</li><li>Kéo xuống, chọn <b>Thêm vào MH chính</b> (Add to Home Screen) → <b>Thêm</b>.</li><li>Từ nay mở game bằng biểu tượng trên màn hình chính.</li></ol>`;
+  return `<ol><li>Mở game.</li><li>Bấm nút <b>⋮</b> ở góc trên bên phải Chrome.</li><li>Chọn <b>Thêm vào màn hình chính</b> hoặc <b>Cài đặt ứng dụng</b>.</li><li>Từ nay mở game bằng biểu tượng trên màn hình chính.</li></ol>`;
+}
+function showTip(a) {
+  closeTip();
+  const m = document.createElement('div'); m.id = 'tip'; m.className = 'tip-wrap';
+  m.innerHTML = `<div class="tip" role="dialog" aria-modal="true" aria-labelledby="tipT">
+    <button type="button" class="tip-x" data-act="tip-close" aria-label="Đóng">×</button>
+    <p class="gp-k">Mẹo chơi trên điện thoại</p>
+    <h2 id="tipT">Thêm game ra màn hình chính để chơi trọn màn hình</h2>
+    <ul class="tip-why"><li>Mở toàn màn hình, không còn thanh địa chỉ che game</li><li>Mở nhanh như app, không phải tải từ App Store hay CH Play</li><li>Không chiếm dung lượng máy như cài app</li></ul>
+    ${tipSteps()}
+    <a class="gp-btn big" href="${esc(a.getAttribute('href'))}" ${a.dataset.gid ? `data-direct data-gid="${esc(a.dataset.gid)}"` : 'data-direct'}><span class="play-ico"></span>Mở game</a>
+    <label class="tip-off"><input type="checkbox" id="tipOff"> Không hiện lại hướng dẫn này</label>
+  </div>`;
+  document.body.appendChild(m); document.body.style.overflow = 'hidden';
+}
+function closeTip() { const m = $('#tip'); if (!m) return; m.remove(); document.body.style.overflow = ''; }
+document.addEventListener('change', e => { if (e.target.id === 'tipOff') { try { localStorage.setItem('vlg_tip_off', e.target.checked ? '1' : '0'); } catch (_) {} } });
+document.addEventListener('click', e => {
+  if (e.target.id === 'tip') { closeTip(); return; }
+  const a = e.target.closest?.('a[data-direct]');
+  if (!a || a.closest('#tip') || !needTip()) return;
+  e.preventDefault(); e.stopPropagation(); showTip(a);
+}, true);
+
 // Thanh "Chơi ngay" dính đáy màn hình trên điện thoại khi nút chính đã cuộn khỏi màn hình
 let gpObs = null;
 function watchPlayBar() {
@@ -1136,16 +1213,23 @@ function viewPlay(slug) {
     </a>
     <p class="play-note">Game mở toàn màn hình. Bấm nút Quay lại của trình duyệt để về trang giới thiệu.</p>
   </div>`;
-  return `<div class="wrap play">
-    <nav class="crumbs" style="padding-top:8px"><a href="#/">Thư viện</a><span>/</span><a href="#/game/${esc(g.slug)}">${esc(g.title)}</a><span>/</span><span>Chơi</span></nav>
-    <div class="play-bar">
-      <h1>${esc(g.title)}</h1>
-      <button class="btn small line" data-act="fs">Toàn màn hình</button>
-      <button class="btn small primary fs-close" data-act="fs-close" aria-label="Thoát toàn màn hình">✕ Thoát</button>
-      <a class="btn small line" href="${esc(g.play_url)}" target="_blank" rel="noopener">Mở tab mới</a>
+  if (g.play_mode === 'direct') return `<div class="wrap play"><div class="empty">Game này mở trực tiếp để lưu được tiến độ và đăng nhập. <a class="gp-btn" style="margin-top:14px" href="${esc(g.play_url)}" data-direct data-gid="${esc(g.id)}"><span class="play-ico"></span>Mở game</a></div></div>`;
+  const others = pubGames().filter(x => x.id !== g.id && x.play_url).slice(0, 6);
+  return `<div class="th" id="th" style="--ac:${okAccent(g.accent)}">
+    <div class="th-bar">
+      <a class="th-logo" href="#/" aria-label="Vinh Làm Game, về thư viện"><svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><g fill="#6B1A2D"><rect x="0" y="0" width="8" height="8"/><rect x="18" y="0" width="8" height="8"/><rect x="0" y="9" width="8" height="8"/><rect x="18" y="9" width="8" height="8"/><rect x="9" y="18" width="8" height="8"/></g></svg><span>Vinh <em>Làm Game</em></span></a>
+      <span class="th-sep" aria-hidden="true"></span>
+      <h1 class="th-title">${esc(g.title)}</h1>
+      <div class="th-act">
+        <button type="button" class="th-b" data-act="th-fs"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Toàn màn hình</span></button>
+        <button type="button" class="th-b" data-act="share" data-net=""><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg><span>Chia sẻ</span></button>
+        ${others.length ? `<div class="th-more"><button type="button" class="th-b" data-act="th-more" aria-expanded="false" aria-haspopup="true"><span>Game khác</span><span class="caret"></span></button>
+          <div class="th-menu" id="thMenu" hidden>${others.map(o => `<a href="#/play/${esc(o.slug)}">${coverOf(o)}<span>${esc(o.title)}</span></a>`).join('')}<a class="th-all" href="#/">Xem tất cả game →</a></div></div>` : ''}
+        <a class="th-b th-x" href="#/game/${esc(g.slug)}" aria-label="Thoát, về trang giới thiệu game">✕<span>Thoát</span></a>
+      </div>
     </div>
-    <div class="frame" id="frame"><iframe src="${esc(g.play_url)}" title="${esc(g.title)}" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe></div>
-    <p class="play-note">Khung trống hoặc không tải được? <a href="${esc(g.play_url)}" target="_blank" rel="noopener">Mở game trong tab mới</a>.${g.controls ? ' Điều khiển: ' + esc(g.controls) + '.' : ''}</p>
+    <iframe src="${esc(g.play_url)}" title="${esc(g.title)}" allow="autoplay; fullscreen; gamepad; clipboard-write" allowfullscreen></iframe>
+    <a class="th-alt" href="${esc(g.play_url)}" target="_blank" rel="noopener">Game không hiện? Mở trực tiếp ↗</a>
   </div>`;
 }
 
@@ -1354,7 +1438,9 @@ function render() {
     if (g0 && r === 'game') Track.push('game_view', g0.id);
     if (g0 && r === 'play' && !touchOnly()) Track.push('play', g0.id);
   }
-  Track.watch(); Track.heroView(); watchPlayBar(); if (prev !== routeKey) closeLB();
+  Track.watch(); Track.heroView(); watchPlayBar(); if (prev !== routeKey) { closeLB(); closeTip(); }
+  const th = !!$('#th'); document.body.classList.toggle('theater', th);
+  if (!th && prev !== routeKey && document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
   if (r === 'the-loai' && prev !== routeKey) $('#library')?.scrollIntoView({ block: 'start' });
   else if (prev !== routeKey) window.scrollTo(0, 0);
   document.querySelectorAll('[data-nav]').forEach(el => el.classList.toggle('on', el.dataset.nav === r));
@@ -1374,7 +1460,11 @@ function closeDD() { $('#ddMenu').hidden = true; $('#ddBtn').setAttribute('aria-
 /* ============ SỰ KIỆN ============ */
 document.addEventListener('click', async e => {
   const link = e.target.closest('a[href^="#/"]');
-  if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); go(link.getAttribute('href')); return; }
+  if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+    e.preventDefault();
+    if (link.getAttribute('href').startsWith('#/play/') && typeof touchOnly === 'function' && !touchOnly() && !document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+    go(link.getAttribute('href')); return;
+  }
   const t = e.target.closest('[data-act]');
   if (!t) { if (!e.target.closest('.dd')) closeDD(); return; }
   const act = t.dataset.act, id = t.dataset.id;
@@ -1398,8 +1488,10 @@ document.addEventListener('click', async e => {
       case 'lb': openLB(Number(t.dataset.i)); break;
       case 'lb-step': openLB(lbIdx + Number(t.dataset.d)); break;
       case 'lb-close': closeLB(); break;
+      case 'th-fs': { if (document.fullscreenElement) document.exitFullscreen?.(); else document.documentElement.requestFullscreen?.().catch(() => toast('Trình duyệt không cho bật toàn màn hình, bấm F11.', true)); break; }
+      case 'th-more': { const m = $('#thMenu'); m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); break; }
+      case 'tip-close': closeTip(); break;
       case 'share': await shareGame(t.dataset.net); break;
-      case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
       case 'fs': {
         const f = $('#frame'), req = f.requestFullscreen || f.webkitRequestFullscreen;
         const fake = () => { document.body.classList.add('pseudo-fs'); addEventListener('keydown', function k(e) { if (e.key === 'Escape') { document.body.classList.remove('pseudo-fs'); removeEventListener('keydown', k); } }); };

@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "headers": [
-    { "source": "/admin", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
+    { "source": "/admin", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/vlg.js", "headers": [{ "key": "Cache-Control", "value": "public, max-age=300" }, { "key": "Access-Control-Allow-Origin", "value": "*" }] }
   ]
 }

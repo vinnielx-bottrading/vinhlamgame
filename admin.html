@@ -380,6 +380,43 @@ p{margin:0}
 
 /* Play */
 .play{padding-block:20px 48px;display:grid;gap:16px}
+/* ---- Chế độ rạp chiếu khi chơi game trên máy tính ---- */
+body.theater{overflow:hidden}
+body.theater .site-head,body.theater .site-foot{display:none}
+.th{position:fixed;inset:0;z-index:60;background:#0E0709;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.th-bar{display:flex;align-items:center;gap:14px;height:46px;padding:0 12px 0 16px;background:#fff;border-bottom:1px solid var(--line);min-width:0}
+.th-logo{display:flex;align-items:center;gap:8px;font:600 18px/1 var(--display);color:var(--ink);flex:none}
+.th-logo em{color:var(--wine)}
+.th-sep{width:1px;height:20px;background:var(--line);flex:none}
+.th-title{font:700 15px/1.2 var(--body);margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.th-act{display:flex;align-items:center;gap:4px;flex:none}
+.th-b{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:4px;font-size:13px;font-weight:600;color:var(--ink);background:transparent}
+.th-b:hover{background:var(--wine-tint);color:var(--wine)}
+.th-x{background:var(--ac);color:#fff;margin-left:4px}
+.th-x:hover{background:var(--ac);color:#fff;filter:brightness(1.12)}
+.th iframe{width:100%;height:100%;border:0;background:#0E0709;display:block}
+.th-alt{position:absolute;right:12px;bottom:10px;font-size:12px;color:rgba(255,255,255,.55);background:rgba(0,0,0,.35);padding:4px 10px;border-radius:999px;opacity:0;transition:opacity .2s}
+.th:hover .th-alt{opacity:1}
+.th-more{position:relative}
+.th-menu{position:absolute;right:0;top:40px;width:300px;background:#fff;border:1px solid var(--line);box-shadow:0 18px 40px -16px rgba(0,0,0,.35);padding:8px;display:grid;gap:4px;z-index:2}
+.th-menu a{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;padding:6px;border-radius:4px;font-size:14px;font-weight:600;color:var(--ink)}
+.th-menu a:hover{background:var(--wine-tint)}
+.th-menu .cover{aspect-ratio:4/3;width:72px}
+.th-menu .th-all{display:block;text-align:center;font-size:13px;color:var(--wine);padding:8px}
+@media (max-width:900px){ .th-b span:not(.caret){display:none} .th-logo span{display:none} }
+/* ---- Hướng dẫn thêm ra màn hình chính ---- */
+.tip-wrap{position:fixed;inset:0;z-index:90;background:rgba(20,10,14,.55);display:flex;align-items:flex-end;justify-content:center}
+.tip{--ac:var(--wine);position:relative;background:#fff;width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:14px 14px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;animation:tipUp .25s ease-out}
+@keyframes tipUp{from{transform:translateY(40px);opacity:0}}
+.tip h2{font:800 1.35rem/1.2 'Bricolage Grotesque',var(--body);padding-right:30px}
+.tip-x{position:absolute;top:10px;right:12px;width:40px;height:40px;font-size:24px;color:var(--muted)}
+.tip-why{list-style:none;margin:0;padding:12px 14px;background:var(--wine-tint);border-radius:6px;display:grid;gap:6px;font-size:14px;color:var(--wine)}
+.tip-why li::before{content:'✓ ';font-weight:700}
+.tip ol{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:1.5}
+.tip ol svg{vertical-align:-3px;color:#1F5A85}
+.tip-warn{font-size:14px;color:#8A3B12;background:#FFF3E8;padding:10px 12px;border-radius:6px}
+.tip .gp-btn{align-self:stretch;justify-content:center}
+.tip-off{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
 .play-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .fs-close{display:none}
 body.pseudo-fs{overflow:hidden}
@@ -1042,6 +1079,7 @@ const FIELDS = {
     { k: 'tagline', label: 'Câu hook (dòng màu nhấn)', type: 'text', full: true },
     { k: 'summary', label: 'Mô tả ngắn', type: 'textarea', max: 160, full: true, hint: 'Khoảng 2 dòng.' },
     { k: 'play_url', label: 'Link chơi game', type: 'url', hint: 'Để trống = nút “Sắp ra mắt”.' },
+    { k: 'play_mode', label: 'Cách mở game trên máy tính', type: 'select', options: [['frame', 'Trong trang: toàn cửa sổ, giữ thanh Vinh Làm Game'], ['direct', 'Mở trực tiếp: cho game cần đăng nhập / lưu tiến độ']], hint: 'Điện thoại luôn mở trực tiếp để chơi trọn màn hình.' },
     { k: 'accent', label: 'Màu nhấn của game', type: 'accent' },
     { k: 'is_free', label: 'Miễn phí', type: 'checkbox', default: true, hint: 'Tick: nút hiện “Chơi ngay · Miễn phí”. Bỏ tick: chỉ “Chơi ngay”.' },
     { type: 'heading', sec: true, label: '2 · Điểm nổi bật', note: 'Tối đa 3 thẻ · ảnh 16:9 + tiêu đề + 1 câu' },
@@ -2360,7 +2398,11 @@ document.addEventListener('paste', e => {
 /* ============ SỰ KIỆN ============ */
 document.addEventListener('click', async e => {
   const link = e.target.closest('a[href^="#/"]');
-  if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); go(link.getAttribute('href')); return; }
+  if (link && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+    e.preventDefault();
+    if (link.getAttribute('href').startsWith('#/play/') && typeof touchOnly === 'function' && !touchOnly() && !document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+    go(link.getAttribute('href')); return;
+  }
   const t = e.target.closest('[data-act]');
   if (!t) { if (!e.target.closest('.dd')) closeDD(); return; }
   const act = t.dataset.act, id = t.dataset.id;
@@ -2384,8 +2426,10 @@ document.addEventListener('click', async e => {
       case 'lb': openLB(Number(t.dataset.i)); break;
       case 'lb-step': openLB(lbIdx + Number(t.dataset.d)); break;
       case 'lb-close': closeLB(); break;
+      case 'th-fs': { if (document.fullscreenElement) document.exitFullscreen?.(); else document.documentElement.requestFullscreen?.().catch(() => toast('Trình duyệt không cho bật toàn màn hình, bấm F11.', true)); break; }
+      case 'th-more': { const m = $('#thMenu'); m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); break; }
+      case 'tip-close': closeTip(); break;
       case 'share': await shareGame(t.dataset.net); break;
-      case 'share': { const url = location.href; try { if (navigator.share) { await navigator.share({ title: document.title, url }); break; } await navigator.clipboard.writeText(url); toast('Đã sao chép link game'); } catch (_) { toast('Sao chép link trên thanh địa chỉ để chia sẻ.'); } break; }
       case 'fs': {
         const f = $('#frame'), req = f.requestFullscreen || f.webkitRequestFullscreen;
         const fake = () => { document.body.classList.add('pseudo-fs'); addEventListener('keydown', function k(e) { if (e.key === 'Escape') { document.body.classList.remove('pseudo-fs'); removeEventListener('keydown', k); } }); };

@@ -638,6 +638,11 @@ textarea{min-height:120px;resize:vertical}
 .shot-item.dragging{opacity:.35}
 .shot-item.drop-before{box-shadow:-4px 0 0 var(--wine)}
 .shot-item.drop-after{box-shadow:4px 0 0 var(--wine)}
+.drag-table td.drag-handle{width:28px;padding-inline:6px;color:var(--muted);cursor:grab}
+.drag-table td.drag-handle:active{cursor:grabbing}
+.drag-table tr.drag-row.dragging{opacity:.35}
+.drag-table tr.drag-row.drop-before td{box-shadow:inset 0 2px 0 var(--wine)}
+.drag-table tr.drag-row.drop-after td{box-shadow:inset 0 -2px 0 var(--wine)}
 [data-drop]{position:relative;transition:background .15s,outline-color .15s;outline:2px dashed transparent;outline-offset:4px;border-radius:var(--r)}
 [data-drop].dropping{outline-color:var(--wine);background:var(--wine-tint)}
 .drop-hint{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
@@ -1127,7 +1132,6 @@ const FIELDS = {
     { k: 'cover', label: 'Thumbnail — ô game trong thư viện (4:3 · 1200 × 900)', type: 'image', max: 1200, full: true, hint: 'Cũng dùng làm ảnh thay khi game chưa có slide.' },
     { type: 'heading', sec: true, label: 'Xuất bản' },
     { k: 'status', label: 'Trạng thái', type: 'select', options: [['published', 'Đã đăng'], ['draft', 'Bản nháp']] },
-    { k: 'sort', label: 'Thứ tự', type: 'number' },
     { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo từ tên game.' }
   ],
   banners: [
@@ -1390,19 +1394,21 @@ function delCell(id) {
     : `<button class="btn small line" data-act="edit" data-id="${esc(id)}">Sửa</button><button class="btn small danger" data-act="del" data-id="${esc(id)}">Xoá</button>`;
 }
 
+const IC_GRIP = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><g fill="currentColor"><circle cx="5" cy="3" r="1.4"/><circle cx="11" cy="3" r="1.4"/><circle cx="5" cy="8" r="1.4"/><circle cx="11" cy="8" r="1.4"/><circle cx="5" cy="13" r="1.4"/><circle cx="11" cy="13" r="1.4"/></g></svg>';
 function adminGames() {
-  const rows = [...D.games].sort(bySort).map(g => `<tr>
+  const rows = [...D.games].sort(bySort).map((g, i) => `<tr class="drag-row" data-gid="${esc(g.id)}">
+    <td class="drag-handle" draggable="true" title="Kéo để đổi thứ tự">${IC_GRIP}</td>
     <td><div class="thumb">${coverOf(g)}</div></td>
     <td><a href="index.html#/game/${esc(g.slug)}" target="_blank" rel="noopener" style="font-weight:500">${esc(g.title)}</a>${DEVICE[g.device] ? ` <span class="dev-inline" title="Tối ưu cho ${DEVICE[g.device][0].toLowerCase()}">${DEVICE[g.device][1]}</span>` : ''}<div class="hint mono" style="color:var(--muted)">/${esc(g.slug)}</div></td>
     <td>${esc(genreNames(g).join(', '))}</td>
     <td><span class="pill ${g.status === 'published' ? 'pub' : 'draft'}">${g.status === 'published' ? 'Đã đăng' : 'Nháp'}</span>${g.play_url ? '' : ' <span class="pill draft">Chưa có link</span>'}</td>
     <td><button class="toggle ${g.hot ? 'on' : ''}" data-act="flip" data-kind="games" data-k="hot" data-id="${esc(g.id)}" aria-label="Hot"></button></td>
     <td><button class="toggle ${g.hero ? 'on' : ''}" data-act="flip" data-kind="games" data-k="hero" data-id="${esc(g.id)}" aria-label="Banner trang chủ" ${!g.kv && !g.hero ? 'title="Chưa có ảnh KV chính"' : ''}></button>${g.hero && !g.kv ? '<div class="hint" style="color:var(--wine);font-size:11px">Thiếu KV</div>' : ''}</td>
-    <td class="num">${g.sort ?? 0}</td>
+    <td class="num">${i + 1}</td>
     <td><div class="row-act">${delCell(g.id)}</div></td></tr>`).join('');
   const nHero = bannerSlidesAdmin();
-  return `<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Banner trang chủ đang có <b>${nHero.games}</b> game${nHero.ads ? ` và <b>${nHero.ads}</b> quảng cáo` : ''}. Bật cột “Banner trang chủ” để đưa KV chính của game lên banner; thứ tự slide theo cột Thứ tự.</p>
-  ${tableWrap(['', 'Game', 'Thể loại', 'Trạng thái', 'Hot', 'Banner trang chủ', 'Thứ tự', ''], rows, 'Chưa có game nào.')}`;
+  return `<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Banner trang chủ đang có <b>${nHero.games}</b> game${nHero.ads ? ` và <b>${nHero.ads}</b> quảng cáo` : ''}. Bật cột “Banner trang chủ” để đưa KV chính của game lên banner; thứ tự slide theo cột Thứ tự.<br>Kéo <span class="mono">${IC_GRIP}</span> ở đầu dòng để sắp xếp lại — thứ tự này cũng là thứ tự hiện trong thư viện trên trang chủ.</p>
+  ${tableWrap(['', '', 'Game', 'Thể loại', 'Trạng thái', 'Hot', 'Banner trang chủ', 'Thứ tự', ''], rows, 'Chưa có game nào.', 'drag-table')}`;
 }
 function bannerSlidesAdmin() {
   return { games: D.games.filter(g => g.hero && g.kv && g.status === 'published').length,
@@ -1558,8 +1564,8 @@ function adminGenres() {
     <td><div class="row-act">${delCell(x.id)}</div></td></tr>`).join('');
   return tableWrap(['Tên', 'Slug', 'Số game', 'Thứ tự', 'Hiện', ''], rows, 'Chưa có thể loại.');
 }
-const tableWrap = (heads, rows, empty) => rows
-  ? `<div class="tbl-wrap"><table><thead><tr>${heads.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`
+const tableWrap = (heads, rows, empty, cls) => rows
+  ? `<div class="tbl-wrap${cls ? ' ' + cls : ''}"><table><thead><tr>${heads.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`
   : `<div class="empty">${empty}</div>`;
 
 function adminSettings() {
@@ -2363,6 +2369,46 @@ document.addEventListener('dragend', () => {
   if (!dragShot) return;
   dragShot.wrap?.querySelectorAll('.dragging,.drop-before,.drop-after').forEach(x => x.classList.remove('dragging', 'drop-before', 'drop-after'));
   dragShot = null;
+});
+
+/* ---------- Kéo để sắp xếp danh sách game (đồng bộ thứ tự với thư viện trên trang chủ) ---------- */
+let dragGame = null;
+document.addEventListener('dragstart', e => {
+  const h = e.target.closest?.('.drag-handle'); if (!h) return;
+  const tr = h.closest('tr[data-gid]'); if (!tr) return;
+  dragGame = { from: tr.dataset.gid };
+  tr.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  try { e.dataTransfer.setData('text/plain', 'game-' + dragGame.from); } catch (_) {}
+});
+document.addEventListener('dragover', e => {
+  if (!dragGame) return;
+  const tr = e.target.closest('tr[data-gid]'); if (!tr) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  const r = tr.getBoundingClientRect(), after = e.clientY > r.top + r.height / 2;
+  tr.closest('tbody').querySelectorAll('.drop-before,.drop-after').forEach(x => x.classList.remove('drop-before', 'drop-after'));
+  tr.classList.add(after ? 'drop-after' : 'drop-before');
+  dragGame.to = tr.dataset.gid; dragGame.after = after;
+});
+document.addEventListener('drop', async e => {
+  if (!dragGame || hasFiles(e)) return;
+  e.preventDefault();
+  const { from, to, after } = dragGame;
+  if (to && to !== from) {
+    const order = [...D.games].sort(bySort).map(x => x.id);
+    const fi = order.indexOf(from); order.splice(fi, 1);
+    let ti = order.indexOf(to); if (after) ti++;
+    order.splice(ti, 0, from);
+    const changed = [];
+    order.forEach((id, i) => { const g = D.games.find(x => x.id === id); if ((g.sort ?? 0) !== i + 1) changed.push({ ...g, sort: i + 1 }); });
+    if (changed.length) { try { await Promise.all(changed.map(g => Store.save('games', g))); toast('Đã lưu thứ tự'); } catch (err) { toast(err.message || 'Không lưu được thứ tự', true); } }
+  }
+  render();
+});
+document.addEventListener('dragend', () => {
+  if (!dragGame) return;
+  document.querySelectorAll('.drag-row.dragging,.drag-row.drop-before,.drag-row.drop-after').forEach(x => x.classList.remove('dragging', 'drop-before', 'drop-after'));
+  dragGame = null;
 });
 
 /* ---------- Trình soạn thảo bài viết ---------- */

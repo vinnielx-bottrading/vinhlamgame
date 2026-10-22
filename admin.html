@@ -901,6 +901,7 @@ const Store = {
       if (err) throw err.error;
       session = ss.data.session;
       D = { settings: { ...SEED.settings, ...(s.data?.data || {}) }, games: g.data || [], genres: ge.data || [], banners: b.data || [], ads: ad.error ? [] : (ad.data || []) };   // bảng ads chưa tạo thì bỏ qua
+      if (window.__fullCols && session) { const pr = await sb.from('ads').select('report_key,budget,show_cost').limit(1); window.__adReport = !pr.error; }   // đã chạy schema.sql bản có báo cáo?
     } else {
       let raw = null;
       try { raw = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
@@ -922,7 +923,11 @@ const Store = {
     return item;
   },
   async remove(kind, id) {
-    if (MODE === 'cloud') { const { error } = await sb.from(TABLES[kind]).delete().eq('id', id); if (error) throw error; }
+    if (MODE === 'cloud') {
+      // Bảng ads: dùng bộ lọc or=(...) để link không có dạng "/ads?id=" mà trình chặn quảng cáo (AdBlock, uBlock…) hay chặn.
+      const q = sb.from(TABLES[kind]).delete();
+      const { error } = await (kind === 'ads' ? q.or(`id.eq.${id}`) : q.eq('id', id)); if (error) throw error;
+    }
     D[kind] = D[kind].filter(x => x.id !== id);
     if (kind === 'games') D.banners.forEach(b => { if (b.game_id === id) b.game_id = ''; });
     if (MODE === 'local') this.persist();
@@ -1172,6 +1177,9 @@ const FIELDS = {
     { k: 'start_at', label: 'Ngày bắt đầu', type: 'date', hint: 'Để trống = chạy ngay.' },
     { k: 'end_at', label: 'Ngày kết thúc', type: 'date', hint: 'Hết ngày này quảng cáo tự tắt.' },
     { k: 'active', label: 'Đang bật', type: 'checkbox' },
+    { type: 'heading', label: 'Báo cáo cho khách' },
+    { k: 'budget', label: 'Giá trị hợp đồng (đồng)', type: 'number', hint: 'Dùng để tính CPM (giá mỗi 1.000 lượt hiển thị) và CPC (giá mỗi lượt bấm). Để 0 nếu không cần.' },
+    { k: 'show_cost', label: 'Hiện chi phí, CPM, CPC trên trang báo cáo gửi khách', type: 'checkbox' },
     { k: 'note', label: 'Ghi chú nội bộ (giá, hợp đồng, người liên hệ)', type: 'textarea', full: true, hint: 'Chỉ quản trị viên thấy.' }
   ],
   assets: [
@@ -1388,6 +1396,8 @@ function applyWhen(root = document) {
     el.hidden = !!ctl && !vals.split('|').includes(val);
   });
 }
+// Lỗi "Failed to fetch": yêu cầu bị chặn trước khi tới máy chủ, thường do tiện ích chặn quảng cáo hoặc mất mạng.
+function netMsg(err) { return /failed to fetch|networkerror|load failed/i.test(err?.message || String(err)) ? 'Trình duyệt đã chặn kết nối. Thường do tiện ích chặn quảng cáo (AdBlock, uBlock…): hãy tắt nó cho trang này rồi thử lại. Nếu không phải, kiểm tra mạng.' : ''; }
 function delCell(id) {
   return confirmDel === id
     ? `<span class="confirm">Xoá thật? <button class="btn small danger" data-act="del-yes" data-id="${esc(id)}">Xoá</button><button class="btn small line" data-act="del-no">Không</button></span>`
@@ -1440,6 +1450,7 @@ function adReport(a) {
   const st = adStatsOf('c:' + a.id);
   return `Báo cáo quảng cáo · Vinh Làm Game\nKhách hàng: ${a.advertiser}${a.title ? '\nChiến dịch: ' + a.title : ''}\nVị trí: ${placeText(a)}${a.placement === 'game' ? ' (' + (a.game_ids || []).map(id => gameById(id)?.title).filter(Boolean).join(', ') + ')' : ''}\nThời gian: ${a.start_at || '…'} → ${a.end_at || '…'}\nLượt hiển thị: ${nfmt(st.views)}\nSố người xem: ${nfmt(st.reach)}\nLượt bấm: ${nfmt(st.clicks)}\nTỉ lệ bấm (CTR): ${pct(st.clicks, st.views)}\nSố liệu tính đến ${new Date().toLocaleString('vi-VN')}`;
 }
+const reportUrl = a => `${location.origin}/report?id=${encodeURIComponent(a.id)}&k=${encodeURIComponent(a.report_key)}`;
 function adminAds() {
   if ((!ADSTATS || Date.now() - ADSTATS.at > 60000) && !statsBusy.ads) loadStats(400, 'ads');
   const s = D.settings;
@@ -1454,8 +1465,8 @@ function adminAds() {
       <td class="num" style="white-space:nowrap">${esc(a.start_at || '…')} → ${esc(a.end_at || '…')}<br><span class="pill ${cls}">${st}</span></td>
       <td class="num" style="white-space:nowrap">${ADSTATS ? `${nfmt(m.views)} xem<br>${nfmt(m.clicks)} bấm · ${pct(m.clicks, m.views)}` : '…'}</td>
       <td><button class="toggle ${a.active ? 'on' : ''}" data-act="flip" data-kind="ads" data-k="active" data-id="${esc(a.id)}" aria-label="Bật quảng cáo"></button></td>
-      <td><div class="row-act"><button class="btn small line" data-act="copy" data-v="${esc(adReport(a))}" title="Chép báo cáo gửi khách">Báo cáo</button>${delCell(a.id)}</div></td></tr>`; }).join('');
-  return `${legacy}<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Mọi quảng cáo của khách quản lý ở đây. Hai vị trí: <b>banner lớn đầu trang chủ</b> (chạy chung với KV các game) và <b>banner ngang</b> dưới thư viện / trang game. Nút <b>Báo cáo</b> chép số liệu để gửi khách.</p>
+      <td><div class="row-act">${a.report_key ? `<a class="btn small line" href="${esc(reportUrl(a))}" target="_blank" rel="noopener" title="Mở trang báo cáo của chiến dịch">Báo cáo ↗</a><button class="btn small line" data-act="copy" data-v="${esc(reportUrl(a))}" data-msg="Đã chép link báo cáo. Gửi link này cho khách." title="Chép link báo cáo để gửi khách">Chép link</button>` : `<button class="btn small line" data-act="copy" data-v="${esc(adReport(a))}" data-msg="Đã chép số liệu báo cáo (dạng chữ)." title="Chép số liệu dạng chữ">Chép số liệu</button>`}${delCell(a.id)}</div></td></tr>`; }).join('');
+  return `${legacy}<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Mọi quảng cáo của khách quản lý ở đây. Hai vị trí: <b>banner lớn đầu trang chủ</b> (chạy chung với KV các game) và <b>banner ngang</b> dưới thư viện / trang game. ${window.__adReport === false ? '<b>Chưa bật trang báo cáo:</b> chạy lại <span class="mono">schema.sql</span> trong Supabase › SQL Editor.' : 'Nút <b>Báo cáo</b> mở trang báo cáo của chiến dịch. <b>Chép link</b> để gửi khách: khách mở link xem số liệu cập nhật liên tục, không cần đăng nhập.'}</p>
     ${tableWrap(['', 'Khách hàng', 'Vị trí', 'Thời gian', 'Hiệu quả', 'Bật', ''], rows, 'Chưa có quảng cáo nào. Bấm “+ Thêm quảng cáo” khi có khách đặt.')}`;
 }
 
@@ -2536,7 +2547,7 @@ document.addEventListener('click', async e => {
         break;
       }
       case 'fs-close': document.body.classList.remove('pseudo-fs'); break;
-      case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
+      case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast(t.dataset.msg || 'Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
       case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) };
         if (tab === 'games') { const g = editing.item; g.screenshots = gameMedia(g); if (!(g.features || []).length && g.highlights) g.features = pairs(g.highlights).slice(0, 3).map(([title, text]) => ({ image: '', title, text })); } confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
@@ -2601,7 +2612,7 @@ document.addEventListener('click', async e => {
       case 'admin-del-yes': { const { error } = await sb.from('admins').delete().eq('email', id); if (error) throw new Error('Không xoá được: ' + error.message); confirmDel = null; ADMINS = null; render(); toast('Đã xoá quyền của ' + id); break; }
       case 'admin-invite': await inviteAdmin(id); toast('Đã gửi lại email mời tới ' + id); break;
     }
-  } catch (err) { toast(err.message || 'Có lỗi xảy ra', true); }
+  } catch (err) { toast(netMsg(err) || err.message || 'Có lỗi xảy ra', true, 6000); }
 });
 
 document.addEventListener('input', e => {
@@ -2694,6 +2705,8 @@ document.addEventListener('submit', async e => {
       if (v.placement !== 'game') v.game_ids = [];
       v.weight = Math.min(10, Math.max(1, Number(v.weight) || 1));
       v.hero_sort = Number(v.hero_sort) || 0;
+      v.budget = Math.max(0, Number(v.budget) || 0);
+      if (!window.__adReport) { delete v.budget; delete v.show_cost; }   // chưa chạy schema.sql mới thì chưa có 2 cột này
     }
     if (missing) { toast(`Hãy điền “${missing.label}”.`, true); form.elements[missing.k]?.focus(); return; }
     if (kind === 'display') v.banner_speed = Math.max(2, Number(v.banner_speed) || 6), v.grid_rows = Math.max(1, Number(v.grid_rows) || 3);

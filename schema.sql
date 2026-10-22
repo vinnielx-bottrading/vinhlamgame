@@ -345,6 +345,76 @@ end $$;
 revoke all on function public.site_stats(int) from public;
 grant execute on function public.site_stats(int) to authenticated;
 
+-- ---------- Trang báo cáo quảng cáo cho khách (/report?id=…&k=…) ----------
+-- Mỗi chiến dịch có một mã bí mật report_key. Ai có link (id + mã) mới xem được báo cáo của đúng chiến dịch đó.
+-- budget: giá trị hợp đồng (đồng) để tính CPM / CPC; show_cost = có hiện chi phí cho khách không. Cả ba cột khách không đọc được trực tiếp.
+alter table ads add column if not exists report_key text;
+alter table ads add column if not exists budget     numeric default 0;
+alter table ads add column if not exists show_cost  boolean default false;
+alter table ads alter column report_key set default substr(md5(random()::text || clock_timestamp()::text), 1, 20);
+update ads set report_key = substr(md5(random()::text || id || clock_timestamp()::text), 1, 20) where coalesce(report_key, '') = '';
+
+create or replace function public.campaign_report(p_id text, p_key text default '')
+returns jsonb
+language plpgsql stable security definer set search_path = public
+as $$
+declare
+  a      ads%rowtype;
+  tz     text := 'Asia/Ho_Chi_Minh';
+  today  date := (now() at time zone 'Asia/Ho_Chi_Minh')::date;
+  d0     date;
+  d1     date;   -- ngày cuối có số liệu (không vượt hôm nay)
+  dend   date;   -- ngày kết thúc hợp đồng
+  since  timestamptz;
+  r      text;
+  admin  boolean := public.is_admin();
+begin
+  select * into a from ads where id = p_id;
+  if not found or not (admin or (coalesce(a.report_key, '') <> '' and a.report_key = p_key)) then
+    raise exception 'Không tìm thấy báo cáo. Link có thể đã sai hoặc hết hiệu lực.';
+  end if;
+  r    := 'c:' || a.id;
+  d0   := coalesce(nullif(a.start_at, '')::date, (a.created_at at time zone tz)::date);
+  dend := nullif(a.end_at, '')::date;
+  d1   := least(coalesce(dend, today), today);
+  if d1 < d0 then d1 := d0; end if;
+  since := d0::timestamp at time zone tz;
+  return jsonb_build_object(
+    'ad', jsonb_build_object('advertiser', a.advertiser, 'title', a.title, 'image', a.image, 'hero_image', a.hero_image,
+            'link_url', a.link_url, 'placement', a.placement, 'hero_on', a.hero_on, 'active', a.active,
+            'start', to_char(d0, 'YYYY-MM-DD'), 'end', coalesce(to_char(dend, 'YYYY-MM-DD'), ''),
+            'games', (select coalesce(jsonb_agg(g.title), '[]'::jsonb) from games g where a.placement = 'game' and a.game_ids ? g.id)),
+    'cost', case when admin or a.show_cost then coalesce(a.budget, 0) else null end,
+    'today', to_char(today, 'YYYY-MM-DD'),
+    'generated_at', now(),
+    'totals', (select jsonb_build_object(
+        'views',    count(*) filter (where type = 'ad_view'),
+        'clicks',   count(*) filter (where type = 'ad_click'),
+        'reach',    count(distinct vid) filter (where type = 'ad_view'),
+        'clickers', count(distinct vid) filter (where type = 'ad_click'))
+      from events where ref = r and at >= since),
+    'daily', (select coalesce(jsonb_agg(jsonb_build_object('d', to_char(g.d, 'YYYY-MM-DD'), 'views', coalesce(x.v, 0), 'clicks', coalesce(x.c, 0), 'reach', coalesce(x.u, 0)) order by g.d), '[]'::jsonb)
+      from generate_series(d0, d1, interval '1 day') as g(d)
+      left join (select (at at time zone tz)::date d, count(*) filter (where type = 'ad_view') v, count(*) filter (where type = 'ad_click') c,
+                        count(distinct vid) filter (where type = 'ad_view') u
+                 from events where ref = r and at >= since group by 1) x on x.d = g.d::date),
+    'devices', (select coalesce(jsonb_agg(jsonb_build_object('device', dv, 'views', v, 'clicks', c) order by v desc), '[]'::jsonb)
+      from (select coalesce(nullif(device, ''), 'khác') dv, count(*) filter (where type = 'ad_view') v, count(*) filter (where type = 'ad_click') c
+            from events where ref = r and at >= since group by 1) t),
+    'pages', (select coalesce(jsonb_agg(jsonb_build_object('path', pth, 'views', v, 'clicks', c) order by v desc), '[]'::jsonb)
+      from (select case when coalesce(path, '') in ('', '/', '#/', '#') then 'Trang chủ'
+                        when path like '#/game/%' then coalesce((select 'Trang game · ' || g.title from games g where path like '#/game/' || g.slug || '%' limit 1), path)
+                        else path end pth,
+                   count(*) filter (where type = 'ad_view') v, count(*) filter (where type = 'ad_click') c
+            from events where ref = r and at >= since group by 1 order by 2 desc limit 10) t),
+    'hours', (select coalesce(jsonb_agg(jsonb_build_object('h', h, 'views', v, 'clicks', c) order by h), '[]'::jsonb)
+      from (select extract(hour from at at time zone tz)::int h, count(*) filter (where type = 'ad_view') v, count(*) filter (where type = 'ad_click') c
+            from events where ref = r and at >= since group by 1) t)
+  );
+end $$;
+revoke all on function public.campaign_report(text, text) from public;
+grant execute on function public.campaign_report(text, text) to anon, authenticated;
+
 -- ---------- Cập nhật trực tiếp: bật Realtime cho các bảng trang khách đọc ----------
 do $$
 declare t text;

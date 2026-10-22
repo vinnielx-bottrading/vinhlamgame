@@ -228,3 +228,18 @@ Admin bấm **Lưu** thì trang khách đang mở tự cập nhật sau khoảng
 - Khung quảng cáo chưa có khách đặt dẫn về Liên hệ, điền sẵn nội dung đặt quảng cáo. Tin nhắn này có nhãn "Quảng cáo" trong admin.
 - Không có Worker thì ảnh tải lên trong admin được nén và lưu thẳng vào database, nên chỉ hợp với ảnh nhỏ. Có Worker thì mọi ảnh và video đều lên B2.
 - `wrangler.toml` chỉ chứa biến không bí mật. Key B2 và service_role key **không bao giờ** ghi vào file hay commit lên GitHub.
+
+---
+
+## Báo cáo quảng cáo cho khách (`/report`)
+
+- Mỗi chiến dịch quảng cáo có một link báo cáo riêng, dạng `/report?id=…&k=…`. Mã `k` là mã bí mật, tạo tự động. Khách mở link là xem được số liệu cập nhật liên tục, không cần đăng nhập, và chỉ xem được đúng chiến dịch của mình.
+- Trong admin, tab **Quảng cáo**: nút **Báo cáo ↗** mở trang báo cáo, nút **Chép link** chép link để gửi khách.
+- Báo cáo gồm:
+  - Lượt hiển thị (Impression), người tiếp cận (Reach), tần suất (Frequency), lượt bấm, CTR
+  - Biểu đồ theo ngày và theo khung giờ
+  - Tỉ lệ thiết bị, các trang có hiển thị
+  - Mục giải thích cách đo
+  - Nút In / Lưu PDF
+- **CPM và CPC:** điền "Giá trị hợp đồng" và bật "Hiện chi phí…" trong form quảng cáo. Không bật thì khách không thấy chi phí.
+- **Cài đặt:** chạy lại `schema.sql` (thêm cột `report_key`, `budget`, `show_cost` và hàm `campaign_report`). Chưa chạy thì admin vẫn dùng nút **Chép số liệu** dạng chữ như cũ.

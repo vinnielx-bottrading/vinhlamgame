@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Báo cáo quảng cáo · Vinh Làm Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<style>
+/* Báo cáo hiệu quả chiến dịch gửi khách quảng cáo — cùng nhận diện với vinhlamgame (giấy trắng, đỏ rượu vang) */
+:root{
+  --paper:#FFFFFF; --paper-2:#FAF6F7; --ink:#22151B; --muted:#7C6A71; --line:#ECE2E5;
+  --wine:#6B1A2D; --wine-deep:#4A0F1F; --wine-tint:#F5EBEE; --rose:#C98A99; --ok:#2F6B4A; --warn:#9A6A12;
+  --display:'Cormorant Garamond','Iowan Old Style','Times New Roman',serif;
+  --body:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper-2);color:var(--ink);font:15px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--wine)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--paper);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:16px}
+.brand{display:flex;align-items:center;gap:10px;font:500 24px/1 var(--display);color:var(--ink);text-decoration:none}
+.brand em{color:var(--wine);font-style:italic}
+.mark{display:grid;grid-template-columns:repeat(3,7px);grid-auto-rows:7px;gap:2px}
+.mark i{background:var(--wine)} .mark i.o{background:transparent}
+.eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.top .eyebrow::before{content:"";display:inline-block;width:7px;height:7px;background:var(--wine);margin-right:8px;vertical-align:1px}
+main .wrap{display:flex;flex-direction:column;gap:22px;padding-block:28px 56px}
+.card{background:var(--paper);border:1px solid var(--line);padding:22px}
+h1{font:600 clamp(32px,5vw,48px)/1.05 var(--display);margin:6px 0 0;text-wrap:balance}
+h2{font:600 26px/1.1 var(--display);margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:14px;margin:0}
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:start}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 22px;margin-top:18px}
+.meta b{display:block;font-weight:500;font-size:15px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--wine-tint);color:var(--wine)}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.run{background:#E6F1EA;color:var(--ok)} .pill.wait{background:#F7EFDD;color:var(--warn)}
+.prog{margin-top:18px}
+.prog .bar{height:6px;background:var(--wine-tint);margin-top:8px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--wine)}
+.creative{display:flex;flex-direction:column;gap:10px;min-width:0}
+.creative .img{background:var(--paper-2);border:1px solid var(--line);display:grid;place-items:center;overflow:hidden}
+.creative img{display:block;width:100%;height:auto}
+.creative .noimg{padding:40px;color:var(--muted);font-size:13px}
+.creative .dest{font-size:13px;color:var(--muted);word-break:break-all}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.kpi{background:var(--paper);padding:18px 18px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi .v{font:600 34px/1.05 var(--display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.kpi .v small{font:500 14px var(--body);color:var(--muted);margin-left:3px}
+.kpi .d{font-size:12.5px;color:var(--muted)}
+.kpi.main .v{color:var(--wine)}
+.kpis.cost{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:-22px;border-top:0}
+.kpis.cost .v{font-size:28px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.legend{display:flex;gap:16px;font-size:12.5px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--rose)}
+.legend span.c::before{background:var(--wine);border-radius:50%;width:8px;height:8px}
+.chart{position:relative;overflow-x:auto}
+.chart svg{display:block;height:auto}
+.chart text{font:11px var(--body);fill:var(--muted)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:12.5px;padding:7px 10px;white-space:nowrap;opacity:0;transition:opacity .12s;transform:translate(-50%,-110%)}
+.tip.on{opacity:1}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
+.split{display:flex;height:34px;margin:8px 0 14px;border:1px solid var(--line)}
+.split i{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-style:normal;font-weight:600;min-width:0;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right}
+tr:last-child td{border-bottom:0}
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px 26px;font-size:13.5px}
+.gloss b{display:block;font-weight:600;color:var(--ink)}
+.gloss p{margin:2px 0 0;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:500 13.5px var(--body);padding:10px 16px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--wine);border-color:var(--wine);color:#fff}
+.btn:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+.foot{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.state{padding:60px 22px;text-align:center;color:var(--muted)}
+.state h2{color:var(--ink);margin-bottom:8px}
+.empty-note{font-size:13px;color:var(--muted);padding:6px 0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--wine);color:#fff;padding:10px 18px;font-size:13.5px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:760px){ .hero,.grid2{grid-template-columns:minmax(0,1fr)} .kpi .v{font-size:28px} }
+@media print{
+  html,body{background:#fff} header.top .actions,.actions,.toast{display:none!important}
+  .card{break-inside:avoid;border-color:#ddd} main .wrap{padding-block:10px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/"><span class="mark" aria-hidden="true"><i></i><i class="o"></i><i></i><i></i><i></i><i></i><i class="o"></i><i></i><i class="o"></i></span>Vinh <em>Làm</em> Game</a>
+  <span class="eyebrow">Báo cáo quảng cáo</span>
+</div></header>
+<main><div class="wrap" id="app"><div class="card state"><h2>Đang tải báo cáo…</h2><p>Số liệu lấy trực tiếp từ hệ thống đo của Vinh Làm Game.</p></div></div></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const CONFIG = {
+  SUPABASE_URL: 'https://yzyepdkzownfajvqmzbf.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_bFh-bM6FkvlbIDSDsfX4pA_B7wDMZ2k'
+};
+const $app = document.getElementById('app');
+const qs = new URLSearchParams(location.search);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nf = n => new Intl.NumberFormat('vi-VN').format(Math.round(n || 0));
+const nf1 = n => new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 }).format(n || 0);
+const money = n => nf(n) + ' đ';
+const pct = (a, b) => b ? nf1(a / b * 100) + '%' : '—';
+const dmy = s => { if (!s) return '…'; const [y, m, d] = s.split('-'); return `${d}/${m}/${y}`; };
+const dm = s => { const [, m, d] = s.split('-'); return `${d}/${m}`; };
+const days = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 864e5);
+const PLACE = { all: 'Banner ngang toàn trang', home: 'Banner ngang trang chủ', games: 'Banner ngang mọi trang game', game: 'Banner ngang trang game', none: '' };
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); }
+
+async function load() {
+  const id = qs.get('id'), key = qs.get('k') || '';
+  if (!id) return fail('Link báo cáo chưa đủ thông tin', 'Hãy mở đúng link Vinh Làm Game đã gửi cho bạn.');
+  try {
+    const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true } });
+    const { data, error } = await sb.rpc('campaign_report', { p_id: id, p_key: key });
+    if (error) throw error;
+    render(data);
+  } catch (e) {
+    const m = e?.message || String(e);
+    if (/failed to fetch|networkerror/i.test(m)) fail('Không kết nối được', 'Kiểm tra mạng, hoặc tắt tiện ích chặn quảng cáo cho trang này rồi tải lại.');
+    else fail('Không mở được báo cáo', /Không tìm thấy/.test(m) ? 'Link có thể đã sai hoặc hết hiệu lực. Hãy liên hệ Vinh Làm Game để nhận link mới.' : m);
+  }
+}
+function fail(t, d) { $app.innerHTML = `<div class="card state"><h2>${esc(t)}</h2><p>${esc(d)}</p></div>`; }
+
+const kpiHtml = ([l, v, d, c]) => `<div class="kpi ${c || ''}"><span class="eyebrow">${l}</span><span class="v">${v}</span><span class="d">${d}</span></div>`;
+function render(R) {
+  const a = R.ad, T = R.totals, cost = R.cost;
+  const today = R.today, total = a.end ? days(a.start, a.end) + 1 : null;
+  const elapsed = Math.max(0, Math.min(total ?? Infinity, days(a.start, today) + 1));
+  const [stText, stCls] = !a.active ? ['Đã tắt', ''] : a.start > today ? ['Chờ chạy', 'wait'] : a.end && a.end < today ? ['Đã kết thúc', ''] : ['Đang chạy', 'run'];
+  const places = [a.hero_on ? 'Banner lớn đầu trang chủ' : '', PLACE[a.placement] || ''].filter(Boolean);
+  const freq = T.reach ? T.views / T.reach : 0;
+  const kpis = [
+    ['Lượt hiển thị', nf(T.views), 'Banner hiện ít nhất một nửa trên màn hình', 'main'],
+    ['Người tiếp cận', nf(T.reach), 'Số trình duyệt khác nhau đã thấy banner'],
+    ['Tần suất', nf1(freq), 'Trung bình mỗi người thấy bấy nhiêu lần'],
+    ['Lượt bấm', nf(T.clicks), `${nf(T.clickers)} người đã bấm`, 'main'],
+    ['Tỉ lệ bấm (CTR)', pct(T.clicks, T.views), 'Lượt bấm / lượt hiển thị'],
+    ['TB mỗi ngày', nf(T.views / Math.max(1, R.daily.length)), `lượt hiển thị, tính trên ${R.daily.length} ngày đã chạy`],
+  ];
+  const costK = [];
+  if (cost != null && cost > 0) costK.push(
+    ['Giá trị hợp đồng', money(cost), 'Chi phí cả chiến dịch'],
+    ['CPM', T.views ? money(cost / T.views * 1000) : '—', 'Chi phí cho 1.000 lượt hiển thị'],
+    ['CPC', T.clicks ? money(cost / T.clicks) : '—', 'Chi phí cho mỗi lượt bấm']);
+  const img = a.image || a.hero_image;
+  const devTot = R.devices.reduce((s, d) => s + d.views, 0);
+  const DEV = { desktop: ['Máy tính', 'var(--wine)'], mobile: ['Điện thoại', 'var(--rose)'], 'khác': ['Khác', '#B9AEB2'] };
+  $app.innerHTML = `
+    <section class="card hero">
+      <div>
+        <div class="eyebrow">${esc(a.advertiser)}</div>
+        <h1>${esc(a.title || 'Chiến dịch quảng cáo')}</h1>
+        <div class="meta">
+          <div><span class="eyebrow">Trạng thái</span><b><span class="pill ${stCls}">${stText}</span></b></div>
+          <div><span class="eyebrow">Thời gian</span><b>${dmy(a.start)} → ${a.end ? dmy(a.end) : 'chưa đặt ngày kết thúc'}</b></div>
+          <div><span class="eyebrow">Vị trí</span><b>${esc(places.join(' + ') || '—')}</b>${a.games?.length ? `<span class="sub">${esc(a.games.join(', '))}</span>` : ''}</div>
+        </div>
+        ${total ? `<div class="prog"><span class="sub">Ngày ${nf(Math.min(elapsed, total))} / ${nf(total)} của chiến dịch</span><div class="bar"><i style="width:${Math.min(100, elapsed / total * 100)}%"></i></div></div>` : ''}
+      </div>
+      <div class="creative">
+        <span class="eyebrow">Mẫu quảng cáo</span>
+        <div class="img">${img ? `<img src="${esc(img)}" alt="Banner ${esc(a.advertiser)}">` : '<div class="noimg">Chưa có ảnh</div>'}</div>
+        ${a.link_url ? `<div class="dest">Dẫn tới: <a href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_url)}</a></div>` : ''}
+      </div>
+    </section>
+
+    <section class="kpis" aria-label="Chỉ số chính">${kpis.map(kpiHtml).join('')}</section>
+    ${costK.length ? `<section class="kpis cost" aria-label="Chi phí">${costK.map(kpiHtml).join('')}</section>` : ''}
+
+    <section class="card">
+      <div class="sec-head"><div><h2>Theo ngày</h2><p class="sub">Lượt hiển thị và lượt bấm mỗi ngày (giờ Việt Nam)</p></div>
+        <div class="legend"><span>Lượt hiển thị</span><span class="c">Lượt bấm</span></div></div>
+      <div class="chart" id="chart"></div>
+    </section>
+
+    <section class="grid2">
+      <div class="card">
+        <h2>Thiết bị</h2><p class="sub">Tỉ lệ lượt hiển thị theo loại thiết bị</p>
+        ${devTot ? `<div class="split">${R.devices.map(d => { const [n, c] = DEV[d.device] || [d.device, '#B9AEB2']; const w = d.views / devTot * 100; return `<i style="width:${w}%;background:${c}" title="${n}">${w >= 12 ? Math.round(w) + '%' : ''}</i>`; }).join('')}</div>
+        <table><thead><tr><th>Thiết bị</th><th class="n">Hiển thị</th><th class="n">Bấm</th><th class="n">CTR</th></tr></thead><tbody>
+        ${R.devices.map(d => `<tr><td>${(DEV[d.device] || [d.device])[0]}</td><td class="n">${nf(d.views)}</td><td class="n">${nf(d.clicks)}</td><td class="n">${pct(d.clicks, d.views)}</td></tr>`).join('')}</tbody></table>` : '<p class="empty-note">Chưa có số liệu.</p>'}
+      </div>
+      <div class="card">
+        <h2>Khung giờ</h2><p class="sub">Lượt hiển thị theo giờ trong ngày</p>
+        <div class="chart" id="hours"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Trang hiển thị</h2><p class="sub">Banner được xem ở những trang nào của Vinh Làm Game</p>
+      ${R.pages.length ? `<table style="margin-top:10px"><thead><tr><th>Trang</th><th class="n">Hiển thị</th><th class="n">Bấm</th><th class="n">CTR</th></tr></thead><tbody>
+      ${R.pages.map(p => `<tr><td>${esc(p.path)}</td><td class="n">${nf(p.views)}</td><td class="n">${nf(p.clicks)}</td><td class="n">${pct(p.clicks, p.views)}</td></tr>`).join('')}</tbody></table>` : '<p class="empty-note">Chưa có số liệu.</p>'}
+    </section>
+
+    <section class="card">
+      <h2 style="margin-bottom:14px">Cách đo số liệu</h2>
+      <div class="gloss">
+        <div><b>Lượt hiển thị (Impression)</b><p>Tính 1 lượt khi banner hiện ít nhất 50% diện tích trên màn hình người xem. Mỗi lần mở trang chỉ tính 1 lượt cho mỗi banner.</p></div>
+        <div><b>Người tiếp cận (Reach)</b><p>Số trình duyệt khác nhau đã thấy banner. Một người dùng 2 thiết bị được tính là 2.</p></div>
+        <div><b>Tần suất (Frequency)</b><p>Lượt hiển thị chia cho người tiếp cận: trung bình mỗi người thấy banner bao nhiêu lần.</p></div>
+        <div><b>Lượt bấm và CTR</b><p>Lượt bấm vào banner để mở trang của bạn. CTR là lượt bấm chia cho lượt hiển thị.</p></div>
+        ${cost != null && cost > 0 ? `<div><b>CPM và CPC</b><p>CPM là chi phí cho 1.000 lượt hiển thị. CPC là chi phí cho mỗi lượt bấm. Cả hai tính trên giá trị hợp đồng.</p></div>` : ''}
+        <div><b>Nguồn số liệu</b><p>Hệ thống đo riêng của Vinh Làm Game, cập nhật liên tục. Lượt mở trang của quản trị viên và công cụ tự động có thể vẫn được tính.</p></div>
+      </div>
+    </section>
+
+    <div class="foot">
+      <span>Cập nhật lúc ${new Date(R.generated_at).toLocaleString('vi-VN')}</span>
+      <div class="actions"><button class="btn" data-a="reload">Làm mới số liệu</button><button class="btn" data-a="copy">Chép link báo cáo</button><button class="btn pri" data-a="print">In / Lưu PDF</button></div>
+    </div>`;
+  drawDaily(R.daily); drawHours(R.hours);
+}
+
+function svgBars(el, items, { labelEvery = 1, h = 220, line = true, fmtLabel = x => x, tipOf }) {
+  const W = Math.max(520, el.clientWidth || 900, items.length * 26), L = 44, Rp = 12, Tp = 14, B = 28, ih = h - Tp - B, iw = W - L - Rp;
+  const maxV = Math.max(1, ...items.map(d => d.views)), maxC = Math.max(1, ...items.map(d => d.clicks || 0));
+  const nice = v => { const p = 10 ** Math.floor(Math.log10(v)); const m = v / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+  const tick = Math.max(1, nice(maxV / 4)), top = tick * Math.ceil(maxV / tick), step = iw / items.length, bw = Math.max(3, Math.min(28, step * 0.62));
+  const y = v => Tp + ih - v / top * ih, yc = v => Tp + ih - v / Math.max(nice(maxC), 1) * ih * 0.92;
+  let g = '';
+  for (let v = 0; v <= top; v += tick) { const yy = y(v); g += `<line x1="${L}" x2="${W - Rp}" y1="${yy}" y2="${yy}" stroke="#ECE2E5"/><text x="${L - 8}" y="${yy + 4}" text-anchor="end">${nf(v)}</text>`; }
+  items.forEach((d, i) => {
+    const x = L + step * i + (step - bw) / 2;
+    g += `<rect x="${x}" y="${y(d.views)}" width="${bw}" height="${Tp + ih - y(d.views)}" fill="#C98A99"/>`;
+    if (i % labelEvery === 0) g += `<text x="${x + bw / 2}" y="${h - 9}" text-anchor="middle">${fmtLabel(d)}</text>`;
+    g += `<rect x="${L + step * i}" y="${Tp}" width="${step}" height="${ih}" fill="transparent" data-i="${i}"/>`;
+  });
+  if (line && items.some(d => d.clicks)) {
+    const pts = items.map((d, i) => `${L + step * i + step / 2},${yc(d.clicks)}`);
+    g += `<polyline points="${pts.join(' ')}" fill="none" stroke="#6B1A2D" stroke-width="2"/>` + items.map((d, i) => `<circle cx="${L + step * i + step / 2}" cy="${yc(d.clicks)}" r="3" fill="#6B1A2D"/>`).join('');
+  }
+  el.innerHTML = `<svg width="${W}" height="${h}" viewBox="0 0 ${W} ${h}" role="img" aria-label="Biểu đồ">${g}</svg><div class="tip"></div>`;
+  const tip = el.querySelector('.tip'), svg = el.querySelector('svg');
+  svg.addEventListener('pointermove', e => {
+    const r = e.target.closest('[data-i]'); if (!r) { tip.classList.remove('on'); return; }
+    const d = items[+r.dataset.i]; const box = el.getBoundingClientRect();
+    tip.innerHTML = tipOf(d); tip.style.left = (e.clientX - box.left + el.scrollLeft) + 'px'; tip.style.top = (e.clientY - box.top) + 'px'; tip.classList.add('on');
+  });
+  svg.addEventListener('pointerleave', () => tip.classList.remove('on'));
+}
+function drawDaily(daily) {
+  const el = document.getElementById('chart'); if (!daily.length) { el.innerHTML = '<p class="empty-note">Chưa có số liệu.</p>'; return; }
+  svgBars(el, daily, { labelEvery: Math.ceil(daily.length / 14), fmtLabel: d => dm(d.d), tipOf: d => `<b>${dmy(d.d)}</b><br>${nf(d.views)} hiển thị · ${nf(d.clicks)} bấm · CTR ${pct(d.clicks, d.views)}` });
+}
+function drawHours(hours) {
+  const el = document.getElementById('hours'); const m = Object.fromEntries(hours.map(h => [h.h, h]));
+  const items = Array.from({ length: 24 }, (_, h) => ({ h, views: m[h]?.views || 0, clicks: m[h]?.clicks || 0 }));
+  if (!hours.length) { el.innerHTML = '<p class="empty-note">Chưa có số liệu.</p>'; return; }
+  svgBars(el, items, { labelEvery: 3, h: 200, line: false, fmtLabel: d => d.h + 'h', tipOf: d => `<b>${d.h}:00 – ${d.h}:59</b><br>${nf(d.views)} hiển thị · ${nf(d.clicks)} bấm` });
+}
+
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  if (b.dataset.a === 'reload') { load(); }
+  if (b.dataset.a === 'print') window.print();
+  if (b.dataset.a === 'copy') { try { await navigator.clipboard.writeText(location.href); toast('Đã chép link báo cáo'); } catch { toast('Hãy chép link trên thanh địa chỉ.'); } }
+});
+let LAST = null; const _render = render; render = R => { LAST = R; _render(R); };
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => LAST && (drawDaily(LAST.daily), drawHours(LAST.hours)), 150); });
+if (qs.has('demo') && window.__DEMO) render(window.__DEMO); else load();
+</script>
+</body>
+</html>

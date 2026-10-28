@@ -373,6 +373,18 @@ p{margin:0}
 .lb figcaption{color:#fff;font-size:15px;text-align:center}
 .lb figcaption .num{opacity:.6;margin-left:8px;font-size:13px}
 .lb-x{position:absolute;top:12px;right:16px;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:26px;line-height:44px}
+.promo{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:24px}
+.promo-back{position:absolute;inset:0;background:rgba(10,5,7,.82);backdrop-filter:blur(2px);animation:promoFade .35s both}
+.promo-card{position:relative;width:min(92vw,460px);aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.5);animation:promoIn .4s cubic-bezier(.2,.9,.25,1.2) both}
+.promo-rays{position:absolute;top:50%;left:50%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;background:repeating-conic-gradient(from 0deg,rgba(255,214,140,.30) 0deg 3deg,transparent 3deg 18deg);animation:promoSpin 30s linear infinite;pointer-events:none;mix-blend-mode:screen;z-index:0}
+.promo-media{position:absolute;inset:0;display:block;z-index:1}
+.promo-media img,.promo-media video,.promo-media iframe{width:100%;height:100%;object-fit:cover;border:0;display:block}
+.promo-x{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font-size:22px;line-height:36px;backdrop-filter:blur(2px)}
+.promo-tag{position:absolute;top:12px;left:12px;z-index:2;padding:5px 12px;border-radius:999px;background:var(--wine);color:#fff;font:700 11px/1 var(--gt,inherit);letter-spacing:.04em;text-transform:uppercase;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+@keyframes promoFade{from{opacity:0}to{opacity:1}}
+@keyframes promoIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes promoSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){ .promo-rays{animation:none} .promo-card,.promo-back{animation:none} }
 @media (max-width:900px){ .gp-grid{grid-template-columns:minmax(0,1fr)} .gp-info{order:-1} }
 @media (max-width:760px){
   .gp-mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid var(--line);align-items:center;justify-content:space-between;gap:12px;transform:translateY(110%);transition:transform .25s}
@@ -596,6 +608,7 @@ const SEED = {
     footer_text: 'Làm game nhỏ, chơi trên trình duyệt.',
     facebook: '', youtube: '', github: '',
     banner_autoplay: true, banner_speed: 6, logo_seconds: 4, logo_corner: 'tl', cr_on: true, cr_text: 'Bản quyền game thuộc về Vinh Làm Game', cr_seconds: 15,
+    popup_on: false, popup_tag: 'SIÊU HOT', popup_media_type: 'image', popup_seconds: 8, popup_repeat_hours: 24,
     grid_cols: '3', pagination_on: false, grid_rows: 3,
     genre_show_count: true,
     ad_on: true, ad_image: '', ad_link: '', ad_size: '6/1',
@@ -903,6 +916,50 @@ function startSlides() {
   const ms = Number(cur.dataset.ms) || slideMs();
   slideTimer = setTimeout(() => { if (!document.hidden && !document.querySelector('.slides:hover')) goSlide(1); else startSlides(); }, ms);
 }
+
+/* ---------- Popup quảng bá (SIÊU HOT) ---------- */
+let promoTimer = null;
+function promoMedia(s) {
+  const label = esc(s.popup_tag || 'Khuyến mãi');
+  const yt = s.popup_media_type === 'youtube' && ytId(s.popup_video_url);
+  if (yt) return `<iframe src="https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=0&modestbranding=1&playsinline=1&rel=0&disablekb=1" title="${label}" tabindex="-1" allow="autoplay; encrypted-media"></iframe>`;
+  if (s.popup_media_type === 'video' && s.popup_video_url) return `<video src="${esc(s.popup_video_url)}" ${s.popup_image ? `poster="${esc(s.popup_image)}"` : ''} autoplay muted loop playsinline></video>`;
+  return s.popup_image ? `<img src="${esc(s.popup_image)}" alt="${label}">` : '';
+}
+function maybeShowPromo() {
+  const s = D.settings || {};
+  if (!s.popup_on || !s.popup_image) return;
+  let last = 0; try { last = Number(localStorage.getItem('vlg_promo_seen') || 0); } catch (_) {}
+  const hrs = Number(s.popup_repeat_hours) || 0;
+  if (hrs > 0 && last && Date.now() - last < hrs * 3600000) return;
+  setTimeout(openPromo, 700);
+}
+function openPromo() {
+  const s = D.settings || {};
+  if ($('#promo')) return;
+  try { localStorage.setItem('vlg_promo_seen', String(Date.now())); } catch (_) {}
+  const ext = /^https?:\/\//i.test(s.popup_link || '');
+  const m = document.createElement('div'); m.id = 'promo'; m.className = 'promo'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+  m.innerHTML = `<div class="promo-back" data-act="promo-close"></div>
+    <div class="promo-card">
+      <div class="promo-rays" aria-hidden="true"></div>
+      <button type="button" class="promo-x" data-act="promo-close" aria-label="Đóng">×</button>
+      ${s.popup_link ? `<a class="promo-media" href="${esc(s.popup_link)}" target="_blank" rel="noopener" data-act="promo-hit">${promoMedia(s)}</a>` : `<div class="promo-media">${promoMedia(s)}</div>`}
+      ${s.popup_tag ? `<span class="promo-tag">${esc(s.popup_tag)}</span>` : ''}
+    </div>`;
+  document.body.appendChild(m);
+  document.body.style.overflow = 'hidden';
+  if (typeof Track !== 'undefined') Track.push('promo_view', '', true);
+  const secs = Number(s.popup_seconds);
+  if (secs > 0) promoTimer = setTimeout(closePromo, secs * 1000);
+}
+function closePromo() {
+  clearTimeout(promoTimer);
+  try { localStorage.setItem('vlg_promo_seen', String(Date.now())); } catch (_) {}
+  $('#promo')?.remove();
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#promo')) closePromo(); });
 
 /* ============ TRANG CÔNG KHAI ============ */
 // Điện thoại / máy tính bảng (chỉ cảm ứng): mở thẳng game, không nhúng khung
@@ -1501,6 +1558,8 @@ document.addEventListener('click', async e => {
       case 'lb': openLB(Number(t.dataset.i)); break;
       case 'lb-step': openLB(lbIdx + Number(t.dataset.d)); break;
       case 'lb-close': closeLB(); break;
+      case 'promo-close': closePromo(); break;
+      case 'promo-hit': if (typeof Track !== 'undefined') Track.push('promo_click', '', true); closePromo(); break;
       case 'th-fs': { if (document.fullscreenElement) document.exitFullscreen?.(); else document.documentElement.requestFullscreen?.().catch(() => toast('Trình duyệt không cho bật toàn màn hình, bấm F11.', true)); break; }
       case 'th-more': { const m = $('#thMenu'); m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); break; }
       case 'tip-close': closeTip(); break;
@@ -1634,6 +1693,7 @@ window.addEventListener('popstate', () => { ROUTE = location.hash || '#/'; close
   if (typeof afterBoot === 'function') await afterBoot();
   render();
   if (typeof startLive === 'function') startLive();
+  if (typeof maybeShowPromo === 'function') maybeShowPromo();
 })();
 </script>
 

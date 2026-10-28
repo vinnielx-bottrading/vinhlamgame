@@ -373,6 +373,18 @@ p{margin:0}
 .lb figcaption{color:#fff;font-size:15px;text-align:center}
 .lb figcaption .num{opacity:.6;margin-left:8px;font-size:13px}
 .lb-x{position:absolute;top:12px;right:16px;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:26px;line-height:44px}
+.promo{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:24px}
+.promo-back{position:absolute;inset:0;background:rgba(10,5,7,.82);backdrop-filter:blur(2px);animation:promoFade .35s both}
+.promo-card{position:relative;width:min(92vw,460px);aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.5);animation:promoIn .4s cubic-bezier(.2,.9,.25,1.2) both}
+.promo-rays{position:absolute;top:50%;left:50%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;background:repeating-conic-gradient(from 0deg,rgba(255,214,140,.30) 0deg 3deg,transparent 3deg 18deg);animation:promoSpin 30s linear infinite;pointer-events:none;mix-blend-mode:screen;z-index:0}
+.promo-media{position:absolute;inset:0;display:block;z-index:1}
+.promo-media img,.promo-media video,.promo-media iframe{width:100%;height:100%;object-fit:cover;border:0;display:block}
+.promo-x{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font-size:22px;line-height:36px;backdrop-filter:blur(2px)}
+.promo-tag{position:absolute;top:12px;left:12px;z-index:2;padding:5px 12px;border-radius:999px;background:var(--wine);color:#fff;font:700 11px/1 var(--gt,inherit);letter-spacing:.04em;text-transform:uppercase;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+@keyframes promoFade{from{opacity:0}to{opacity:1}}
+@keyframes promoIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes promoSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){ .promo-rays{animation:none} .promo-card,.promo-back{animation:none} }
 @media (max-width:900px){ .gp-grid{grid-template-columns:minmax(0,1fr)} .gp-info{order:-1} }
 @media (max-width:760px){
   .gp-mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);border-top:1px solid var(--line);align-items:center;justify-content:space-between;gap:12px;transform:translateY(110%);transition:transform .25s}
@@ -616,13 +628,17 @@ textarea{min-height:120px;resize:vertical}
 .acc-sw.on{box-shadow:0 0 0 2px var(--c)}
 .acc-in{width:96px !important;font-family:ui-monospace,monospace;font-size:13px}
 .acc-prev{color:#fff;font-size:13px;font-weight:700;padding:8px 14px;border-radius:6px}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.feat-ed{display:grid;gap:10px;align-content:start;padding:12px;background:var(--paper-2);border-radius:4px}
-.feat-ed > b{font-size:13px}
-.feat-ed textarea{min-height:64px}
-.feat-ed .img-field{grid-template-columns:minmax(0,1fr)}
-.feat-ed .img-prev{aspect-ratio:16/9;width:100%}
-.feat-ed .img-btns{flex-wrap:wrap}
+.feat-list{display:grid;gap:10px}
+.feat-row{display:grid;grid-template-columns:auto 150px minmax(0,1fr);gap:12px;align-items:start;padding:10px;background:var(--paper-2);border-radius:4px}
+.feat-n{display:grid;place-items:center;width:22px;height:22px;margin-top:2px;border-radius:999px;background:var(--wine);color:#fff;font-size:12px;font-weight:700}
+.feat-img .img-field{grid-template-columns:minmax(0,1fr)}
+.feat-img .img-prev{aspect-ratio:16/9;width:100%}
+.feat-img .img-btns{flex-wrap:wrap}
+.feat-img .drop-hint{display:none}
+.feat-txt{display:grid;gap:8px;align-content:start}
+.feat-txt input,.feat-txt textarea{width:100%}
+.feat-txt textarea{min-height:56px}
+@media (max-width:640px){ .feat-row{grid-template-columns:1fr} }
 .steps-ed{display:grid;gap:8px}
 .step-ed{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,2fr);gap:8px;align-items:center}
 .step-ed .num{font-weight:700;color:var(--wine);text-align:center}
@@ -844,6 +860,7 @@ const SEED = {
     footer_text: 'Làm game nhỏ, chơi trên trình duyệt.',
     facebook: '', youtube: '', github: '',
     banner_autoplay: true, banner_speed: 6, logo_seconds: 4, logo_corner: 'tl', cr_on: true, cr_text: 'Bản quyền game thuộc về Vinh Làm Game', cr_seconds: 15,
+    popup_on: false, popup_tag: 'SIÊU HOT', popup_media_type: 'image', popup_seconds: 8, popup_repeat_hours: 24,
     grid_cols: '3', pagination_on: false, grid_rows: 3,
     genre_show_count: true,
     ad_on: true, ad_image: '', ad_link: '', ad_size: '6/1',
@@ -901,7 +918,6 @@ const Store = {
       if (err) throw err.error;
       session = ss.data.session;
       D = { settings: { ...SEED.settings, ...(s.data?.data || {}) }, games: g.data || [], genres: ge.data || [], banners: b.data || [], ads: ad.error ? [] : (ad.data || []) };   // bảng ads chưa tạo thì bỏ qua
-      if (window.__fullCols && session) { const pr = await sb.from('ads').select('report_key,budget,show_cost').limit(1); window.__adReport = !pr.error; }   // đã chạy schema.sql bản có báo cáo?
     } else {
       let raw = null;
       try { raw = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
@@ -923,11 +939,7 @@ const Store = {
     return item;
   },
   async remove(kind, id) {
-    if (MODE === 'cloud') {
-      // Bảng ads: dùng bộ lọc or=(...) để link không có dạng "/ads?id=" mà trình chặn quảng cáo (AdBlock, uBlock…) hay chặn.
-      const q = sb.from(TABLES[kind]).delete();
-      const { error } = await (kind === 'ads' ? q.or(`id.eq.${id}`) : q.eq('id', id)); if (error) throw error;
-    }
+    if (MODE === 'cloud') { const { error } = await sb.from(TABLES[kind]).delete().eq('id', id); if (error) throw error; }
     D[kind] = D[kind].filter(x => x.id !== id);
     if (kind === 'games') D.banners.forEach(b => { if (b.game_id === id) b.game_id = ''; });
     if (MODE === 'local') this.persist();
@@ -1103,39 +1115,40 @@ let SUBSEL = null;           // id game đang chọn trong tab "Admin game con"
 
 const FIELDS = {
   games: [
-    { type: 'heading', sec: true, label: '1 · Đầu trang', note: 'Slide ảnh / video và thông tin chính' },
-    { k: 'screenshots', label: 'Slide ảnh / video (16:9 · 1920 × 1080) · kéo để đổi thứ tự', type: 'images', max: 1920, full: true, hint: 'Thứ tự ở đây là thứ tự khách vuốt xem. Nhận ảnh, video .mp4 / .webm và link YouTube. Ảnh có caption sẽ hiện thêm ở mục Hình ảnh.' },
+    { type: 'heading', sec: true, label: '1 · Tên & mô tả', note: 'Chỉ gõ chữ' },
     { k: 'title', label: 'Tên game', type: 'text', req: true },
     { k: 'subtitle', label: 'Tên phụ', type: 'text', hint: 'VD: Đập Phá. Hiện nhỏ dưới tên game.' },
-    { k: 'genre_ids', label: 'Nhãn trên trang (bấm để bật / tắt)', type: 'tags', full: true, hint: 'Thể loại thêm / sửa ở tab Thể loại.' },
     { k: 'tagline', label: 'Câu hook (dòng màu nhấn)', type: 'text', full: true },
     { k: 'summary', label: 'Mô tả ngắn', type: 'textarea', max: 160, full: true, hint: 'Khoảng 2 dòng.' },
-    { k: 'play_url', label: 'Link chơi game', type: 'url', hint: 'Để trống = nút “Sắp ra mắt”.' },
+    { k: 'play_url', label: 'Link chơi game', type: 'url', full: true, hint: 'Để trống = nút “Sắp ra mắt”.' },
+    { type: 'heading', sec: true, label: '2 · Hình ảnh', note: 'Slide, KV trang chủ, thumbnail — gom hết ảnh vào đây' },
+    { k: 'screenshots', label: 'Slide ảnh / video (16:9 · 1920 × 1080) · kéo để đổi thứ tự', type: 'images', max: 1920, full: true, hint: 'Thứ tự ở đây là thứ tự khách vuốt xem. Nhận ảnh, video .mp4 / .webm và link YouTube. Ảnh có caption sẽ tự hiện thêm ở mục Hình ảnh phụ.' },
+    { k: 'kv', label: 'KV chính — banner lớn trang chủ (21:8 · 2100 × 800)', type: 'image', max: 2400, full: true, hint: 'Để chữ và nhân vật chính ở giữa vì điện thoại cắt bớt hai bên.' },
+    { k: 'hero', label: 'Hiện KV chính trên banner trang chủ', type: 'checkbox', hint: 'Thứ tự banner kéo-thả ở danh sách Game trong tab Game.' },
+    { k: 'cover', label: 'Thumbnail — ô game trong thư viện (4:3 · 1200 × 900)', type: 'image', max: 1200, full: true, hint: 'Cũng dùng làm ảnh thay khi game chưa có slide.' },
+    { type: 'heading', sec: true, label: '3 · Điểm nổi bật', note: 'Tối đa 3 thẻ · ảnh + tiêu đề + 1 câu' },
+    { k: 'features', type: 'features', full: true },
+    { type: 'heading', sec: true, label: '4 · Cách chơi', note: 'Mặc định tắt' },
+    { k: 'show_howto', label: 'Hiện khối Cách chơi trên trang', type: 'checkbox', default: false },
+    { k: 'howto', type: 'steps', full: true, when: 'show_howto=on' },
+    { k: 'controls_detail', label: 'Phím điều khiển', type: 'textarea', full: true, when: 'show_howto=on', hint: 'Mỗi dòng: Hành động | Phím. VD: Di chuyển | W A S D' },
+    { k: 'touch_note', label: 'Điều khiển trên điện thoại', type: 'text', full: true, when: 'show_howto=on' },
+    { type: 'heading', sec: true, label: '5 · Câu chuyện', note: 'Mặc định tắt' },
+    { k: 'show_story', label: 'Hiện khối Câu chuyện trên trang', type: 'checkbox', default: false },
+    { k: 'description', label: 'Bài viết', type: 'richtext', full: true, when: 'show_story=on', hint: 'Dán từ Word / Google Docs được, định dạng lạ sẽ tự lọc bỏ.' },
+    { type: 'heading', sec: true, label: '6 · Hình ảnh phụ', note: 'Tự lấy các ảnh có caption ở mục 2, không cần tải thêm' },
+    { k: 'show_gallery', label: 'Hiện lưới hình ảnh trên trang', type: 'checkbox', default: true },
+    { type: 'heading', sec: true, label: '7 · Dải kêu gọi chơi', note: 'Bỏ trống câu lớn thì dùng câu hook' },
+    { k: 'cta_title', label: 'Câu lớn', type: 'text' },
+    { k: 'cta_sub', label: 'Câu nhỏ', type: 'text' },
+    { type: 'heading', sec: true, label: '8 · Cài đặt chơi', note: 'Chỉ bấm chọn' },
+    { k: 'genre_ids', label: 'Nhãn trên trang (bấm để bật / tắt)', type: 'tags', full: true, hint: 'Thể loại thêm / sửa ở tab Thể loại.' },
     { k: 'device', label: 'Tối ưu cho thiết bị', type: 'select', options: [['', 'Chưa chọn (không hiện biểu tượng)'], ['both', 'Cả máy tính và điện thoại'], ['desktop', 'Máy tính'], ['mobile', 'Điện thoại']], hint: 'Hiện biểu tượng trên thumbnail ở thư viện và dưới nút Chơi ngay ở trang game.' },
     { k: 'play_mode', label: 'Cách mở game', type: 'select', options: [['frame', 'Trang chơi Vinh Làm Game: toàn màn hình, có logo'], ['direct', 'Mở trực tiếp link game: cho game cần đăng nhập / lưu tiến độ']], hint: 'Trang chơi không sửa code game, chỉ thêm logo vài giây ở một góc.' },
     { k: 'logo_corner', label: 'Góc hiện logo trong game này', type: 'select', options: [['', 'Theo cài đặt chung (tab Giao diện)'], ['tl', 'Trên trái'], ['tr', 'Trên phải'], ['bl', 'Dưới trái'], ['br', 'Dưới phải']], when: 'play_mode=frame', hint: 'Chọn góc không có nút của game.' },
     { k: 'accent', label: 'Màu nhấn của game', type: 'accent' },
     { k: 'is_free', label: 'Miễn phí', type: 'checkbox', default: true, hint: 'Tick: nút hiện “Chơi ngay · Miễn phí”. Bỏ tick: chỉ “Chơi ngay”.' },
-    { type: 'heading', sec: true, label: '2 · Điểm nổi bật', note: 'Tối đa 3 thẻ · ảnh 16:9 + tiêu đề + 1 câu' },
-    { k: 'features', type: 'features', full: true },
-    { type: 'heading', sec: true, label: '3 · Cách chơi', note: 'Mặc định tắt' },
-    { k: 'show_howto', label: 'Hiện khối Cách chơi trên trang', type: 'checkbox', default: false },
-    { k: 'howto', type: 'steps', full: true, when: 'show_howto=on' },
-    { k: 'controls_detail', label: 'Phím điều khiển', type: 'textarea', full: true, when: 'show_howto=on', hint: 'Mỗi dòng: Hành động | Phím. VD: Di chuyển | W A S D' },
-    { k: 'touch_note', label: 'Điều khiển trên điện thoại', type: 'text', full: true, when: 'show_howto=on' },
-    { type: 'heading', sec: true, label: '4 · Câu chuyện', note: 'Mặc định tắt' },
-    { k: 'show_story', label: 'Hiện khối Câu chuyện trên trang', type: 'checkbox', default: false },
-    { k: 'description', label: 'Bài viết', type: 'richtext', full: true, when: 'show_story=on', hint: 'Dán từ Word / Google Docs được, định dạng lạ sẽ tự lọc bỏ.' },
-    { type: 'heading', sec: true, label: '5 · Hình ảnh', note: 'Tự lấy các ảnh có caption ở khối 1' },
-    { k: 'show_gallery', label: 'Hiện lưới hình ảnh trên trang', type: 'checkbox', default: true },
-    { type: 'heading', sec: true, label: '6 · Dải kêu gọi chơi', note: 'Bỏ trống câu lớn thì dùng câu hook' },
-    { k: 'cta_title', label: 'Câu lớn', type: 'text' },
-    { k: 'cta_sub', label: 'Câu nhỏ', type: 'text' },
-    { type: 'heading', sec: true, label: '7 · Ảnh ngoài trang game', note: 'Dùng ở trang chủ' },
-    { k: 'kv', label: 'KV chính — banner lớn trang chủ (21:8 · 2100 × 800)', type: 'image', max: 2400, full: true, hint: 'Để chữ và nhân vật chính ở giữa vì điện thoại cắt bớt hai bên.' },
-    { k: 'hero', label: 'Hiện KV chính trên banner trang chủ', type: 'checkbox', hint: 'Thứ tự slide theo ô “Thứ tự” bên dưới.' },
-    { k: 'cover', label: 'Thumbnail — ô game trong thư viện (4:3 · 1200 × 900)', type: 'image', max: 1200, full: true, hint: 'Cũng dùng làm ảnh thay khi game chưa có slide.' },
-    { type: 'heading', sec: true, label: 'Xuất bản' },
+    { type: 'heading', sec: true, label: '9 · Xuất bản' },
     { k: 'status', label: 'Trạng thái', type: 'select', options: [['published', 'Đã đăng'], ['draft', 'Bản nháp']] },
     { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo từ tên game.' }
   ],
@@ -1177,9 +1190,6 @@ const FIELDS = {
     { k: 'start_at', label: 'Ngày bắt đầu', type: 'date', hint: 'Để trống = chạy ngay.' },
     { k: 'end_at', label: 'Ngày kết thúc', type: 'date', hint: 'Hết ngày này quảng cáo tự tắt.' },
     { k: 'active', label: 'Đang bật', type: 'checkbox' },
-    { type: 'heading', label: 'Báo cáo cho khách' },
-    { k: 'budget', label: 'Giá trị hợp đồng (đồng)', type: 'number', hint: 'Dùng để tính CPM (giá mỗi 1.000 lượt hiển thị) và CPC (giá mỗi lượt bấm). Để 0 nếu không cần.' },
-    { k: 'show_cost', label: 'Hiện chi phí, CPM, CPC trên trang báo cáo gửi khách', type: 'checkbox' },
     { k: 'note', label: 'Ghi chú nội bộ (giá, hợp đồng, người liên hệ)', type: 'textarea', full: true, hint: 'Chỉ quản trị viên thấy.' }
   ],
   assets: [
@@ -1201,6 +1211,15 @@ const FIELDS = {
     { k: 'show', label: 'Hiện trong menu & bộ lọc', type: 'checkbox' }
   ],
   display: [
+    { type: 'heading', label: 'Popup quảng bá (SIÊU HOT)' },
+    { k: 'popup_on', label: 'Bật popup khi khách vào thăm', type: 'checkbox' },
+    { k: 'popup_tag', label: 'Nhãn góc popup', type: 'text', hint: 'Mặc định “SIÊU HOT”. Để trống thì ẩn nhãn.' },
+    { k: 'popup_media_type', label: 'Dạng nội dung', type: 'select', options: [['image', 'Hình ảnh'], ['video', 'Video ngắn (.mp4 / .webm)'], ['youtube', 'Video web (YouTube)']] },
+    { k: 'popup_image', label: 'Ảnh popup (4:3) — JPG, PNG, WebP hoặc GIF động', type: 'image', max: 1600, full: true, hint: 'Khuyên dùng 1200 × 900. Với video, ảnh này làm ảnh chờ khi video đang tải.' },
+    { k: 'popup_video_url', label: 'Link video', type: 'media-url', full: true, when: 'popup_media_type=video|youtube', hint: 'Video tự chạy, không tiếng, lặp lại.' },
+    { k: 'popup_link', label: 'Bấm vào popup sẽ mở', type: 'url', full: true, hint: 'Link ngoài (tab mới), hoặc dán link trang game VD index.html#/game/dapa-dap-pha' },
+    { k: 'popup_seconds', label: 'Tự đóng sau (giây)', type: 'number', hint: '0 = không tự đóng, khách phải bấm X. Mặc định 8.' },
+    { k: 'popup_repeat_hours', label: 'Không hiện lại trong vòng (giờ)', type: 'number', hint: 'Tính từ lần khách thấy hoặc đóng gần nhất, trên cùng trình duyệt. 0 = hiện lại mỗi lần tải trang.' },
     { type: 'heading', label: 'Banner trang chủ' },
     { k: 'banner_autoplay', label: 'Tự động trượt banner', type: 'checkbox' },
     { k: 'banner_speed', label: 'Thời gian mỗi banner (giây)', type: 'number', hint: 'Tối thiểu 2 giây. Mặc định 6.' },
@@ -1270,10 +1289,13 @@ function fieldHTML(f, v) {
     }
     case 'features': {
       const arr = Array.isArray(v) ? v : [];
-      return `<div class="${cls}"><div class="feat-grid">${[1, 2, 3].map(n => { const x = arr[n - 1] || {};
-        return `<div class="feat-ed"><b>Thẻ ${n}</b>${fieldHTML({ k: `feat${n}_image`, label: 'Ảnh (16:9)', type: 'image', max: 1600 }, x.image || '')}
-          <div class="field"><label for="ft${n}">Tiêu đề</label><input id="ft${n}" name="feat${n}_title" type="text" value="${esc(x.title || '')}"></div>
-          <div class="field"><label for="fx${n}">Một câu mô tả</label><textarea id="fx${n}" name="feat${n}_text" rows="2">${esc(x.text || '')}</textarea></div></div>`; }).join('')}</div>
+      return `<div class="${cls}"><div class="feat-list">${[1, 2, 3].map(n => { const x = arr[n - 1] || {};
+        return `<div class="feat-row"><span class="feat-n">${n}</span>
+          <div class="feat-img">${fieldHTML({ k: `feat${n}_image`, label: 'Ảnh', type: 'image', max: 1600 }, x.image || '')}</div>
+          <div class="feat-txt">
+            <input name="feat${n}_title" type="text" placeholder="Tiêu đề thẻ ${n}" value="${esc(x.title || '')}" aria-label="Tiêu đề thẻ ${n}">
+            <textarea name="feat${n}_text" rows="2" placeholder="Một câu mô tả" aria-label="Mô tả thẻ ${n}">${esc(x.text || '')}</textarea>
+          </div></div>`; }).join('')}</div>
         <span class="hint">Thẻ bỏ trống tiêu đề và mô tả sẽ không hiện.</span></div>`;
     }
     case 'steps': {
@@ -1396,8 +1418,6 @@ function applyWhen(root = document) {
     el.hidden = !!ctl && !vals.split('|').includes(val);
   });
 }
-// Lỗi "Failed to fetch": yêu cầu bị chặn trước khi tới máy chủ, thường do tiện ích chặn quảng cáo hoặc mất mạng.
-function netMsg(err) { return /failed to fetch|networkerror|load failed/i.test(err?.message || String(err)) ? 'Trình duyệt đã chặn kết nối. Thường do tiện ích chặn quảng cáo (AdBlock, uBlock…): hãy tắt nó cho trang này rồi thử lại. Nếu không phải, kiểm tra mạng.' : ''; }
 function delCell(id) {
   return confirmDel === id
     ? `<span class="confirm">Xoá thật? <button class="btn small danger" data-act="del-yes" data-id="${esc(id)}">Xoá</button><button class="btn small line" data-act="del-no">Không</button></span>`
@@ -1450,7 +1470,6 @@ function adReport(a) {
   const st = adStatsOf('c:' + a.id);
   return `Báo cáo quảng cáo · Vinh Làm Game\nKhách hàng: ${a.advertiser}${a.title ? '\nChiến dịch: ' + a.title : ''}\nVị trí: ${placeText(a)}${a.placement === 'game' ? ' (' + (a.game_ids || []).map(id => gameById(id)?.title).filter(Boolean).join(', ') + ')' : ''}\nThời gian: ${a.start_at || '…'} → ${a.end_at || '…'}\nLượt hiển thị: ${nfmt(st.views)}\nSố người xem: ${nfmt(st.reach)}\nLượt bấm: ${nfmt(st.clicks)}\nTỉ lệ bấm (CTR): ${pct(st.clicks, st.views)}\nSố liệu tính đến ${new Date().toLocaleString('vi-VN')}`;
 }
-const reportUrl = a => `${location.origin}/report?id=${encodeURIComponent(a.id)}&k=${encodeURIComponent(a.report_key)}`;
 function adminAds() {
   if ((!ADSTATS || Date.now() - ADSTATS.at > 60000) && !statsBusy.ads) loadStats(400, 'ads');
   const s = D.settings;
@@ -1465,8 +1484,8 @@ function adminAds() {
       <td class="num" style="white-space:nowrap">${esc(a.start_at || '…')} → ${esc(a.end_at || '…')}<br><span class="pill ${cls}">${st}</span></td>
       <td class="num" style="white-space:nowrap">${ADSTATS ? `${nfmt(m.views)} xem<br>${nfmt(m.clicks)} bấm · ${pct(m.clicks, m.views)}` : '…'}</td>
       <td><button class="toggle ${a.active ? 'on' : ''}" data-act="flip" data-kind="ads" data-k="active" data-id="${esc(a.id)}" aria-label="Bật quảng cáo"></button></td>
-      <td><div class="row-act">${a.report_key ? `<a class="btn small line" href="${esc(reportUrl(a))}" target="_blank" rel="noopener" title="Mở trang báo cáo của chiến dịch">Báo cáo ↗</a><button class="btn small line" data-act="copy" data-v="${esc(reportUrl(a))}" data-msg="Đã chép link báo cáo. Gửi link này cho khách." title="Chép link báo cáo để gửi khách">Chép link</button>` : `<button class="btn small line" data-act="copy" data-v="${esc(adReport(a))}" data-msg="Đã chép số liệu báo cáo (dạng chữ)." title="Chép số liệu dạng chữ">Chép số liệu</button>`}${delCell(a.id)}</div></td></tr>`; }).join('');
-  return `${legacy}<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Mọi quảng cáo của khách quản lý ở đây. Hai vị trí: <b>banner lớn đầu trang chủ</b> (chạy chung với KV các game) và <b>banner ngang</b> dưới thư viện / trang game. ${window.__adReport === false ? '<b>Chưa bật trang báo cáo:</b> chạy lại <span class="mono">schema.sql</span> trong Supabase › SQL Editor.' : 'Nút <b>Báo cáo</b> mở trang báo cáo của chiến dịch. <b>Chép link</b> để gửi khách: khách mở link xem số liệu cập nhật liên tục, không cần đăng nhập.'}</p>
+      <td><div class="row-act"><button class="btn small line" data-act="copy" data-v="${esc(adReport(a))}" title="Chép báo cáo gửi khách">Báo cáo</button>${delCell(a.id)}</div></td></tr>`; }).join('');
+  return `${legacy}<p class="hint" style="color:var(--muted);font-size:13px;margin:0">Mọi quảng cáo của khách quản lý ở đây. Hai vị trí: <b>banner lớn đầu trang chủ</b> (chạy chung với KV các game) và <b>banner ngang</b> dưới thư viện / trang game. Nút <b>Báo cáo</b> chép số liệu để gửi khách.</p>
     ${tableWrap(['', 'Khách hàng', 'Vị trí', 'Thời gian', 'Hiệu quả', 'Bật', ''], rows, 'Chưa có quảng cáo nào. Bấm “+ Thêm quảng cáo” khi có khách đặt.')}`;
 }
 
@@ -2535,6 +2554,8 @@ document.addEventListener('click', async e => {
       case 'lb': openLB(Number(t.dataset.i)); break;
       case 'lb-step': openLB(lbIdx + Number(t.dataset.d)); break;
       case 'lb-close': closeLB(); break;
+      case 'promo-close': closePromo(); break;
+      case 'promo-hit': if (typeof Track !== 'undefined') Track.push('promo_click', '', true); closePromo(); break;
       case 'th-fs': { if (document.fullscreenElement) document.exitFullscreen?.(); else document.documentElement.requestFullscreen?.().catch(() => toast('Trình duyệt không cho bật toàn màn hình, bấm F11.', true)); break; }
       case 'th-more': { const m = $('#thMenu'); m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); break; }
       case 'tip-close': closeTip(); break;
@@ -2547,7 +2568,7 @@ document.addEventListener('click', async e => {
         break;
       }
       case 'fs-close': document.body.classList.remove('pseudo-fs'); break;
-      case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast(t.dataset.msg || 'Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
+      case 'copy': try { await navigator.clipboard.writeText(t.dataset.v); toast('Đã sao chép'); } catch { toast('Hãy bôi đen và sao chép thủ công.', true); } break;
       case 'new': editing = { kind: t.dataset.kind, item: BLANK[t.dataset.kind]() }; confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
       case 'edit': editing = { kind: tab, item: structuredClone(D[tab].find(x => x.id === id)) };
         if (tab === 'games') { const g = editing.item; g.screenshots = gameMedia(g); if (!(g.features || []).length && g.highlights) g.features = pairs(g.highlights).slice(0, 3).map(([title, text]) => ({ image: '', title, text })); } confirmDel = null; render(); $('.panel')?.scrollIntoView({ block: 'start' }); break;
@@ -2612,7 +2633,7 @@ document.addEventListener('click', async e => {
       case 'admin-del-yes': { const { error } = await sb.from('admins').delete().eq('email', id); if (error) throw new Error('Không xoá được: ' + error.message); confirmDel = null; ADMINS = null; render(); toast('Đã xoá quyền của ' + id); break; }
       case 'admin-invite': await inviteAdmin(id); toast('Đã gửi lại email mời tới ' + id); break;
     }
-  } catch (err) { toast(netMsg(err) || err.message || 'Có lỗi xảy ra', true, 6000); }
+  } catch (err) { toast(err.message || 'Có lỗi xảy ra', true); }
 });
 
 document.addEventListener('input', e => {
@@ -2705,8 +2726,6 @@ document.addEventListener('submit', async e => {
       if (v.placement !== 'game') v.game_ids = [];
       v.weight = Math.min(10, Math.max(1, Number(v.weight) || 1));
       v.hero_sort = Number(v.hero_sort) || 0;
-      v.budget = Math.max(0, Number(v.budget) || 0);
-      if (!window.__adReport) { delete v.budget; delete v.show_cost; }   // chưa chạy schema.sql mới thì chưa có 2 cột này
     }
     if (missing) { toast(`Hãy điền “${missing.label}”.`, true); form.elements[missing.k]?.focus(); return; }
     if (kind === 'display') v.banner_speed = Math.max(2, Number(v.banner_speed) || 6), v.grid_rows = Math.max(1, Number(v.grid_rows) || 3);
@@ -2748,6 +2767,7 @@ document.addEventListener('submit', async e => {
   if (typeof afterBoot === 'function') await afterBoot();
   render();
   if (typeof startLive === 'function') startLive();
+  if (typeof maybeShowPromo === 'function') maybeShowPromo();
 })();
 </script>
 

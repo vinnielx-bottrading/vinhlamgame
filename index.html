@@ -803,7 +803,8 @@ const loadErrorHTML = () => `<section class="wrap" style="padding-block:clamp(64
 </section>`;
 
 /* ============ TRUY VẤN ============ */
-const pubGames = () => D.games.filter(g => g.status === 'published').sort(bySort);
+const isLive = g => g.status === 'published' && (!g.publish_at || g.publish_at <= today());
+const pubGames = () => D.games.filter(isLive).sort(bySort);
 const gameById = id => D.games.find(g => g.id === id);
 const genreById = id => D.genres.find(g => g.id === id);
 const genreNames = g => (g.genre_ids || []).map(genreById).filter(Boolean).map(x => x.name);
@@ -1128,7 +1129,7 @@ function playBtn(g, cls = '') {
   return `<a class="gp-btn ${cls}" href="${direct ? esc(g.play_url) : 'play.html?g=' + encodeURIComponent(g.slug)}" data-direct${direct ? ` data-gid="${esc(g.id)}"` : ''}><span class="play-ico"></span>Chơi ngay${free ? '<span class="gp-free"> · Miễn phí</span>' : ''}</a>`;
 }
 function viewGame(slug) {
-  const g = D.games.find(x => x.slug === slug && (x.status === 'published' || isAdmin()));
+  const g = D.games.find(x => x.slug === slug && (isLive(x) || isAdmin()));
   if (!g) return notFound();
   const gens = (g.genre_ids || []).map(genreById).filter(Boolean);
   const media = gameMedia(g);
@@ -1156,7 +1157,7 @@ function viewGame(slug) {
         ${many ? `<div class="gp-dots">${curMedia.map((m, i) => `<button type="button" data-act="media" data-i="${i}" class="${i ? '' : 'on'}${isVid(m.src) ? ' vid' : ''}" aria-label="${isVid(m.src) ? 'Video' : 'Ảnh'} ${i + 1}" aria-current="${i ? 'false' : 'true'}"></button>`).join('')}</div>` : ''}
       </div>
       <div class="gp-info">
-        ${gens.length || g.hot ? `<div class="gp-tags">${gens.map(x => `<a class="gp-tag" href="#/the-loai/${esc(x.slug)}">${esc(x.name)}</a>`).join('')}${g.hot ? '<span class="gp-tag hot">● Hot</span>' : ''}${g.status !== 'published' ? '<span class="gp-tag">Bản nháp</span>' : ''}</div>` : ''}
+        ${gens.length || g.hot ? `<div class="gp-tags">${gens.map(x => `<a class="gp-tag" href="#/the-loai/${esc(x.slug)}">${esc(x.name)}</a>`).join('')}${g.hot ? '<span class="gp-tag hot">● Hot</span>' : ''}${!isLive(g) ? `<span class="gp-tag">${g.status !== 'published' ? 'Bản nháp' : 'Lên lịch · ' + esc(g.publish_at)}</span>` : ''}</div>` : ''}
         <div><h1 class="gp-title" id="gp-title">${esc(g.title)}</h1>${g.subtitle ? `<p class="gp-sub">${esc(g.subtitle)}</p>` : ''}</div>
         ${g.tagline ? `<p class="gp-hook">${esc(g.tagline)}</p>` : ''}
         ${g.summary ? `<p class="gp-sum">${esc(g.summary)}</p>` : ''}

@@ -573,6 +573,7 @@ td .thumb .gen-t,td .thumb .gen-px{display:none}
 .pill{display:inline-block;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;letter-spacing:.04em}
 .pill.pub{background:#E8F1EC;color:var(--ok)}
 .pill.draft{background:var(--paper-2);color:var(--muted);border:1px solid var(--line)}
+.pill.sched{background:#FCF3DC;color:#8A6300}
 .row-act{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .toggle{width:36px;height:20px;border-radius:999px;background:var(--line);position:relative;transition:background .2s}
 .toggle::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
@@ -1055,7 +1056,8 @@ const loadErrorHTML = () => `<section class="wrap" style="padding-block:clamp(64
 </section>`;
 
 /* ============ TRUY VẤN ============ */
-const pubGames = () => D.games.filter(g => g.status === 'published').sort(bySort);
+const isLive = g => g.status === 'published' && (!g.publish_at || g.publish_at <= today());
+const pubGames = () => D.games.filter(isLive).sort(bySort);
 const gameById = id => D.games.find(g => g.id === id);
 const genreById = id => D.genres.find(g => g.id === id);
 const genreNames = g => (g.genre_ids || []).map(genreById).filter(Boolean).map(x => x.name);
@@ -1150,6 +1152,7 @@ const FIELDS = {
     { k: 'is_free', label: 'Miễn phí', type: 'checkbox', default: true, hint: 'Tick: nút hiện “Chơi ngay · Miễn phí”. Bỏ tick: chỉ “Chơi ngay”.' },
     { type: 'heading', sec: true, label: '9 · Xuất bản' },
     { k: 'status', label: 'Trạng thái', type: 'select', options: [['published', 'Đã đăng'], ['draft', 'Bản nháp']] },
+    { k: 'publish_at', label: 'Đăng theo ngày', type: 'date', when: 'status=published', hint: 'Để trống = đăng ngay. Chọn ngày tương lai thì game vẫn ẩn như bản nháp đến đúng ngày đó mới tự hiện lên, không cần vào sửa lại.' },
     { k: 'slug', label: 'Đường dẫn (slug)', type: 'text', hint: 'Để trống sẽ tự tạo từ tên game.' }
   ],
   banners: [
@@ -1431,7 +1434,7 @@ function adminGames() {
     <td><div class="thumb">${coverOf(g)}</div></td>
     <td><a href="index.html#/game/${esc(g.slug)}" target="_blank" rel="noopener" style="font-weight:500">${esc(g.title)}</a>${DEVICE[g.device] ? ` <span class="dev-inline" title="Tối ưu cho ${DEVICE[g.device][0].toLowerCase()}">${DEVICE[g.device][1]}</span>` : ''}<div class="hint mono" style="color:var(--muted)">/${esc(g.slug)}</div></td>
     <td>${esc(genreNames(g).join(', '))}</td>
-    <td><span class="pill ${g.status === 'published' ? 'pub' : 'draft'}">${g.status === 'published' ? 'Đã đăng' : 'Nháp'}</span>${g.play_url ? '' : ' <span class="pill draft">Chưa có link</span>'}</td>
+    <td><span class="pill ${isLive(g) ? 'pub' : g.status === 'published' ? 'sched' : 'draft'}">${isLive(g) ? 'Đã đăng' : g.status === 'published' ? `Lên lịch · ${esc(g.publish_at)}` : 'Nháp'}</span>${g.play_url ? '' : ' <span class="pill draft">Chưa có link</span>'}</td>
     <td><button class="toggle ${g.hot ? 'on' : ''}" data-act="flip" data-kind="games" data-k="hot" data-id="${esc(g.id)}" aria-label="Hot"></button></td>
     <td><button class="toggle ${g.hero ? 'on' : ''}" data-act="flip" data-kind="games" data-k="hero" data-id="${esc(g.id)}" aria-label="Banner trang chủ" ${!g.kv && !g.hero ? 'title="Chưa có ảnh KV chính"' : ''}></button>${g.hero && !g.kv ? '<div class="hint" style="color:var(--wine);font-size:11px">Thiếu KV</div>' : ''}</td>
     <td class="num">${i + 1}</td>
@@ -1441,7 +1444,7 @@ function adminGames() {
   ${tableWrap(['', '', 'Game', 'Thể loại', 'Trạng thái', 'Hot', 'Banner trang chủ', 'Thứ tự', ''], rows, 'Chưa có game nào.', 'drag-table')}`;
 }
 function bannerSlidesAdmin() {
-  return { games: D.games.filter(g => g.hero && g.kv && g.status === 'published').length,
+  return { games: D.games.filter(g => g.hero && g.kv && isLive(g)).length,
     ads: (D.ads || []).filter(a => a.active && a.hero_on && (!a.start_at || a.start_at <= today()) && (!a.end_at || a.end_at >= today())).length };
 }
 function adminBanners() {

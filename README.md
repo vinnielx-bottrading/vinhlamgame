@@ -132,6 +132,8 @@ Tab công việc nằm **bên phải**, nội dung của tab đang chọn hiện
 
 **Popup quảng bá (SIÊU HOT):** hiện khi khách vào thăm trang, ảnh/video tỉ lệ 4:3, nền tối lại và có hiệu ứng tia hào quang xoay quanh để gây chú ý. Bấm vào popup mở link đã đặt trong tab mới; có nút X và/hoặc tự đóng sau N giây. Cấu hình ở **Giao diện › Popup quảng bá**: bật/tắt, ảnh hoặc video, link, nhãn góc (mặc định "SIÊU HOT"), số giây tự đóng, và số giờ không hiện lại sau khi khách đã thấy (tính theo trình duyệt từng khách, qua `localStorage`). Không hiện trong admin.
 
+**Lưu bản nháp / đăng theo ngày (admin, mục Thêm/Sửa game › 9 · Xuất bản):** bên cạnh "Trạng thái" (Đã đăng / Bản nháp) có thêm trường **"Đăng theo ngày"**. Để trống thì game đăng ngay khi chọn "Đã đăng" như trước. Chọn một ngày trong tương lai thì game vẫn **ẩn hoàn toàn** như bản nháp (không hiện trong thư viện, không mở được bằng link trực tiếp, không tính vào banner trang chủ) cho đến đúng ngày đó mới **tự hiện lên** — không cần vào sửa lại hay bấm gì thêm. Soạn trước bài đăng, đặt ngày muốn ra mắt, xong. Trong bảng danh sách game ở admin, trạng thái hiện 3 kiểu: "Đã đăng" (xanh), "Lên lịch · <ngày>" (vàng, đang chờ tới ngày), "Nháp" (xám). Admin bấm "Mở tab mới" hoặc "Xem trang" vẫn xem được trước trang của game đang lên lịch/nháp để kiểm tra; khách thường thì không thấy được cho tới ngày đăng.
+
 **Banner trang chủ (hero):**
 - Chỉ hiện hình hoặc video, tự trượt mờ dần, không có chữ.
 - Gồm **KV chính của các game được bật cột "Banner trang chủ"** trong tab Game, cộng các **quảng cáo có vị trí Banner trang chủ** trong tab Quảng cáo. Số lượng không giới hạn, admin tự quyết. Thứ tự: cột Thứ tự của game và ô "Thứ tự trong banner trang chủ" của quảng cáo, xếp chung.
